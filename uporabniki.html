@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="sl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Uporabniki – RD Mozirje</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page" data-page="uporabniki">
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo-block">
+          <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" href="seznam.html"/>
+          <div class="logo-placeholder"></div>
+        </div>
+        <div class="header-right">
+          <div class="user-icon">👤</div>
+          <span id="header-username">UPORABNIK</span>
+          <button id="btn-logout" class="btn-logout">ODJAVA</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="main-inner">
+        <nav class="tab-menu">
+          <a href="seznam.html">SEZNAM</a>
+          <a href="vpis-clana.html">VPIS ČLANA</a>
+          <a href="arhiv-clanstva.html">ARHIV ČLANOV</a>
+          <a href="koledar.html">KOLEDAR</a>
+          <a href="funkcionarji.html">FUNKCIONARJI</a>
+          <a href="priznanja.html">PRIZNANJA</a>
+          <a href="uporabniki.html" class="active">UPORABNIKI</a>
+          <a href="tiskanje.html">TISKANJE</a>
+          <a href="zgodovina-dejanj.html">ZGODOVINA DEJANJ</a>
+        </nav>
+
+        <h2>Upravljanje uporabnikov</h2>
+        <br />
+
+        <form id="user-form">
+          <div class="form-group">
+            <label for="username">UPORABNIŠKO IME</label>
+            <input id="username" name="username" type="text" required />
+          </div>
+
+          <div class="form-group">
+            <label for="password">ZAČASNO GESLO</label>
+            <input id="password" name="password" type="text" required />
+          </div>
+
+          <div class="form-group">
+            <label for="visibleStatuses">VIDNI STATUSE ČLANOV</label>
+            <input
+              id="visibleStatuses"
+              name="visibleStatuses"
+              type="text"
+              placeholder="npr. AA, AM ali pusti prazno za vse"
+            />
+          </div>
+
+          <br />
+          <h3>Moduli, ki jih uporabnik vidi</h3>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" name="module" value="dashboard" />
+              Dashboard
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" name="module" value="seznam" />
+              Seznam članov
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" name="module" value="vpis" />
+              Vpis člana
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" name="module" value="arhiv" />
+              Arhiv članstva
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" name="module" value="koledar" />
+              Koledar
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" name="module" value="funkcionarji" />
+              Funkcionarji
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" name="module" value="priznanja" />
+              Priznanja
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" name="module" value="uporabniki" />
+              Uporabniki
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" name="module" value="tiskanje" />
+              Tiskanje
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input type="checkbox" name="module" value="zgodovina" />
+              Zgodovina dejanj
+            </label>
+          </div>
+
+          <br />
+          <h3>Pravice uporabnika</h3>
+          <div class="form-group">
+            <label>
+              <input id="canEditMembers" type="checkbox" />
+              Lahko ureja člane (urejanje podatkov)
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input id="canArchiveMembers" type="checkbox" />
+              Lahko arhivira člane / briše iz arhiva
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input id="canManageUsers" type="checkbox" />
+              Lahko upravlja uporabnike
+            </label>
+          </div>
+          <div class="form-group">
+            <label>
+              <input id="canSeeHistory" type="checkbox" />
+              Lahko vidi zgodovino dejanj
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+              DODAJ UPORABNIKA
+            </button>
+          </div>
+        </form>
+
+        <br />
+        <h3>Obstoječi uporabniki</h3>
+        <br />
+
+        <div class="table-wrapper">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>UPORABNIK</th>
+                <th>MODULI</th>
+                <th>VIDNI STATUSI</th>
+                <th>ORODJA</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+
+    <script src="core.js" defer></script>
+    <script src="uporabniki.js" defer></script>
+  </body>
+</html>

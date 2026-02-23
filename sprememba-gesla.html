@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="sl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sprememba gesla – RD Mozirje</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page" data-page="change-password">
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo-block">
+            <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img"/>
+          <div class="logo-placeholder"></div>
+        </div>
+        <div class="header-right">
+          <div class="user-icon">👤</div>
+          <span id="header-username">UPORABNIK</span>
+          <button id="btn-logout" class="btn-logout">ODJAVA</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="main-inner">
+        <h2>Sprememba gesla</h2>
+        <br />
+        <div id="change-pass-error" class="error-msg"></div>
+        <form id="change-password-form">
+          <div class="form-group">
+            <label for="oldPassword">STARO GESLO</label>
+            <input id="oldPassword" name="oldPassword" type="password" />
+          </div>
+          <div class="form-group">
+            <label for="newPassword1">NOVO GESLO</label>
+            <input id="newPassword1" name="newPassword1" type="password" />
+          </div>
+          <div class="form-group">
+            <label for="newPassword2">PONOVI NOVO GESLO</label>
+            <input id="newPassword2" name="newPassword2" type="password" />
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+              SHRANI NOVO GESLO
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+
+    <script src="core.js" defer></script>
+    <script src="sprememba-gesla.js" defer></script>
+  </body>
+</html>

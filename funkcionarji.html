@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="sl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Funkcionarji – RD Mozirje</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page" data-page="funkcionarji">
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo-block">
+          <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" href="seznam.html"/>
+        </div>
+        <div class="header-right">
+          <div class="user-icon">👤</div>
+          <span id="header-username">UPORABNIK</span>
+          <button id="btn-logout" class="btn-logout">ODJAVA</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="main-inner">
+        <nav class="tab-menu">
+          <a href="seznam.html">SEZNAM</a>
+          <a href="vpis-clana.html">VPIS ČLANA</a>
+          <a href="arhiv-clanstva.html">ARHIV ČLANOV</a>
+          <a href="koledar.html">KOLEDAR</a>
+          <a href="funkcionarji.html" class="active">FUNKCIONARJI</a>
+          <a href="priznanja.html">PRIZNANJA</a>
+          <a href="uporabniki.html">UPORABNIKI</a>
+          <a href="tiskanje.html">TISKANJE</a>
+          <a href="zgodovina-dejanj.html">ZGODOVINA DEJANJ</a>
+        </nav>
+
+        <h2>Funkcionarji družine</h2>
+        <br />
+
+        <form id="official-form">
+          <div class="form-group">
+            <label for="official-member">ČLAN</label>
+            <select id="official-member" name="official-member"></select>
+          </div>
+          <div class="form-group">
+            <label for="official-role">FUNCKIJA</label>
+            <select id="official-role" name="official-role">
+              <option value="Predsednik">Predsednik</option>
+              <option value="Gospodar">Gospodar</option>
+              <option value="Tajnik">Tajnik</option>
+              <option value="Član UO">Član UO</option>
+              <option value="Tožilec">Tožilec</option>
+              <option value="Član disciplinske razsodišča">
+                Član disciplinske razsodišča
+              </option>
+              <option value="Drugo">Drugo</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+              DODAJ FUNKCIONARJA
+            </button>
+          </div>
+        </form>
+
+        <br />
+        <h3>Seznam funkcionarjev</h3>
+        <br />
+
+        <div class="table-wrapper">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>IME IN PRIIMEK</th>
+                <th>FUNCKIJA</th>
+                <th>ORODJA</th>
+              </tr>
+            </thead>
+            <tbody id="officials-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+
+    <script src="core.js" defer></script>
+    <script src="funkcionarji.js" defer></script>
+  </body>
+</html>

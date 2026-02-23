@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Letne karte in čuvaji – RD Mozirje</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="page" data-page="karte-cuvaji">
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo-block">
+        <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img"/>
+      </div>
+      <div class="header-right">
+        <div class="user-icon">👤</div>
+        <span id="header-username">UPORABNIK</span>
+        <button id="btn-logout" class="btn-logout">ODJAVA</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="main-inner">
+      <h2>Letne karte</h2>
+
+      <div style="margin: 12px 0;">
+        <label style="font-size:14px; font-weight:600;">Uvozi Excel (.xlsx):</label><br/>
+        <input id="licenses-file" type="file" accept=".xlsx,.xls" />
+        <div style="font-size:12px; opacity:0.8; margin-top:6px;">
+          Excel naj vsebuje 2 stolpca: <b>Ime in priimek</b> | <b>Številka dovolilnice</b>
+        </div>
+      </div>
+
+      <h3 style="margin-top:18px;">Ročno dodaj dovolilnico</h3>
+      <form id="license-form" style="margin: 10px 0;">
+        <div class="form-group">
+          <label for="licenseName">IME IN PRIIMEK</label>
+          <input id="licenseName" name="licenseName" type="text" />
+        </div>
+        <div class="form-group">
+          <label for="licenseNumber">ŠTEVILKA DOVOLILNICE</label>
+          <input id="licenseNumber" name="licenseNumber" type="text" />
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">DODAJ</button>
+        </div>
+      </form>
+
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>IME IN PRIIMEK</th>
+              <th>ŠT. DOVOLILNICE</th>
+              <th>ORODJA</th>
+            </tr>
+          </thead>
+          <tbody id="licenses-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+
+  <!-- SheetJS (xlsx) - če nimaš interneta, si to datoteko potegni lokalno -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="core.js" defer></script>
+  <script src="karte-čuvaji.js" defer></script>
+</body>
+</html>

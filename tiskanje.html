@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="sl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Tiskanje – RD Mozirje</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page" data-page="tiskanje">
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo-block">
+          <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" href="seznam.html"/>
+        </div>
+        <div class="header-right">
+          <div class="user-icon">👤</div>
+          <span id="header-username">UPORABNIK</span>
+          <button id="btn-logout" class="btn-logout">ODJAVA</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="main-inner">
+        <nav class="tab-menu">
+          <a href="seznam.html">SEZNAM</a>
+          <a href="vpis-clana.html">VPIS ČLANA</a>
+          <a href="arhiv-clanstva.html">ARHIV ČLANOV</a>
+          <a href="koledar.html">KOLEDAR</a>
+          <a href="uporabniki.html">UPORABNIKI</a>
+          <a href="tiskanje.html" class="active">TISKANJE</a>
+          <a href="zgodovina-dejanj.html">ZGODOVINA DEJANJ</a>
+          <a href="funkcionarji.html">FUNKCIONARJI</a>
+          <a href="priznanja.html">PRIZNANJA</a>
+        </nav>
+
+        <h2>Tiskanje</h2>
+        <br />
+
+        <p class="print-info">
+          Tu lahko pripraviš podatke za tisk. Zaenkrat je omogočen izpis
+          trenutnega seznama aktivnih članov.
+        </p>
+
+        <button id="btn-print-members" class="btn btn-primary">
+          Natisni seznam članov
+        </button>
+      </div>
+    </main>
+
+    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+
+    <script src="core.js" defer></script>
+    <script src="tiskanje.js" defer></script>
+  </body>
+</html>

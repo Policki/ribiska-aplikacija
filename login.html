@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="sl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Prijava – RD Mozirje</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page login-page" data-page="login">
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo-block">
+          <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img"/>
+        </div>
+        <div></div>
+      </div>
+    </header>
+
+    <main class="login-main">
+      <div class="login-card">
+        <h1>POZDRAVLJENI</h1>
+        <div id="login-error" class="error-msg"></div>
+        <form id="login-form">
+          <div class="login-field">
+            <label for="username">UPORABNIŠKO IME</label>
+            <input id="username" name="username" type="text" />
+          </div>
+          <div class="login-field">
+            <label for="password">GESLO</label>
+            <input id="password" name="password" type="password" />
+          </div>
+          <button type="submit" class="btn btn-primary">VPIŠI</button>
+        </form>
+      </div>
+    </main>
+
+    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+
+    <script src="core.js" defer></script>
+    <script src="login.js" defer></script>
+  </body>
+</html>
+

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Članarina – RD Mozirje</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="page" data-page="clanarina">
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo-block">
+        <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img"/>
+      </div>
+      <div class="header-right">
+        <div class="user-icon">👤</div>
+        <span id="header-username">UPORABNIK</span>
+        <button id="btn-logout" class="btn-logout">ODJAVA</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="main-inner">
+      <h2>Članarina</h2>
+      <p style="margin:12px 0; font-size:14px;">
+        Klikni na znesek → izberi <b>rdeče</b> (neplačano) ali <b>zeleno</b> (plačano).
+      </p>
+
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>PRIIMEK</th>
+              <th>IME</th>
+              <th>NASLOV</th>
+              <th>KRAJ</th>
+              <th>ZNESEK</th>
+            </tr>
+          </thead>
+          <tbody id="fees-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+  <script src="core.js" defer></script>
+  <script src="clanarina.js" defer></script>
+</body>
+</html>

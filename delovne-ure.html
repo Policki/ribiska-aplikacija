@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Delovne ure – RD Mozirje</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="page" data-page="delovne-ure">
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo-block">
+        <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img"/>
+      </div>
+      <div class="header-right">
+        <div class="user-icon">👤</div>
+        <span id="header-username">UPORABNIK</span>
+        <button id="btn-logout" class="btn-logout">ODJAVA</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="main-inner">
+      <h2>Delovne ure</h2>
+
+      <div style="display:flex; gap:40px; align-items:center; margin: 18px 0;">
+        <div>
+          <div id="workhours-donut" class="donut">
+            <span id="workhours-donut-text">0%</span>
+          </div>
+          <div id="workhours-stats" style="font-size:14px;"></div>
+        </div>
+        <div style="font-size:14px; max-width:500px;">
+          Vsak član mlajši od 70 let mora opraviti <b>10 ur</b>.
+          Člani starejši od 70 let se ne štejejo v statistiko.
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>PRIIMEK</th>
+              <th>IME</th>
+              <th>STAROST</th>
+              <th>MORA?</th>
+              <th>URE (vnos)</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody id="workhours-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+  <script src="core.js" defer></script>
+  <script src="delovne-ure.js" defer></script>
+</body>
+</html>
