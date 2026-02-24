@@ -2,119 +2,240 @@
 <html lang="sl">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Urejanje člana – RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
+
+    <!-- samo za to stran (lahko tudi v styles.css) -->
+    <style>
+      .page-pad { padding: 12px; width: 100%; }
+      .edit-layout {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 14px;
+        align-items: start;
+      }
+      @media (max-width: 1100px){
+        .edit-layout { grid-template-columns: 1fr; }
+      }
+      .member-head {
+        display:flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+      .member-head h2{ margin:0; }
+      .pill {
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        padding:6px 10px;
+        border-radius:999px;
+        border:2px solid rgba(0,0,0,.12);
+        font-weight:900;
+        font-size:12px;
+        background:#fff;
+      }
+      .card {
+        background:#fff;
+        border-radius:14px;
+        border:2px solid rgba(11,75,75,.15);
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+        padding: 14px;
+      }
+      .card-title { font-weight: 900; margin-bottom: 10px; }
+      .avatar-drop {
+        border: 2px dashed rgba(11,75,75,.35);
+        border-radius: 14px;
+        padding: 10px;
+        text-align:center;
+        cursor: pointer;
+        user-select:none;
+      }
+      .avatar-drop:hover { filter: brightness(.98); }
+      .avatar-preview {
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid var(--teal-dark);
+        margin: 0 auto 10px auto;
+        background:#fff;
+      }
+      .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+      .grid-2 {
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 14px;
+      }
+      @media (max-width: 900px){
+        .grid-2{ grid-template-columns: 1fr; }
+      }
+      .small-hint { font-size: 12px; opacity: .75; margin-top: 4px; }
+      .actions-row {
+        display:flex;
+        gap:10px;
+        justify-content:flex-end;
+        margin-top: 12px;
+      }
+      .btn-danger {
+        background: #e74c3c;
+        color:#fff;
+      }
+    </style>
   </head>
+
   <body class="page" data-page="urejanje-clana">
-    <header class="header">
-      <div class="header-inner">
-        <div class="logo-block">
-          <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img"/>
-        </div>
-        <div class="header-right">
-          <div class="user-icon">👤</div>
-          <span id="header-username">UPORABNIK</span>
-          <button id="btn-logout" class="btn-logout">ODJAVA</button>
+    <header class="header header--universal">
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+          </div>
+
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
         </div>
       </div>
+
+      <nav id="app-nav" class="header-nav"></nav>
     </header>
 
     <main class="main">
-      <div class="main-inner">
-        <nav class="tab-menu">
-          <a href="seznam.html" class="active">SEZNAM</a>
-          <a href="vpis-clana.html">VPIS ČLANA</a>
-          <a href="arhiv-clanstva.html">ARHIV ČLANOV</a>
-          <a href="koledar.html">KOLEDAR</a>
-          <a href="uporabniki.html">UPORABNIKI</a>
-          <a href="tiskanje.html">TISKANJE</a>
-          <a href="zgodovina-dejanj.html">ZGODOVINA DEJANJ</a>
-          <a href="funkcionarji.html">FUNKCIONARJI</a>
-          <a href="priznanja.html">PRIZNANJA</a>
-        </nav>
-
-        <h2>Urejanje člana</h2>
-        <br />
-
-        <form id="urejanje-clana-form">
-          <div class="form-layout">
-            <div class="avatar-section">
-              <div class="avatar-preview">
-                <img
-                  id="avatar-img"
-                  src="https://via.placeholder.com/300x300.png?text=CLAN"
-                  alt="Slika člana"
-                />
-              </div>
-              <div class="avatar-input">
-                <label for="avatar-input">Spremeni sliko</label>
-                <input id="avatar-input" type="file" accept="image/*" />
-              </div>
+      <div class="main-inner full-width">
+        <div class="page-pad">
+          <div class="member-head">
+            <div>
+              <h2>Urejanje člana</h2>
+              <div class="small-hint">Uredi podatke, sliko ali status člana. Obvezna polja so označena z *.</div>
             </div>
 
-            <div class="form-fields">
-              <!-- povsem ista polja kot pri vpisu -->
-              <div class="form-group">
-                <label for="priimek">PRIIMEK</label>
-                <input id="priimek" name="priimek" type="text" required />
-              </div>
-              <div class="form-group">
-                <label for="ime">IME</label>
-                <input id="ime" name="ime" type="text" required />
-              </div>
-              <div class="form-group">
-                <label for="datumRojstva">DATUM ROJSTVA</label>
-                <input id="datumRojstva" name="datumRojstva" type="date" />
-              </div>
-              <div class="form-group">
-                <label for="naslov">NASLOV</label>
-                <input id="naslov" name="naslov" type="text" />
-              </div>
-              <div class="form-group">
-                <label for="kraj">KRAJ IN POŠTA</label>
-                <input id="kraj" name="kraj" type="text" />
-              </div>
-              <div class="form-group">
-                <label for="telefon">TELEFON</label>
-                <input id="telefon" name="telefon" type="text" />
-              </div>
-              <div class="form-group">
-                <label for="email">EMAIL</label>
-                <input id="email" name="email" type="email" />
-              </div>
-              <div class="form-group">
-    <label for="tipKarte">TIP KARTE</label>
-    <select id="tipKarte" name="tipKarte">
-        <option value="">-- izberi --</option>
-        <option value="navadna">Navadna</option>
-        <option value="eLRD">eLRD</option>
-    </select>
-</div>
-              </div>
-              <div class="form-group">
-                <label for="datumVpisa">DATUM VPISA</label>
-                <input id="datumVpisa" name="datumVpisa" type="date" />
-              </div>
-              <div class="form-group">
-                <label for="status">STATUS (STAT)</label>
-                <input id="status" name="status" type="text" />
-              </div>
-              <div class="form-group">
-                <label for="spc">SPC</label>
-                <input id="spc" name="spc" type="text" />
-              </div>
-              <div class="form-group">
-                <label for="clanska">ČLANSKA ŠTEVILKA</label>
-                <input id="clanska" name="clanska" type="text" />
-              </div>
-
-              <div class="form-actions">
-                <button type="submit" class="btn btn-primary">SHRANI</button>
-                <a href="seznam.html" class="btn btn-secondary">NAZAJ</a>
-              </div>
+            <div class="pill">
+              <span>Članska:</span> <span id="pill-clanska">—</span>
             </div>
           </div>
-        </form>
+
+          <form id="urejanje-clana-form">
+            <div class="edit-layout">
+              <!-- LEFT: AVATAR -->
+              <section class="card">
+                <div class="card-title">Slika člana</div>
+
+                <div class="avatar-preview">
+                  <img id="avatar-img" src="https://via.placeholder.com/300x300.png?text=CLAN" alt="Slika člana" />
+                </div>
+
+                <div class="avatar-drop" id="avatar-drop">
+                  Povleci sliko sem ali klikni za izbiro<br />
+                  <span class="small-hint">JPG/PNG/WebP • do 2 MB • priporočeno 300×300</span>
+                </div>
+
+                <input id="avatar-input" type="file" accept="image/*" style="display:none;" />
+
+                <div class="chip-row" style="display:flex; gap:10px; margin-top:10px; justify-content:center;">
+                  <button type="button" class="btn btn-secondary" id="btn-avatar-remove">Odstrani</button>
+                  <button type="button" class="btn btn-primary" id="btn-avatar-suggest">Predlagaj člansko</button>
+                </div>
+              </section>
+
+              <!-- RIGHT: FIELDS -->
+              <section class="card">
+                <div class="card-title">Podatki člana</div>
+
+                <div class="grid-2">
+                  <div class="form-group">
+                    <label for="priimek">Priimek *</label>
+                    <input id="priimek" name="priimek" type="text" required placeholder="npr. Kranjc" />
+                    <div class="small-hint">Samodejno pretvorjeno v velike črke.</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="ime">Ime *</label>
+                    <input id="ime" name="ime" type="text" required placeholder="npr. Miha" />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="datumRojstva">Datum rojstva</label>
+                    <input id="datumRojstva" name="datumRojstva" type="date" />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="telefon">Telefon</label>
+                    <input id="telefon" name="telefon" type="text" placeholder="npr. 041123456" />
+                  </div>
+
+                  <div class="form-group" style="grid-column: 1 / -1;">
+                    <label for="naslov">Naslov</label>
+                    <input id="naslov" name="naslov" type="text" placeholder="Ulica in hišna številka" />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="kraj">Kraj</label>
+                    <input id="kraj" name="kraj" type="text" placeholder="npr. Mozirje" />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="email">E-mail</label>
+                    <input id="email" name="email" type="email" placeholder="npr. ime.priimek@email.com" />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="status">Status (STAT) *</label>
+                    <select id="status" name="status" required>
+                      <option value="">Izberi status…</option>
+                      <option value="AA">AA – polnoletni polnopravni član</option>
+                      <option value="AM">AM – mladinec</option>
+                      <option value="AP">AP – pripravnik</option>
+                      <option value="AČ">AČ – častni član</option>
+                      <option value="ZAČ">ZAČ – zaslužni častni član</option>
+                      <option value="AŠI">AŠI – dijak/študent z izpitom</option>
+                      <option value="DAA">DAA – pridružen polnoletni član</option>
+                      <option value="DAM">DAM – pridružen mladinec</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="spc">SPC (spol) *</label>
+                    <select id="spc" name="spc" required>
+                      <option value="">Izberi…</option>
+                      <option value="M">M</option>
+                      <option value="Ž">Ž</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="tipKarte">Tip karte</label>
+                    <select id="tipKarte" name="tipKarte">
+                      <option value="">—</option>
+                      <option value="navadna">Navadna</option>
+                      <option value="eLRD">eLRD</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="datumVpisa">Datum vpisa</label>
+                    <input id="datumVpisa" name="datumVpisa" type="date" />
+                    <div class="small-hint">Prvi vpis (ne spreminjaj, če ni potrebno).</div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="clanska">Članska številka</label>
+                    <input id="clanska" name="clanska" type="text" />
+                  </div>
+                </div>
+
+                <div class="actions-row">
+                  <a href="seznam.html" class="btn btn-secondary">NAZAJ</a>
+                  <button type="submit" class="btn btn-primary">SHRANI</button>
+                </div>
+              </section>
+            </div>
+          </form>
+        </div>
       </div>
     </main>
 

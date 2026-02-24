@@ -61,4 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!user) return;
   initHeader(user);
   handleClanarinaPage();
+  startReminderWatcher();
+  renderAppNav(user, "clanarina");
 });

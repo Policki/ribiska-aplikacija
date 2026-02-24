@@ -6,21 +6,26 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body class="page" data-page="delovne-ure">
-  <header class="header">
+  <header class="header header--universal">
+  <div class="header-top">
     <div class="header-inner">
       <div class="logo-block">
-        <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img"/>
+        <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
       </div>
+
       <div class="header-right">
         <div class="user-icon">👤</div>
         <span id="header-username">UPORABNIK</span>
         <button id="btn-logout" class="btn-logout">ODJAVA</button>
       </div>
     </div>
-  </header>
+  </div>
 
+  <nav id="app-nav" class="header-nav"></nav>
+</header>
   <main class="main">
-    <div class="main-inner">
+    <div class="main-inner full-width">
+      <nav id="app-nav" class="header-nav"></nav>
       <h2>Delovne ure</h2>
 
       <div style="display:flex; gap:40px; align-items:center; margin: 18px 0;">

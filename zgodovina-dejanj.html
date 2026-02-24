@@ -2,47 +2,99 @@
 <html lang="sl">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Zgodovina dejanj – RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
+
   <body class="page" data-page="zgodovina">
-    <header class="header">
-      <div class="header-inner">
-        <div class="logo-block">
-          <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img"/>
-        </div>
-        <div class="header-right">
-          <div class="user-icon">👤</div>
-          <span id="header-username">UPORABNIK</span>
-          <button id="btn-logout" class="btn-logout">ODJAVA</button>
+    <header class="header header--universal">
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+          </div>
+
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
         </div>
       </div>
+
+       <nav id="app-nav" class="header-nav"></nav>
     </header>
 
     <main class="main">
-      <div class="main-inner">
-        <nav class="tab-menu">
-          <a href="seznam.html">SEZNAM</a>
-          <a href="vpis-clana.html">VPIS ČLANA</a>
-          <a href="arhiv-clanstva.html">ARHIV ČLANOV</a>
-          <a href="koledar.html">KOLEDAR</a>
-          <a href="uporabniki.html">UPORABNIKI</a>
-          <a href="tiskanje.html">TISKANJE</a>
-          <a href="zgodovina-dejanj.html" class="active">ZGODOVINA DEJANJ</a>
-          <a href="funkcionarji.html">FUNKCIONARJI</a>
-          <a href="priznanja.html">PRIZNANJA</a>
-        </nav>
+      <div class="main-inner full-width">
+        <div style="padding: 12px 12px 0 12px;">
+          <h2 style="margin:0;">Zgodovina dejanj</h2>
+          <div class="small-hint">Pregled vseh akcij: kdo, kdaj in kaj je bilo narejeno.</div>
+        </div>
 
-        <h2>Zgodovina dejanj</h2>
-        <br />
+        <div class="users-layout" style="grid-template-columns: 520px 1fr;">
+          <!-- FILTERS -->
+          <section class="card">
+            <div class="card-title">Filtri</div>
 
-        <div id="history-list" class="history-list"></div>
+            <div class="form-group">
+              <label for="hist-search">Iskanje</label>
+              <input id="hist-search" type="text" placeholder="Išči (dejanje, podrobnosti, uporabnik)..." />
+            </div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="hist-user">Uporabnik</label>
+                <select id="hist-user">
+                  <option value="">Vsi</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="hist-action">Dejanje</label>
+                <select id="hist-action">
+                  <option value="">Vsa</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="hist-from">Od datuma</label>
+                <input id="hist-from" type="date" />
+              </div>
+
+              <div class="form-group">
+                <label for="hist-to">Do datuma</label>
+                <input id="hist-to" type="date" />
+              </div>
+            </div>
+
+            <div class="chip-row">
+              <button class="btn btn-secondary" type="button" id="hist-reset">Ponastavi</button>
+              <button class="btn btn-primary" type="button" id="hist-clear">Počisti zgodovino</button>
+            </div>
+
+            <div class="small-hint" style="margin-top:10px;">
+              Opomba: čiščenje zgodovine izbriše zapise iz tega brskalnika (localStorage).
+            </div>
+          </section>
+
+          <!-- LIST -->
+          <section class="card">
+            <div class="card-title">Zapisi</div>
+            <div class="small-hint" id="hist-meta">—</div>
+
+            <div id="hist-container" style="margin-top:10px;"></div>
+          </section>
+        </div>
       </div>
     </main>
 
     <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
 
     <script src="core.js" defer></script>
-    <script src="zgodovina-dejanj.js" defer></script>
+    <script src="zgodovina.js" defer></script>
   </body>
 </html>

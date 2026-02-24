@@ -6,58 +6,87 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="page" data-page="koledar">
-    <header class="header">
-      <div class="header-inner">
-        <div class="logo-block">
-          <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img"/>
+   <header class="header header--universal">
+  <div class="header-top">
+    <div class="header-inner">
+      <div class="logo-block">
+        <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+      </div>
+
+      <div class="header-right">
+        <div class="user-icon">👤</div>
+        <span id="header-username">UPORABNIK</span>
+        <button id="btn-logout" class="btn-logout">ODJAVA</button>
+      </div>
+    </div>
+  </div>
+
+  <nav id="app-nav" class="header-nav"></nav>
+</header>
+
+    <main class="main-inner full-width">
+     <nav id="app-nav" class="header-nav"></nav>
+      <div class="calendar-layout">
+  <div class="calendar-panel">
+    <div class="calendar-toolbar">
+      <div class="cal-left">
+        <button id="cal-prev" class="cal-btn">◀</button>
+        <button id="cal-next" class="cal-btn">▶</button>
+        <button id="cal-today" class="cal-btn ghost">danes</button>
+      </div>
+
+      <div id="cal-title" class="cal-title">Mesec Leto</div>
+
+      <div class="cal-right">
+        <button id="cal-month" class="cal-btn toggle active">mesec</button>
+        <button id="cal-week" class="cal-btn toggle">teden</button>
+      </div>
+    </div>
+
+    <div id="calendar-grid" class="calendar-grid"></div>
+
+    <div id="calendar-week" class="calendar-week" style="display:none;"></div>
+  </div>
+
+  <aside class="calendar-side">
+    <h3>Dodaj</h3>
+
+    <form id="cal-form" class="cal-form">
+      <label>Vrsta</label>
+      <div class="cal-radio">
+        <label><input type="radio" name="type" value="event" checked /> Dogodek</label>
+        <label><input type="radio" name="type" value="reminder" /> Opomnik</label>
+      </div>
+
+      <label for="cal-name">Naziv</label>
+      <input id="cal-name" name="name" type="text" required />
+
+      <label for="cal-date">Datum</label>
+      <input id="cal-date" name="date" type="date" required />
+
+      <div class="cal-row">
+        <div style="flex:1;">
+          <label for="cal-time">Čas (za opomnik)</label>
+          <input id="cal-time" name="time" type="time" />
         </div>
-        <div class="header-right">
-          <div class="user-icon">👤</div>
-          <span id="header-username">UPORABNIK</span>
-          <button id="btn-logout" class="btn-logout">ODJAVA</button>
+        <div style="width:120px;">
+          <label for="cal-color">Barva</label>
+          <input id="cal-color" name="color" type="color" value="#2ecc71" />
         </div>
       </div>
-    </header>
 
-    <main class="main">
-      <div class="main-inner">
-        <nav class="tab-menu">
-          <a href="seznam.html">SEZNAM</a>
-          <a href="vpis-clana.html">VPIS ČLANA</a>
-          <a href="arhiv-clanstva.html">ARHIV ČLANOV</a>
-          <a href="koledar.html" class="active">KOLEDAR</a>
-          <a href="uporabniki.html">UPORABNIKI</a>
-          <a href="tiskanje.html">TISKANJE</a>
-          <a href="zgodovina-dejanj.html">ZGODOVINA DEJANJ</a>
-          <a href="funkcionarji.html">FUNKCIONARJI</a>
-          <a href="priznanja.html">PRIZNANJA</a>
-        </nav>
+      <label for="cal-note">Opis / opomba</label>
+      <textarea id="cal-note" name="note" rows="3"></textarea>
 
-        <h2>Koledar dogodkov</h2>
-        <br />
+      <button class="btn btn-primary" type="submit">SHRANI</button>
+    </form>
 
-        <form id="event-form">
-          <div class="form-group">
-            <label for="datum">DATUM</label>
-            <input id="datum" name="datum" type="date" required />
-          </div>
-          <div class="form-group">
-            <label for="naslov">NASLOV DOGODKA</label>
-            <input id="naslov" name="naslov" type="text" required />
-          </div>
-          <div class="form-group">
-            <label for="opis">OPIS</label>
-            <input id="opis" name="opis" type="text" />
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-              DODAJ DOGODEK
-            </button>
-          </div>
-        </form>
+    <hr style="margin:16px 0; opacity:.25;" />
 
-        <div class="events-list" id="events-list"></div>
-      </div>
+    <h3>Seznam (ta mesec)</h3>
+    <div id="cal-list" class="cal-list"></div>
+  </aside>
+</div>
     </main>
 
     <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>

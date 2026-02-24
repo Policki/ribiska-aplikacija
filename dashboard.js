@@ -27,4 +27,5 @@ document.addEventListener("DOMContentLoaded", () => {
       _aktivnoLetoEl.textContent = '';
     }
   }
+  startReminderWatcher();
 });

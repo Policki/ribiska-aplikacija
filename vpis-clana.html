@@ -2,118 +2,337 @@
 <html lang="sl">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Vpis člana – RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
+
+    <!-- Inline style samo za to stran (da ni treba spreminjati styles.css) -->
+    <style>
+      .page-title {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 14px 0 10px 0;
+        padding: 0 12px;
+      }
+      .page-title h2 {
+        margin: 0;
+      }
+      .page-subtitle {
+        font-size: 13px;
+        opacity: 0.75;
+      }
+
+      /* Layout */
+      .vpis-layout {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 14px;
+        align-items: start;
+        padding: 12px;
+      }
+      @media (max-width: 980px) {
+        .vpis-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .card {
+        background: #fff;
+        border-radius: 14px;
+        border: 2px solid rgba(11, 75, 75, 0.15);
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+        padding: 14px;
+      }
+      .card-title {
+        font-weight: 900;
+        margin-bottom: 10px;
+      }
+      .muted {
+        font-size: 12px;
+        opacity: 0.75;
+      }
+
+      /* Avatar */
+      .avatar-wrap {
+        display: grid;
+        gap: 12px;
+        place-items: center;
+      }
+      .avatar-preview {
+        width: 190px;
+        height: 190px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid #0b4b4b;
+        background: #fff;
+      }
+      .avatar-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .avatar-drop {
+        width: 100%;
+        border-radius: 14px;
+        border: 2px dashed rgba(11, 75, 75, 0.35);
+        padding: 12px;
+        text-align: center;
+        cursor: pointer;
+        user-select: none;
+        background: rgba(11, 75, 75, 0.03);
+      }
+      .avatar-drop.dragover {
+        background: rgba(11, 75, 75, 0.08);
+        border-color: rgba(11, 75, 75, 0.6);
+      }
+
+      .btn-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+      }
+      .btn-wide {
+        width: 100%;
+      }
+
+      /* Form grid */
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px 14px;
+      }
+      @media (max-width: 980px) {
+        .form-grid { grid-template-columns: 1fr; }
+      }
+      .form-group label {
+        font-weight: 800;
+        letter-spacing: .02em;
+      }
+      .help {
+        margin-top: 4px;
+        font-size: 12px;
+        opacity: .72;
+      }
+
+      .inline-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: flex-end;
+        margin-top: 14px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 999px;
+        border: 2px solid rgba(0,0,0,.12);
+        font-weight: 800;
+        font-size: 12px;
+        background: #fff;
+      }
+
+      .required-star {
+        color: #c0392b;
+        margin-left: 4px;
+      }
+
+      .divider {
+        margin: 12px 0;
+        height: 1px;
+        background: rgba(0,0,0,.10);
+      }
+      .header-nav {
+       width: 100%;
+       background: var(--teal-dark);
+        border-top: 1px solid rgba(255,255,255,0.2);
+      }
+      .header-nav-inner {
+       max-width: none !important;
+       width: 100% !important;
+        margin: 0 !important;
+       padding-left: 18px;
+       padding-right: 18px;
+      }
+      .logo-img {
+       height: 48px;
+       width: auto;
+     } 
+
+    </style>
   </head>
+
   <body class="page" data-page="vpis-clana">
-    <header class="header">
-      <div class="header-inner">
-        <div class="logo-block">
-          <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img"/>
-        </div>
-        <div class="header-right">
-          <div class="user-icon">👤</div>
-          <span id="header-username">UPORABNIK</span>
-          <button id="btn-logout" class="btn-logout">ODJAVA</button>
-        </div>
+  <header class="header header--universal">
+  <div class="header-top">
+    <div class="header-inner">
+      <div class="logo-block">
+        <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
       </div>
-    </header>
+
+      <div class="header-right">
+        <div class="user-icon">👤</div>
+        <span id="header-username">UPORABNIK</span>
+        <button id="btn-logout" class="btn-logout">ODJAVA</button>
+      </div>
+    </div>
+  </div>
+
+  <nav id="app-nav" class="header-nav"></nav>
+</header>
 
     <main class="main">
-      <div class="main-inner">
-        <nav class="tab-menu">
-          <a href="seznam.html">SEZNAM</a>
-          <a href="vpis-clana.html" class="active">VPIS ČLANA</a>
-          <a href="arhiv-clanstva.html">ARHIV ČLANOV</a>
-          <a href="koledar.html">KOLEDAR</a>
-          <a href="uporabniki.html">UPORABNIKI</a>
-          <a href="tiskanje.html">TISKANJE</a>
-          <a href="zgodovina-dejanj.html">ZGODOVINA DEJANJ</a>
-          <a href="funkcionarji.html">FUNKCIONARJI</a>
-          <a href="priznanja.html">PRIZNANJA</a>
-        </nav>
+      <div class="main-inner full-width">
+        <div class="page-title">
+          <div>
+            <h2>Vpis novega člana</h2>
+            <div class="page-subtitle">Izpolni osnovne podatke. Obvezna polja so označena z <span class="required-star">*</span>.</div>
+          </div>
 
-        <h2>Vpis novega člana</h2>
-        <br />
+          <div class="pill" title="Aktivno leto">
+            📅 Aktivno leto: <span id="aktivno-leto"></span>
+          </div>
+        </div>
 
-        <form id="vpis-clana-form">
-          <div class="form-layout">
-            <div class="avatar-section">
-              <div class="avatar-preview">
-                <img
-                  id="avatar-img"
-                  src="https://via.placeholder.com/300x300.png?text=CLAN"
-                  alt="Slika člana"
-                />
-              </div>
-              <div class="avatar-input">
-                <label for="avatar-input">Spremeni sliko</label>
-                <input id="avatar-input" type="file" accept="image/*" />
-              </div>
-            </div>
+        <form id="vpis-clana-form" autocomplete="on">
+          <div class="vpis-layout">
+            <!-- LEVO: AVATAR + HITRE AKCIJE -->
+            <section class="card">
+              <div class="card-title"></div>
 
-            <div class="form-fields">
-              <div class="form-group">
-                <label for="priimek">PRIIMEK</label>
-                <input id="priimek" name="priimek" type="text" required />
+              <div class="avatar-wrap">
+                <div class="avatar-preview">
+                  <img
+                    id="avatar-img"
+                    src="https://via.placeholder.com/300x300.png?text=CLAN"
+                    alt="Slika člana"
+                  />
+                </div>
+
+                <div id="avatar-drop" class="avatar-drop" tabindex="0" role="button" aria-label="Naloži sliko">
+                  Povleci sliko sem ali klikni za izbor
+                  <div class="muted">JPG/PNG/WebP</div>
+                </div>
+
+                <input id="avatar-input" type="file" accept="image/*" style="display:none" />
+
+                <div class="btn-row">
+                  <button id="btn-avatar-remove" type="button" class="btn btn-secondary btn-wide">Odstrani</button>
+                  <button id="btn-generate-clanska" type="button" class="btn btn-primary btn-wide">Predlagaj člansko</button>
+                </div>
+
+                <div class="muted" style="text-align:center;">
+                  Največja dovoljena velikost slike je 2 MB. Priporočena velikost je 300x300 px.
+                </div>
               </div>
-              <div class="form-group">
-                <label for="ime">IME</label>
-                <input id="ime" name="ime" type="text" required />
-              </div>
-              <div class="form-group">
-                <label for="datumRojstva">DATUM ROJSTVA</label>
-                <input id="datumRojstva" name="datumRojstva" type="date" />
-              </div>
-              <div class="form-group">
-                <label for="naslov">NASLOV</label>
-                <input id="naslov" name="naslov" type="text" />
-              </div>
-              <div class="form-group">
-                <label for="kraj">KRAJ IN POŠTA</label>
-                <input id="kraj" name="kraj" type="text" />
-              </div>
-              <div class="form-group">
-                <label for="telefon">TELEFON</label>
-                <input id="telefon" name="telefon" type="text" />
-              </div>
-              <div class="form-group">
-                <label for="email">EMAIL</label>
-                <input id="email" name="email" type="email" />
-              </div>
-              <div class="form-group">
-                <label for="tipKarte">TIP KARTE</label>
-                <input id="tipKarte" name="tipKarte" type="text" />
-              </div>
-              <div class="form-group">
-                <label for="datumVpisa">DATUM VPISA</label>
-                <input id="datumVpisa" name="datumVpisa" type="date" />
-              </div>
-              <div class="form-group">
-                <label for="status">STATUS (STAT)</label>
-                <input id="status" name="status" type="text" />
-              </div>
-              <div class="form-group">
-                <label for="spc">SPC</label>
-                <input id="spc" name="spc" type="text" />
-              </div>
-              <div class="form-group">
-                <label for="clanska">ČLANSKA ŠTEVILKA</label>
-                <input id="clanska" name="clanska" type="text" />
+            </section>
+
+            <!-- DESNO: PODATKI -->
+            <section class="card">
+              <div class="card-title">Podatki člana</div>
+
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="priimek">Priimek<span class="required-star">*</span></label>
+                  <input id="priimek" name="priimek" type="text" required placeholder="npr. Kranjc" />
+                  <div class="help">Samodejno pretvorjeno v velike črke.</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="ime">Ime<span class="required-star">*</span></label>
+                  <input id="ime" name="ime" type="text" required placeholder="npr. Miha" />
+                </div>
+
+                <div class="form-group">
+                  <label for="datumRojstva">Datum rojstva</label>
+                  <input id="datumRojstva" name="datumRojstva" type="date" />
+                </div>
+
+                <div class="form-group">
+                  <label for="telefon">Telefon</label>
+                  <input id="telefon" name="telefon" type="tel" inputmode="tel" placeholder="npr. 041123456" />
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label for="naslov">Naslov</label>
+                  <input id="naslov" name="naslov" type="text" placeholder="Ulica in hišna številka" />
+                </div>
+
+                <div class="form-group">
+                  <label for="kraj">Kraj</label>
+                  <input id="kraj" name="kraj" type="text" placeholder="npr. Mozirje" />
+                </div>
+
+                <div class="form-group">
+                  <label for="email">E-mail</label>
+                  <input id="email" name="email" type="email" placeholder="npr. ime.priimek@email.com" />
+                </div>
+
+                <div class="divider" style="grid-column: 1 / -1;"></div>
+
+                <div class="form-group">
+                  <label for="status">Status (STAT)<span class="required-star">*</span></label>
+                  <select id="status" name="status" required>
+                    <option value="" selected disabled>Izberi status…</option>
+                    <option value="AA">AA – polnoletni polnopravni član</option>
+                    <option value="AM">AM – mladinec</option>
+                    <option value="AP">AP – pripravnik</option>
+                    <option value="AŠI">AŠI – dijak/študent z opravljenim izpitom</option>
+                    <option value="DAA">DAA – pridružen polnoletni član</option>
+                    <option value="DAM">DAM – pridružen mladinec</option>
+                    <option value="AČ">AČ – častni član</option>
+                    <option value="ZAČ">ZAČ – zaslužni častni član</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="spc">SPC (spol)<span class="required-star">*</span></label>
+                  <select id="spc" name="spc" required>
+                    <option value="" selected disabled>Izberi…</option>
+                    <option value="M">M</option>
+                    <option value="Ž">Ž</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="tipKarte">Tip karte</label>
+                  <select id="tipKarte" name="tipKarte">
+                    <option value="" selected>—</option>
+                    <option value="Letna">Navadna</option>
+                    <option value="Dnevna">eLRD</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="datumVpisa">Datum vpisa</label>
+                  <input id="datumVpisa" name="datumVpisa" type="date" />
+                  <div class="help">Privzeto nastavljeno na današnji datum.</div>
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                  <label for="clanska">Članska številka</label>
+                  <input id="clanska" name="clanska" type="text" required placeholder="npr. 123456" />
+                </div>
               </div>
 
-              <div class="form-actions">
-                <button type="submit" class="btn btn-primary">SHRANI</button>
+              <div class="inline-actions">
                 <a href="seznam.html" class="btn btn-secondary">PREKLIČI</a>
+                <button type="submit" class="btn btn-primary">SHRANI</button>
               </div>
-            </div>
+            </section>
           </div>
         </form>
       </div>
     </main>
 
-    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
-
+   <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+   
     <script src="core.js" defer></script>
     <script src="vpis-clana.js" defer></script>
   </body>

@@ -40,4 +40,5 @@ function handleLoginPage() {
 document.addEventListener("DOMContentLoaded", () => {
   ensureDemoData();
   handleLoginPage();
+  startReminderWatcher();
 });

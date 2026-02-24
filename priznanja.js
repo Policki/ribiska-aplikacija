@@ -83,4 +83,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!user) return;
   initHeader(user);
   handlePriznanjaPage();
+  startReminderWatcher();
+  renderAppNav(user, "priznanja");
 });

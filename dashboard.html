@@ -6,21 +6,26 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="page" data-page="dashboard">
-    <header class="header">
-      <div class="header-inner">
-        <div class="logo-block">
-          <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" href="seznam.html"/>
-        </div>
-        <div class="header-right">
-          <div class="user-icon">👤</div>
-          <span id="header-username">UPORABNIK</span>
-          <button id="btn-logout" class="btn-logout">ODJAVA</button>
-        </div>
+  <header class="header header--universal">
+  <div class="header-top">
+    <div class="header-inner">
+      <div class="logo-block">
+        <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
       </div>
-    </header>
 
-    <main class="main">
-      <div class="main-inner">
+      <div class="header-right">
+        <div class="user-icon">👤</div>
+        <span id="header-username">UPORABNIK</span>
+        <button id="btn-logout" class="btn-logout">ODJAVA</button>
+      </div>
+    </div>
+  </div>
+
+  <nav id="app-nav" class="header-nav"></nav>
+</header>
+
+    <main class="main-d">
+      <div class="main-inner full-width">
         <div class="dashboard-grid">
          <a class="dashboard-card" href="seznam.html" data-module="seznam">
   <div class="dashboard-icon">

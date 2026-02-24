@@ -87,4 +87,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!user) return;
   initHeader(user);
   handleKarteCuvajiPage();
+  startReminderWatcher();
+  renderAppNav(user, "karte-cuvaji");
 });

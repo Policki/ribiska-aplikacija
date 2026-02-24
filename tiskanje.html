@@ -2,48 +2,108 @@
 <html lang="sl">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tiskanje – RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
+
   <body class="page" data-page="tiskanje">
-    <header class="header">
-      <div class="header-inner">
-        <div class="logo-block">
-          <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" href="seznam.html"/>
-        </div>
-        <div class="header-right">
-          <div class="user-icon">👤</div>
-          <span id="header-username">UPORABNIK</span>
-          <button id="btn-logout" class="btn-logout">ODJAVA</button>
+    <header class="header header--universal">
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+          </div>
+
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
         </div>
       </div>
+
+      <nav id="app-nav" class="header-nav"></nav>
     </header>
 
     <main class="main">
-      <div class="main-inner">
-        <nav class="tab-menu">
-          <a href="seznam.html">SEZNAM</a>
-          <a href="vpis-clana.html">VPIS ČLANA</a>
-          <a href="arhiv-clanstva.html">ARHIV ČLANOV</a>
-          <a href="koledar.html">KOLEDAR</a>
-          <a href="uporabniki.html">UPORABNIKI</a>
-          <a href="tiskanje.html" class="active">TISKANJE</a>
-          <a href="zgodovina-dejanj.html">ZGODOVINA DEJANJ</a>
-          <a href="funkcionarji.html">FUNKCIONARJI</a>
-          <a href="priznanja.html">PRIZNANJA</a>
-        </nav>
+      <div class="main-inner full-width">
+        <div style="padding: 12px 12px 0 12px;">
+          <h2 style="margin:0;">Tiskanje</h2>
+          <div class="small-hint">
+            Izberi, katere člane in katere stolpce želiš natisniti. Predogled se sproti posodablja.
+          </div>
+        </div>
 
-        <h2>Tiskanje</h2>
-        <br />
+        <div class="users-layout" style="grid-template-columns: 560px 1fr;">
+          <!-- LEFT: OPTIONS -->
+          <section class="card">
+            <div class="card-title">Nastavitve tiska</div>
 
-        <p class="print-info">
-          Tu lahko pripraviš podatke za tisk. Zaenkrat je omogočen izpis
-          trenutnega seznama aktivnih članov.
-        </p>
+            <div class="form-group">
+              <label for="print-title">Naslov dokumenta</label>
+              <input id="print-title" type="text" value="Seznam članov" />
+              <div class="small-hint">Naslov se izpiše na vrhu tiskane strani.</div>
+            </div>
 
-        <button id="btn-print-members" class="btn btn-primary">
-          Natisni seznam članov
-        </button>
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="print-type">Vrsta seznama</label>
+                <select id="print-type">
+                  <option value="active" selected>Aktivni člani</option>
+                  <option value="archived">Arhivirani člani</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="print-orientation">Usmeritev</label>
+                <select id="print-orientation">
+                  <option value="portrait">Pokončno</option>
+                  <option value="landscape" selected>Ležeče</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="section-title">Statusi (filter)</div>
+            <div class="small-hint">Če nič ne izbereš → velja “vsi dovoljenih statusov” za trenutno prijavljenega uporabnika.</div>
+            <div class="check-grid" id="print-status-checks" style="margin-top:8px;"></div>
+
+            <div class="chip-row">
+              <button type="button" class="chip-btn" id="ps-all">Vsi</button>
+              <button type="button" class="chip-btn" id="ps-none">Nič</button>
+              <button type="button" class="chip-btn" id="ps-common">AA/AM/AP</button>
+            </div>
+
+            <div class="section-title">Stolpci (kaj se natisne)</div>
+            <div class="small-hint">Izberi stolpce, ki jih želiš na listu.</div>
+            <div class="check-grid" id="print-col-checks" style="margin-top:8px;"></div>
+
+            <div class="chip-row">
+              <button type="button" class="chip-btn primary" id="pc-all">Vsi stolpci</button>
+              <button type="button" class="chip-btn" id="pc-min">Minimalno</button>
+              <button type="button" class="chip-btn" id="pc-contact">Kontakt</button>
+              <button type="button" class="chip-btn" id="pc-none">Počisti</button>
+            </div>
+
+            <div class="chip-row" style="margin-top:12px;">
+              <button id="btn-print" class="btn btn-primary" type="button">Natisni</button>
+              <button id="btn-open-preview" class="btn btn-secondary" type="button">Odpri predogled</button>
+            </div>
+          </section>
+
+          <!-- RIGHT: PREVIEW -->
+          <section class="card">
+            <div class="card-title">Predogled</div>
+            <div class="small-hint" id="preview-meta">—</div>
+
+            <div class="table-wrapper" style="margin-top:10px; max-height: 65vh;">
+              <table class="table">
+                <thead id="preview-thead"></thead>
+                <tbody id="preview-tbody"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
       </div>
     </main>
 

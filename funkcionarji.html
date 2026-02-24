@@ -6,32 +6,28 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="page" data-page="funkcionarji">
-    <header class="header">
-      <div class="header-inner">
-        <div class="logo-block">
-          <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" href="seznam.html"/>
-        </div>
-        <div class="header-right">
-          <div class="user-icon">👤</div>
-          <span id="header-username">UPORABNIK</span>
-          <button id="btn-logout" class="btn-logout">ODJAVA</button>
-        </div>
+   <header class="header header--universal">
+  <div class="header-top">
+    <div class="header-inner">
+      <div class="logo-block">
+        <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
       </div>
-    </header>
+
+      <div class="header-right">
+        <div class="user-icon">👤</div>
+        <span id="header-username">UPORABNIK</span>
+        <button id="btn-logout" class="btn-logout">ODJAVA</button>
+      </div>
+    </div>
+  </div>
+
+  <nav id="app-nav" class="header-nav"></nav>
+</header>
 
     <main class="main">
-      <div class="main-inner">
-        <nav class="tab-menu">
-          <a href="seznam.html">SEZNAM</a>
-          <a href="vpis-clana.html">VPIS ČLANA</a>
-          <a href="arhiv-clanstva.html">ARHIV ČLANOV</a>
-          <a href="koledar.html">KOLEDAR</a>
-          <a href="funkcionarji.html" class="active">FUNKCIONARJI</a>
-          <a href="priznanja.html">PRIZNANJA</a>
-          <a href="uporabniki.html">UPORABNIKI</a>
-          <a href="tiskanje.html">TISKANJE</a>
-          <a href="zgodovina-dejanj.html">ZGODOVINA DEJANJ</a>
-        </nav>
+      <div class="main-inner full-width">
+        <nav id="app-nav" class="header-nav"></nav>
+        
 
         <h2>Funkcionarji družine</h2>
         <br />

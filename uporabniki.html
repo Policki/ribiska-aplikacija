@@ -2,176 +2,118 @@
 <html lang="sl">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Uporabniki – RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
+
   <body class="page" data-page="uporabniki">
-    <header class="header">
-      <div class="header-inner">
-        <div class="logo-block">
-          <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" href="seznam.html"/>
-          <div class="logo-placeholder"></div>
-        </div>
-        <div class="header-right">
-          <div class="user-icon">👤</div>
-          <span id="header-username">UPORABNIK</span>
-          <button id="btn-logout" class="btn-logout">ODJAVA</button>
+    <header class="header header--universal">
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+          </div>
+
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
         </div>
       </div>
+
+      <nav id="app-nav" class="header-nav"></nav>
     </header>
 
     <main class="main">
-      <div class="main-inner">
-        <nav class="tab-menu">
-          <a href="seznam.html">SEZNAM</a>
-          <a href="vpis-clana.html">VPIS ČLANA</a>
-          <a href="arhiv-clanstva.html">ARHIV ČLANOV</a>
-          <a href="koledar.html">KOLEDAR</a>
-          <a href="funkcionarji.html">FUNKCIONARJI</a>
-          <a href="priznanja.html">PRIZNANJA</a>
-          <a href="uporabniki.html" class="active">UPORABNIKI</a>
-          <a href="tiskanje.html">TISKANJE</a>
-          <a href="zgodovina-dejanj.html">ZGODOVINA DEJANJ</a>
-        </nav>
+      <div class="main-inner full-width">
+        <div style="padding: 12px 12px 0 12px;">
+          <h2 style="margin:0;">Upravljanje uporabnikov</h2>
+          <div class="small-hint">Admin dodaja/ureja uporabnike, module, pravice in vidne statuse članov.</div>
+        </div>
 
-        <h2>Upravljanje uporabnikov</h2>
-        <br />
+        <div class="users-layout">
+          <!-- FORM -->
+          <section class="card">
+            <div class="card-title" id="form-title">Dodaj uporabnika</div>
 
-        <form id="user-form">
-          <div class="form-group">
-            <label for="username">UPORABNIŠKO IME</label>
-            <input id="username" name="username" type="text" required />
-          </div>
+            <form id="user-form" autocomplete="off">
+              <input type="hidden" id="edit-username" value="" />
 
-          <div class="form-group">
-            <label for="password">ZAČASNO GESLO</label>
-            <input id="password" name="password" type="text" required />
-          </div>
+              <div class="grid-2">
+                <div class="form-group">
+                  <label for="username">UPORABNIŠKO IME</label>
+                  <input id="username" name="username" type="text" required placeholder="npr. tajnik" />
+                  <div class="small-hint">Brez presledkov. Npr. “tajnik”, “blagajnik”, “ribiškiNadzor”.</div>
+                </div>
 
-          <div class="form-group">
-            <label for="visibleStatuses">VIDNI STATUSE ČLANOV</label>
-            <input
-              id="visibleStatuses"
-              name="visibleStatuses"
-              type="text"
-              placeholder="npr. AA, AM ali pusti prazno za vse"
-            />
-          </div>
+                <div class="form-group">
+                  <label for="password">ZAČASNO GESLO</label>
+                  <input id="password" name="password" type="password" required placeholder="—" />
+                  <div class="chip-row">
+                    <button type="button" class="chip-btn" id="btn-gen-pass">Generiraj</button>
+                    <button type="button" class="chip-btn" id="btn-toggle-pass">Pokaži</button>
+                    <button type="button" class="chip-btn" id="btn-copy-pass">Kopiraj</button>
+                  </div>
+                  <div class="small-hint">Uporabnik bo ob prvi prijavi prisiljen spremeniti geslo.</div>
+                </div>
+              </div>
 
-          <br />
-          <h3>Moduli, ki jih uporabnik vidi</h3>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" name="module" value="dashboard" />
-              Dashboard
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" name="module" value="seznam" />
-              Seznam članov
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" name="module" value="vpis" />
-              Vpis člana
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" name="module" value="arhiv" />
-              Arhiv članstva
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" name="module" value="koledar" />
-              Koledar
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" name="module" value="funkcionarji" />
-              Funkcionarji
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" name="module" value="priznanja" />
-              Priznanja
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" name="module" value="uporabniki" />
-              Uporabniki
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" name="module" value="tiskanje" />
-              Tiskanje
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input type="checkbox" name="module" value="zgodovina" />
-              Zgodovina dejanj
-            </label>
-          </div>
+              <div class="section-title">Vidni statusi članov</div>
+              <div class="small-hint">Če nič ne izbereš → vidi vse statuse.</div>
+              <div class="check-grid" id="status-checks" style="margin-top:8px;"></div>
 
-          <br />
-          <h3>Pravice uporabnika</h3>
-          <div class="form-group">
-            <label>
-              <input id="canEditMembers" type="checkbox" />
-              Lahko ureja člane (urejanje podatkov)
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input id="canArchiveMembers" type="checkbox" />
-              Lahko arhivira člane / briše iz arhiva
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input id="canManageUsers" type="checkbox" />
-              Lahko upravlja uporabnike
-            </label>
-          </div>
-          <div class="form-group">
-            <label>
-              <input id="canSeeHistory" type="checkbox" />
-              Lahko vidi zgodovino dejanj
-            </label>
-          </div>
+              <div class="chip-row">
+                <button type="button" class="chip-btn" id="status-all">Vsi</button>
+                <button type="button" class="chip-btn" id="status-none">Nič</button>
+                <button type="button" class="chip-btn" id="status-common">Najpogostejši (AA/AM/AP)</button>
+              </div>
 
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-              DODAJ UPORABNIKA
-            </button>
-          </div>
-        </form>
+              <div class="section-title">Moduli, ki jih uporabnik vidi</div>
+              <div class="check-grid" id="module-checks"></div>
 
-        <br />
-        <h3>Obstoječi uporabniki</h3>
-        <br />
+              <div class="chip-row">
+                <button type="button" class="chip-btn primary" id="modules-all">Vsi moduli</button>
+                <button type="button" class="chip-btn" id="modules-readonly">Osnovno (seznam + koledar)</button>
+                <button type="button" class="chip-btn" id="modules-none">Počisti</button>
+              </div>
 
-        <div class="table-wrapper">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>UPORABNIK</th>
-                <th>MODULI</th>
-                <th>VIDNI STATUSI</th>
-                <th>ORODJA</th>
-              </tr>
-            </thead>
-            <tbody id="users-tbody"></tbody>
-          </table>
+              <div class="section-title">Pravice uporabnika</div>
+              <div class="check-grid">
+                <label><input id="canEditMembers" type="checkbox" /> Lahko ureja člane</label>
+                <label><input id="canArchiveMembers" type="checkbox" /> Lahko arhivira / briše iz arhiva</label>
+                <label><input id="canManageUsers" type="checkbox" /> Lahko upravlja uporabnike</label>
+                <label><input id="canSeeHistory" type="checkbox" /> Lahko vidi zgodovino dejanj</label>
+              </div>
+
+              <div class="chip-row" style="margin-top:12px;">
+                <button type="submit" class="btn btn-primary" id="btn-submit">DODAJ UPORABNIKA</button>
+                <button type="button" class="btn btn-secondary" id="btn-cancel-edit" style="display:none;">PREKLIČI UREJANJE</button>
+              </div>
+            </form>
+          </section>
+
+          <!-- LIST -->
+          <section class="card">
+            <div class="card-title">Obstoječi uporabniki</div>
+
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width:60px;">#</th>
+                    <th>UPORABNIK</th>
+                    <th>MODULI</th>
+                    <th>VIDNI STATUSI</th>
+                    <th>PRAVICE</th>
+                    <th style="width:120px;">ORODJA</th>
+                  </tr>
+                </thead>
+                <tbody id="users-tbody"></tbody>
+              </table>
+            </div>
+          </section>
         </div>
       </div>
     </main>

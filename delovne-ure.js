@@ -73,4 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!user) return;
   initHeader(user);
   handleDelovneUrePage();
+  startReminderWatcher();
+  renderAppNav(user, "delovne-ure");
 });
