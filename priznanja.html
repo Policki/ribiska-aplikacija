@@ -5,83 +5,212 @@
     <title>Priznanja – RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
+
   <body class="page" data-page="priznanja">
     <header class="header header--universal">
-  <div class="header-top">
-    <div class="header-inner">
-      <div class="logo-block">
-        <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img
+              src="slike/rd-mozirje-bel_small.png"
+              alt="RD Mozirje"
+              class="logo-img"
+            />
+          </div>
+
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
+        </div>
       </div>
 
-      <div class="header-right">
-        <div class="user-icon">👤</div>
-        <span id="header-username">UPORABNIK</span>
-        <button id="btn-logout" class="btn-logout">ODJAVA</button>
-      </div>
-    </div>
-  </div>
-
-  <nav id="app-nav" class="header-nav"></nav>
-</header>
+      <nav id="app-nav" class="header-nav"></nav>
+    </header>
 
     <main class="main">
       <div class="main-inner full-width">
-        <nav id="app-nav" class="header-nav"></nav>
-       
-
         <h2>Priznanja članov</h2>
+        <p class="small-hint">
+          Priznanja se hranijo kot zgodovina (več vnosov). Predlogi se ne izbrišejo,
+          dokler jih ne potrdiš.
+        </p>
         <br />
 
-        <!-- obrazec za vnos / spremembo zadnjega priznanja -->
-        <form id="award-form">
-          <div class="form-group">
-            <label for="award-member">ČLAN</label>
-            <select id="award-member" name="award-member"></select>
-          </div>
-          <div class="form-group">
-            <label for="award-name">NAZIV PRIZNANJA</label>
-            <input id="award-name" name="award-name" type="text" required />
-          </div>
-          <div class="form-group">
-            <label for="award-year">LETO</label>
-            <input
-              id="award-year"
-              name="award-year"
-              type="number"
-              min="1900"
-              max="2100"
-              required
-            />
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-              SHRANI PRIZNANJE
-            </button>
-          </div>
-        </form>
+        <div class="card">
+          <div class="card-title">Vnos priznanja</div>
+
+          <form id="award-form">
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="award-member">ČLAN</label>
+                <select id="award-member" name="award-member"></select>
+              </div>
+
+              <div class="form-group">
+                <label for="award-type">PRIZNANJE</label>
+                <select id="award-type" name="award-type">
+                  <optgroup label="Znaka">
+                    <option value="ZNAK_MLADI_RIBIC">Znak mladi ribič</option>
+                    <option value="ZNAK_RIBISKE_ZASLUGE">Znak za ribiške zasluge</option>
+                  </optgroup>
+
+                  <optgroup label="Redi">
+                    <option value="RED_III">Red za ribiške zasluge III. stopnje</option>
+                    <option value="RED_II">Red za ribiške zasluge II. stopnje</option>
+                    <option value="RED_I">Red za ribiške zasluge I. stopnje</option>
+                  </optgroup>
+
+                  <optgroup label="Plaketi">
+                    <option value="PLAKETA_RZS">Plaketa RZS</option>
+                    <option value="PLAKETA_FRANKET">Plaketa Ivana Franketa</option>
+                  </optgroup>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="award-date">DATUM PREJEMA</label>
+                <input id="award-date" name="award-date" type="date" required />
+              </div>
+
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <div class="chip-row">
+                  <button type="submit" class="btn btn-primary">DODAJ PRIZNANJE</button>
+                  <button type="button" id="btn-award-reset" class="btn btn-secondary">
+                    POČISTI
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
 
         <br />
-        <h3>Seznam aktivnih članov in zadnje priznanje</h3>
+
+        <div class="card">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <div>
+              <div class="card-title">Predlogi priznanj (do Red I)</div>
+              <div class="small-hint">
+                “Generiraj” doda predloge za primerne člane. Predlogi ostanejo, dokler jih ne potrdiš.
+              </div>
+            </div>
+
+            <div class="chip-row" style="margin-top:0;">
+              <button type="button" id="btn-generate" class="chip-btn primary">
+                GENERIRAJ PREDLOGE
+              </button>
+              <button type="button" id="btn-approve-selected" class="chip-btn">
+                POTRDI IZBRANE
+              </button>
+            </div>
+          </div>
+
+          <br />
+
+          <div class="table-wrapper">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:44px; text-align:center;">✓</th>
+                  <th>#</th>
+                  <th>ČLAN</th>
+                  <th>PREDLAGANO PRIZNANJE</th>
+                  <th>ZADNJE PRIZNANJE</th>
+                  <th>DATUM ZADNJEGA</th>
+                  <th>OPOMBA</th>
+                  <th>ORODJA</th>
+                </tr>
+              </thead>
+              <tbody id="proposals-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
         <br />
 
-        <div class="table-wrapper">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>PRIIMEK</th>
-                <th>IME</th>
-                <th>ZADNJE PRIZNANJE</th>
-                <th>LETO</th>
-                <th>ORODJA</th>
-              </tr>
-            </thead>
-            <tbody id="awards-tbody"></tbody>
-          </table>
+        <div class="card">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <div>
+              <div class="card-title">Predlogi plaket (ločeno)</div>
+              <div class="small-hint">
+                Plaketa RZS po prejetju Red I in pretečenih 5 letih; Franket po prejetju Plaketa RZS in pretečenih 5 letih.
+              </div>
+            </div>
+
+            <div class="chip-row" style="margin-top:0;">
+              <button type="button" id="btn-generate-plaques" class="chip-btn primary">
+                GENERIRAJ PLAKETE
+              </button>
+              <button type="button" id="btn-approve-selected-plaques" class="chip-btn">
+                POTRDI IZBRANE
+              </button>
+            </div>
+          </div>
+
+          <br />
+
+          <div class="table-wrapper">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th style="width:44px; text-align:center;">✓</th>
+                  <th>#</th>
+                  <th>ČLAN</th>
+                  <th>PREDLAGANO</th>
+                  <th>POGOJ (kaj šteje)</th>
+                  <th>DATUM POGOJA</th>
+                  <th>OPOMBA</th>
+                  <th>ORODJA</th>
+                </tr>
+              </thead>
+              <tbody id="plaques-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <br />
+
+        <div class="card">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+            <div>
+              <div class="card-title">Pregled priznanj članov</div>
+              <div class="small-hint">
+                Privzeto aktivni člani. Lahko vključiš arhivirane po želji.
+              </div>
+            </div>
+
+            <label style="display:flex; align-items:center; gap:8px; font-weight:800;">
+              <input type="checkbox" id="toggle-archived" />
+              Prikaži tudi arhivirane
+            </label>
+          </div>
+
+          <br />
+
+          <div class="table-wrapper">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>PRIIMEK</th>
+                  <th>IME</th>
+                  <th>ZADNJE PRIZNANJE</th>
+                  <th>DATUM</th>
+                  <th>VSA PRIZNANJA</th>
+                </tr>
+              </thead>
+              <tbody id="awards-tbody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </main>
 
-    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+    <footer class="footer">
+      ©Enej Poličnik&nbsp;<span id="aktivno-leto"></span>
+    </footer>
 
     <script src="core.js" defer></script>
     <script src="priznanja.js" defer></script>

@@ -1155,3 +1155,10 @@ body {
 
 .hist-action { font-weight: 900; margin-bottom: 4px; }
 .hist-details { font-size: 13px; opacity: .85; }
+.badge.neutral { border-color: rgba(11,75,75,.25); }
+td .badge { margin-right: 6px; margin-bottom: 6px; }
+/* ČLANARINA: dodatna barva za CASH */
+.fee-box.blue { border-color: #3498db; }     /* modra */
+.fee-pick.blue { background: #3498db; border-color: #3498db; }
+
+.badge.cash { border-color: rgba(52, 152, 219, .65); }

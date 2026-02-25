@@ -5,66 +5,148 @@
   <title>Letne karte in čuvaji – RD Mozirje</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body class="page" data-page="karte-cuvaji">
   <header class="header header--universal">
-  <div class="header-top">
-    <div class="header-inner">
-      <div class="logo-block">
-        <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
-      </div>
+    <div class="header-top">
+      <div class="header-inner">
+        <div class="logo-block">
+          <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+        </div>
 
-      <div class="header-right">
-        <div class="user-icon">👤</div>
-        <span id="header-username">UPORABNIK</span>
-        <button id="btn-logout" class="btn-logout">ODJAVA</button>
+        <div class="header-right">
+          <div class="user-icon">👤</div>
+          <span id="header-username">UPORABNIK</span>
+          <button id="btn-logout" class="btn-logout">ODJAVA</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <nav id="app-nav" class="header-nav"></nav>
-</header>
+    <nav id="app-nav" class="header-nav"></nav>
+  </header>
 
   <main class="main">
-    <div class="main-inner">
-      <nav id="app-nav" class="header-nav"></nav>
-      <h2>Letne karte</h2>
+    <div class="main-inner full-width">
+      <h2>Letne karte in čuvaji</h2>
 
-      <div style="margin: 12px 0;">
-        <label style="font-size:14px; font-weight:600;">Uvozi Excel (.xlsx):</label><br/>
-        <input id="licenses-file" type="file" accept=".xlsx,.xls" />
-        <div style="font-size:12px; opacity:0.8; margin-top:6px;">
-          Excel naj vsebuje 2 stolpca: <b>Ime in priimek</b> | <b>Številka dovolilnice</b>
+      <div class="card" style="margin: 14px 0;">
+        <div style="display:flex; gap:14px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;">
+          <div style="min-width:320px;">
+            <div class="card-title" style="margin-bottom:6px;">Orodja</div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="lic-year">LETO</label>
+                <select id="lic-year"></select>
+              </div>
+
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button id="btn-lic-close-year" type="button" class="btn btn-primary" style="width:100%;">
+                  ZAKLJUČI LETO
+                </button>
+              </div>
+
+              <div class="form-group" style="grid-column:1/-1;">
+                <label for="lic-search">HITRO ISKANJE</label>
+                <input id="lic-search" type="text" placeholder="ime, priimek, številka…" />
+              </div>
+
+              <div class="form-group" style="grid-column:1/-1;">
+                <button id="btn-lic-export" type="button" class="btn btn-secondary">
+                  IZVOZI CSV (za Excel)
+                </button>
+              </div>
+            </div>
+
+            <div id="lic-stats" class="small-hint" style="margin-top:8px;"></div>
+          </div>
+
+          <div style="min-width:360px; max-width:520px;">
+            <div class="card-title" style="margin-bottom:6px;">Uvoz iz Excela</div>
+            <input id="licenses-file" type="file" accept=".xlsx,.xls,.csv" />
+
+            <div class="small-hint" style="margin-top:8px;">
+              Podprt je tvoj format (stolpci: <b>ime</b>, <b>priimek</b>, <b>Zap.St.</b>, <b>revir0/1/2</b> …).
+              Številka karte se vzame iz <b>Zap.St.</b> (ali iz stolpca “dovolilnica/stevilka”, če obstaja).
+            </div>
+          </div>
         </div>
       </div>
 
-      <h3 style="margin-top:18px;">Ročno dodaj dovolilnico</h3>
-      <form id="license-form" style="margin: 10px 0;">
-        <div class="form-group">
-          <label for="licenseName">IME IN PRIIMEK</label>
-          <input id="licenseName" name="licenseName" type="text" />
-        </div>
-        <div class="form-group">
-          <label for="licenseNumber">ŠTEVILKA DOVOLILNICE</label>
-          <input id="licenseNumber" name="licenseNumber" type="text" />
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-primary">DODAJ</button>
-        </div>
-      </form>
+      <div class="card" style="margin: 14px 0;">
+        <div class="card-title">Ročno dodaj zapis</div>
+
+        <form id="license-form" style="margin-top: 10px;">
+          <div class="grid-2">
+            <div class="form-group">
+              <label for="licenseFirst">IME</label>
+              <input id="licenseFirst" name="licenseFirst" type="text" />
+            </div>
+
+            <div class="form-group">
+              <label for="licenseLast">PRIIMEK</label>
+              <input id="licenseLast" name="licenseLast" type="text" />
+            </div>
+
+            <div class="form-group">
+              <label for="licenseNumber">ŠT. KARTE</label>
+              <input id="licenseNumber" name="licenseNumber" type="text" />
+            </div>
+
+            <div class="form-group">
+              <label for="revir0">REVIR 0</label>
+              <input id="revir0" name="revir0" type="text" placeholder="npr. Savinja in Dreta" />
+            </div>
+
+            <div class="form-group">
+              <label for="revir1">REVIR 1</label>
+              <input id="revir1" name="revir1" type="text" placeholder="npr. Savinja in Dreta" />
+            </div>
+
+            <div class="form-group">
+              <label for="revir2">REVIR 2</label>
+              <input id="revir2" name="revir2" type="text" placeholder="npr. Ribnik Gaj" />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">DODAJ</button>
+          </div>
+        </form>
+      </div>
 
       <div class="table-wrapper">
         <table class="table">
           <thead>
             <tr>
               <th>#</th>
-              <th>IME IN PRIIMEK</th>
-              <th>ŠT. DOVOLILNICE</th>
+              <th>IME</th>
+              <th>PRIIMEK</th>
+              <th>ŠT. KARTE</th>
+              <th>REVIR0</th>
+              <th>REVIR1</th>
+              <th>REVIR2</th>
               <th>ORODJA</th>
             </tr>
           </thead>
           <tbody id="licenses-tbody"></tbody>
         </table>
       </div>
+
+      <br />
+
+      <details class="card" style="margin-top:14px;">
+        <summary style="cursor:pointer; font-weight:900;">
+          Arhiv let (privzeto zaprto)
+        </summary>
+
+        <div class="small-hint" style="margin:10px 0;">
+          Tukaj so shranjeni zaključeni seznami po letih. Aktivni seznam za novo leto je prazen.
+        </div>
+
+        <div id="licenses-archive-host"></div>
+      </details>
     </div>
   </main>
 

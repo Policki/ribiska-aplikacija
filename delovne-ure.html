@@ -5,39 +5,78 @@
   <title>Delovne ure – RD Mozirje</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body class="page" data-page="delovne-ure">
   <header class="header header--universal">
-  <div class="header-top">
-    <div class="header-inner">
-      <div class="logo-block">
-        <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
-      </div>
+    <div class="header-top">
+      <div class="header-inner">
+        <div class="logo-block">
+          <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+        </div>
 
-      <div class="header-right">
-        <div class="user-icon">👤</div>
-        <span id="header-username">UPORABNIK</span>
-        <button id="btn-logout" class="btn-logout">ODJAVA</button>
+        <div class="header-right">
+          <div class="user-icon">👤</div>
+          <span id="header-username">UPORABNIK</span>
+          <button id="btn-logout" class="btn-logout">ODJAVA</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <nav id="app-nav" class="header-nav"></nav>
-</header>
+    <nav id="app-nav" class="header-nav"></nav>
+  </header>
+
   <main class="main">
     <div class="main-inner full-width">
-      <nav id="app-nav" class="header-nav"></nav>
       <h2>Delovne ure</h2>
 
-      <div style="display:flex; gap:40px; align-items:center; margin: 18px 0;">
-        <div>
-          <div id="workhours-donut" class="donut">
-            <span id="workhours-donut-text">0%</span>
+      <div class="card" style="margin: 14px 0;">
+        <div style="display:flex; gap:16px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;">
+          <div style="display:flex; gap:18px; align-items:center;">
+            <div>
+              <div id="workhours-donut" class="donut">
+                <span id="workhours-donut-text">0%</span>
+              </div>
+              <div id="workhours-stats" style="font-size:14px;"></div>
+            </div>
+
+            <div style="font-size:14px; max-width:520px;">
+              Vsak član mlajši od 70 let mora opraviti <b>10 ur</b>.
+              Člani starejši od 70 let se ne štejejo v statistiko.
+            </div>
           </div>
-          <div id="workhours-stats" style="font-size:14px;"></div>
-        </div>
-        <div style="font-size:14px; max-width:500px;">
-          Vsak član mlajši od 70 let mora opraviti <b>10 ur</b>.
-          Člani starejši od 70 let se ne štejejo v statistiko.
+
+          <div style="min-width:300px;">
+            <div class="card-title" style="margin-bottom:8px;">Orodja</div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="wh-year">LETO</label>
+                <select id="wh-year"></select>
+              </div>
+
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button id="btn-export-csv" class="btn btn-secondary" type="button">
+                  IZVOZI CSV
+                </button>
+              </div>
+
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label for="wh-search">HITRO ISKANJE (priimek, ime, članska)</label>
+                <input id="wh-search" type="text" placeholder="npr. Novak, Janez, 123456" />
+              </div>
+            </div>
+
+            <div class="chip-row" style="margin-top:10px;">
+              <button id="wh-filter-must" class="chip-btn primary" type="button">Samo tisti, ki morajo</button>
+              <button id="wh-filter-missing" class="chip-btn" type="button">Samo neopravljeni</button>
+              <button id="wh-sort-missing" class="chip-btn" type="button">Sortiraj po manjkajočih urah</button>
+            </div>
+
+            <div class="small-hint" style="margin-top:8px;">
+              Namig: pri vnosu lahko klikneš +1 / +2 / +5 za hitrejše dodajanje ur.
+            </div>
+          </div>
         </div>
       </div>
 
@@ -47,9 +86,11 @@
             <tr>
               <th>PRIIMEK</th>
               <th>IME</th>
+              <th>ČLANSKA</th>
               <th>STAROST</th>
               <th>MORA?</th>
-              <th>URE (vnos)</th>
+              <th>URE</th>
+              <th>HITRO</th>
               <th>STATUS</th>
             </tr>
           </thead>
@@ -60,6 +101,7 @@
   </main>
 
   <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+
   <script src="core.js" defer></script>
   <script src="delovne-ure.js" defer></script>
 </body>

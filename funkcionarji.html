@@ -6,29 +6,30 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="page" data-page="funkcionarji">
-   <header class="header header--universal">
-  <div class="header-top">
-    <div class="header-inner">
-      <div class="logo-block">
-        <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+    <header class="header header--universal">
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img
+              src="slike/rd-mozirje-bel_small.png"
+              alt="RD Mozirje"
+              class="logo-img"
+            />
+          </div>
+
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
+        </div>
       </div>
 
-      <div class="header-right">
-        <div class="user-icon">👤</div>
-        <span id="header-username">UPORABNIK</span>
-        <button id="btn-logout" class="btn-logout">ODJAVA</button>
-      </div>
-    </div>
-  </div>
-
-  <nav id="app-nav" class="header-nav"></nav>
-</header>
+      <nav id="app-nav" class="header-nav"></nav>
+    </header>
 
     <main class="main">
       <div class="main-inner full-width">
-        <nav id="app-nav" class="header-nav"></nav>
-        
-
         <h2>Funkcionarji družine</h2>
         <br />
 
@@ -37,20 +38,20 @@
             <label for="official-member">ČLAN</label>
             <select id="official-member" name="official-member"></select>
           </div>
+
           <div class="form-group">
-            <label for="official-role">FUNCKIJA</label>
+            <label for="official-role">FUNKCIJA</label>
             <select id="official-role" name="official-role">
               <option value="Predsednik">Predsednik</option>
               <option value="Gospodar">Gospodar</option>
               <option value="Tajnik">Tajnik</option>
               <option value="Član UO">Član UO</option>
               <option value="Tožilec">Tožilec</option>
-              <option value="Član disciplinske razsodišča">
-                Član disciplinske razsodišča
-              </option>
+              <option value="Član disciplinske razsodišča">Član disciplinske razsodišča</option>
               <option value="Drugo">Drugo</option>
             </select>
           </div>
+
           <div class="form-actions">
             <button type="submit" class="btn btn-primary">
               DODAJ FUNKCIONARJA
@@ -60,15 +61,22 @@
 
         <br />
         <h3>Seznam funkcionarjev</h3>
+        <p class="small-hint">
+          Prikazani so funkcionarji z njihovimi kontaktnimi podatki iz seznama članov.
+        </p>
         <br />
 
         <div class="table-wrapper">
           <table class="table">
             <thead>
               <tr>
-                <th>#</th>
+                <th class="col-zapst">#</th>
                 <th>IME IN PRIIMEK</th>
-                <th>FUNCKIJA</th>
+                <th>FUNKCIJA</th>
+                <th>TELEFON</th>
+                <th>EMAIL</th>
+                <th>NASLOV</th>
+                <th>KRAJ</th>
                 <th>ORODJA</th>
               </tr>
             </thead>
@@ -78,7 +86,9 @@
       </div>
     </main>
 
-    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+    <footer class="footer">
+      ©Enej Poličnik&nbsp;<span id="aktivno-leto"></span>
+    </footer>
 
     <script src="core.js" defer></script>
     <script src="funkcionarji.js" defer></script>

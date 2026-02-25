@@ -5,32 +5,68 @@
   <title>Članarina – RD Mozirje</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body class="page" data-page="clanarina">
   <header class="header header--universal">
-  <div class="header-top">
-    <div class="header-inner">
-      <div class="logo-block">
-        <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
-      </div>
+    <div class="header-top">
+      <div class="header-inner">
+        <div class="logo-block">
+          <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+        </div>
 
-      <div class="header-right">
-        <div class="user-icon">👤</div>
-        <span id="header-username">UPORABNIK</span>
-        <button id="btn-logout" class="btn-logout">ODJAVA</button>
+        <div class="header-right">
+          <div class="user-icon">👤</div>
+          <span id="header-username">UPORABNIK</span>
+          <button id="btn-logout" class="btn-logout">ODJAVA</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <nav id="app-nav" class="header-nav"></nav>
-</header>
+    <nav id="app-nav" class="header-nav"></nav>
+  </header>
 
   <main class="main">
     <div class="main-inner full-width">
-      <nav id="app-nav" class="header-nav"></nav>
       <h2>Članarina</h2>
-      <p style="margin:12px 0; font-size:14px;">
-        Klikni na znesek → izberi <b>rdeče</b> (neplačano) ali <b>zeleno</b> (plačano).
-      </p>
+
+      <div class="card" style="margin: 14px 0;">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap;">
+          <div>
+            <div class="card-title" style="margin-bottom:6px;">Navodila</div>
+            <div style="font-size:14px; max-width:720px;">
+              Klikni status → izberi:
+              <b style="color:#c0392b;">NEPLAČAL</b>,
+              <b style="color:#2ecc71;">PLAČAL (TRR)</b>,
+              <b style="color:#2ecc71;">PLAČAL (CASH)</b>.
+              <br />
+              Ko klikneš <b>ZAKLJUČI LETO</b>, se vsi neplačniki premaknejo v arhiv članstva (odstop).
+            </div>
+          </div>
+
+          <div style="min-width:320px;">
+            <div class="card-title" style="margin-bottom:6px;">Orodja</div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="fee-year">LETO</label>
+                <select id="fee-year"></select>
+              </div>
+              <div class="form-group">
+                <label>&nbsp;</label>
+                <button id="btn-close-year" type="button" class="btn btn-primary" style="width:100%;">
+                  ZAKLJUČI LETO
+                </button>
+              </div>
+
+              <div class="form-group" style="grid-column:1/-1;">
+                <label for="fee-search">HITRO ISKANJE</label>
+                <input id="fee-search" type="text" placeholder="priimek, ime, članska…" />
+              </div>
+            </div>
+
+            <div id="fee-stats" class="small-hint" style="margin-top:8px;"></div>
+          </div>
+        </div>
+      </div>
 
       <div class="table-wrapper">
         <table class="table">
@@ -38,18 +74,49 @@
             <tr>
               <th>PRIIMEK</th>
               <th>IME</th>
+              <th>STATUS</th>
               <th>NASLOV</th>
               <th>KRAJ</th>
               <th>ZNESEK</th>
+              <th>PLAČILO</th>
             </tr>
           </thead>
           <tbody id="fees-tbody"></tbody>
         </table>
       </div>
+
+      <br />
+
+      <details class="card" style="margin-top:14px;">
+        <summary style="cursor:pointer; font-weight:900;">
+          Neplačniki (privzeto zaprto) – možnost plačila in vrnitve iz arhiva v tem letu
+        </summary>
+
+        <div class="small-hint" style="margin:10px 0;">
+          Če član plača med letom, ga lahko tukaj označiš kot plačan in se premakne nazaj med aktivne (samo za izbrano leto).
+        </div>
+
+        <div class="table-wrapper">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>PRIIMEK</th>
+                <th>IME</th>
+                <th>ČLANSKA</th>
+                <th>ZNESEK</th>
+                <th>UKREP</th>
+              </tr>
+            </thead>
+            <tbody id="nonpayers-tbody"></tbody>
+          </table>
+        </div>
+      </details>
     </div>
   </main>
 
   <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+
   <script src="core.js" defer></script>
   <script src="clanarina.js" defer></script>
 </body>
