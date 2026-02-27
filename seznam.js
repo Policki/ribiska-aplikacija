@@ -18,6 +18,7 @@ function defaultUIState() {
       birthYear: [],
       tipKarte: [],
       kraj: [],
+      posta: [], // ✅ NEW
     },
     // prikaz stolpcev
     columns: {
@@ -28,6 +29,7 @@ function defaultUIState() {
       priimek: true,
       ime: true,
       naslov: true,
+      posta: true, // ✅ NEW
       kraj: true,
       email: true,
       telefon: true,
@@ -41,7 +43,12 @@ function loadUIState() {
     const raw = localStorage.getItem(UI_STATE_KEY);
     if (!raw) return defaultUIState();
     const parsed = JSON.parse(raw);
-    return { ...defaultUIState(), ...parsed, filters: { ...defaultUIState().filters, ...(parsed.filters || {}) }, columns: { ...defaultUIState().columns, ...(parsed.columns || {}) } };
+    return {
+      ...defaultUIState(),
+      ...parsed,
+      filters: { ...defaultUIState().filters, ...(parsed.filters || {}) },
+      columns: { ...defaultUIState().columns, ...(parsed.columns || {}) },
+    };
   } catch {
     return defaultUIState();
   }
@@ -70,7 +77,6 @@ function initMembersUI() {
     btnReset.addEventListener("click", () => {
       const fresh = defaultUIState();
       saveUIState(fresh);
-      // reset input value
       if (searchEl) searchEl.value = "";
       renderEverything(fresh);
     });
@@ -108,13 +114,15 @@ function renderDynamicFilters(members, state) {
   const host = document.getElementById("filters-dynamic");
   if (!host) return;
 
-  // helper: unique sorted values
-  const uniq = (arr) => Array.from(new Set(arr.filter((x) => x !== null && x !== undefined && String(x).trim() !== "")));
+  const uniq = (arr) =>
+    Array.from(new Set(arr.filter((x) => x !== null && x !== undefined && String(x).trim() !== "")));
 
   const statuses = uniq(members.map((m) => m.status)).sort();
   const spcs = uniq(members.map((m) => m.spc)).sort();
   const tipKarte = uniq(members.map((m) => m.tipKarte)).sort();
   const kraji = uniq(members.map((m) => m.kraj)).sort();
+  const poste = uniq(members.map((m) => m.posta)).sort((a, b) => String(a).localeCompare(String(b), "sl")); // ✅ NEW
+
   const birthYears = uniq(
     members
       .map((m) => (m.datumRojstva ? String(new Date(m.datumRojstva).getFullYear()) : ""))
@@ -127,12 +135,13 @@ function renderDynamicFilters(members, state) {
   host.appendChild(makeMultiFilterGroup("Letnica rojstva", "birthYear", birthYears, state));
   host.appendChild(makeMultiFilterGroup("Tip karte", "tipKarte", tipKarte, state));
   host.appendChild(makeMultiFilterGroup("Kraj", "kraj", kraji, state));
+  host.appendChild(makeMultiFilterGroup("Pošta", "posta", poste, state)); // ✅ NEW
 }
 
 function makeMultiFilterGroup(title, key, options, state) {
   const details = document.createElement("details");
   details.className = "filter-group";
-  details.open = key === "status"; // status naj bo odprt
+  details.open = key === "status";
 
   const summary = document.createElement("summary");
   summary.textContent = title;
@@ -148,12 +157,12 @@ function makeMultiFilterGroup(title, key, options, state) {
   box.appendChild(allWrap);
 
   const selected = new Set((state.filters && state.filters[key]) || []);
-  const allChecked = selected.size === 0; // prazen selection = vse
+  const allChecked = selected.size === 0;
   allWrap.querySelector("input").checked = allChecked;
 
   allWrap.querySelector("input").addEventListener("change", (e) => {
     if (e.target.checked) {
-      state.filters[key] = []; // prazen = vse
+      state.filters[key] = [];
       saveUIState(state);
       renderEverything(state);
     }
@@ -169,14 +178,9 @@ function makeMultiFilterGroup(title, key, options, state) {
 
     inp.addEventListener("change", () => {
       const next = new Set((state.filters && state.filters[key]) || []);
-      // če je prej bilo "vse" (empty), preklopimo v konkreten izbor
-      if (next.size === 0 && !checked) {
-        // nič
-      }
       if (inp.checked) next.add(String(opt));
       else next.delete(String(opt));
 
-      // če user odkljuka vse opcije => nazaj na "vse"
       state.filters[key] = Array.from(next);
       saveUIState(state);
       renderEverything(state);
@@ -201,6 +205,7 @@ function renderColumnsBox(state) {
     ["priimek", "PRIIMEK"],
     ["ime", "IME"],
     ["naslov", "NASLOV"],
+    ["posta", "ŠT. POŠTE"], // ✅ NEW
     ["kraj", "KRAJ"],
     ["email", "EMAIL"],
     ["telefon", "TELEFON"],
@@ -218,7 +223,6 @@ function renderColumnsBox(state) {
 
   allInp.addEventListener("change", () => {
     cols.forEach(([k]) => (state.columns[k] = allInp.checked));
-    // zapst + tools ponavadi želiš vedno; če nočeš, odstrani spodaj
     state.columns.zapst = true;
     state.columns.tools = true;
     saveUIState(state);
@@ -233,7 +237,6 @@ function renderColumnsBox(state) {
     const inp = wrap.querySelector("input");
     inp.checked = state.columns[key] !== false;
 
-    // ZAP.ŠT in ORDOJA zaklenemo (vedno true), da ne “pokvariš” uporabe
     const locked = key === "zapst" || key === "tools";
     if (locked) {
       inp.checked = true;
@@ -256,9 +259,9 @@ function renderTableWithState(members, state) {
   if (!tbody) return;
 
   const filtered = applyFilters(members, state).sort((a, b) => {
-  const ap = (a.priimek || "").localeCompare((b.priimek || ""), "sl", { sensitivity: "base" });
-  if (ap !== 0) return ap;
-  return (a.ime || "").localeCompare((b.ime || ""), "sl", { sensitivity: "base" });
+    const ap = (a.priimek || "").localeCompare((b.priimek || ""), "sl", { sensitivity: "base" });
+    if (ap !== 0) return ap;
+    return (a.ime || "").localeCompare((b.ime || ""), "sl", { sensitivity: "base" });
   });
 
   tbody.innerHTML = "";
@@ -272,6 +275,7 @@ function renderTableWithState(members, state) {
       <td data-col="priimek">${m.priimek || ""}</td>
       <td data-col="ime">${m.ime || ""}</td>
       <td data-col="naslov">${m.naslov || ""}</td>
+      <td data-col="posta">${m.posta || ""}</td>   <!-- ✅ NEW -->
       <td data-col="kraj">${m.kraj || ""}</td>
       <td data-col="email">${m.email ? `<a href="mailto:${m.email}">${m.email}</a>` : ""}</td>
       <td data-col="telefon">${m.telefon || ""}</td>
@@ -311,9 +315,9 @@ function applyFilters(members, state) {
   const selectedBirthYear = new Set(f.birthYear || []);
   const selectedTipKarte = new Set(f.tipKarte || []);
   const selectedKraj = new Set(f.kraj || []);
+  const selectedPosta = new Set(f.posta || []); // ✅ NEW
 
   return members.filter((m) => {
-    // multi filters: empty => all
     if (selectedStatus.size && !selectedStatus.has(String(m.status || ""))) return false;
     if (selectedSpc.size && !selectedSpc.has(String(m.spc || ""))) return false;
 
@@ -322,8 +326,9 @@ function applyFilters(members, state) {
 
     if (selectedTipKarte.size && !selectedTipKarte.has(String(m.tipKarte || ""))) return false;
     if (selectedKraj.size && !selectedKraj.has(String(m.kraj || ""))) return false;
+    if (selectedPosta.size && !selectedPosta.has(String(m.posta || ""))) return false; // ✅ NEW
 
-    // search (ime/priimek/clanska/email/tel/naslov/kraj/status)
+    // search
     if (!s) return true;
     const hay = [
       m.ime,
@@ -332,6 +337,7 @@ function applyFilters(members, state) {
       m.email,
       m.telefon,
       m.naslov,
+      m.posta, // ✅ NEW
       m.kraj,
       m.status,
       m.spc,
@@ -357,10 +363,9 @@ function applyColumnVisibility(state) {
     el.style.display = visible ? "" : "none";
   });
 
-  // tudi TH-ji: oni nimajo data-col, zato jih matchamo po poziciji z data-col v prvi vrstici
-  // najlažje: dodamo data-col v thead preko JS:
   const ths = table.querySelectorAll("thead th");
-  const mapping = ["zapst","status","spc","clanska","priimek","ime","naslov","kraj","email","telefon","tools"];
+  // ✅ NEW: mapping mora ustrezati vrstnemu redu v thead
+  const mapping = ["zapst","status","spc","clanska","priimek","ime","naslov","posta","kraj","email","telefon","tools"];
   ths.forEach((th, idx) => {
     const k = mapping[idx];
     if (!k) return;
@@ -372,9 +377,7 @@ function applyColumnVisibility(state) {
    EXPORT
 ========================= */
 
-// Layout čim bližje tvoji Excel sliki (kolikor model dopušča)
 function buildExportRows(allMembers) {
-  // samo aktivni (ne arhivirani) – če želiš tudi arhiv, odstrani filter
   const members = allMembers.filter(m => !m.arhiviran);
 
   const header = [
@@ -384,6 +387,7 @@ function buildExportRows(allMembers) {
     "PRIIMEK",
     "IME",
     "NASLOV",
+    "POSTA",   // ✅ NEW
     "KRAJ",
     "ČLANARINA",
     "KARTA",
@@ -396,7 +400,7 @@ function buildExportRows(allMembers) {
   const rows = members.map((m) => {
     const rojstvo = m.datumRojstva ? formatDateSI(m.datumRojstva) : "";
     const vpis = m.datumVpisa ? formatDateSI(m.datumVpisa) : "";
-    const clanarina = feeForStatus(m.status); // iz core.js
+    const clanarina = feeForStatus(m.status);
 
     return [
       m.status || "",
@@ -405,6 +409,7 @@ function buildExportRows(allMembers) {
       m.priimek || "",
       m.ime || "",
       m.naslov || "",
+      m.posta || "",     // ✅ NEW
       m.kraj || "",
       clanarina != null ? String(clanarina) : "",
       m.tipKarte || "",
@@ -448,7 +453,6 @@ function exportMembersCSV() {
   const all = getMembers();
   const { header, rows } = buildExportRows(all);
 
-  // Excel-friendly CSV: ; delimiter + UTF-8 BOM
   const escape = (v) => {
     const s = String(v ?? "");
     if (s.includes('"') || s.includes(";") || s.includes("\n")) {
@@ -475,7 +479,7 @@ function exportMembersCSV() {
 }
 
 /* =========================
-   Existing hooks
+   Page init
 ========================= */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -498,20 +502,5 @@ document.addEventListener("DOMContentLoaded", () => {
     el.textContent = typeof AktivnoLeto === "function" ? AktivnoLeto() : "";
   } catch {
     el.textContent = "";
-  }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const _aktivnoLetoEl = document.getElementById('aktivno-leto');
-  if (_aktivnoLetoEl) {
-    if (typeof AktivnoLeto === 'function') {
-      try {
-        _aktivnoLetoEl.textContent = AktivnoLeto();
-      } catch (err) {
-        _aktivnoLetoEl.textContent = '';
-      }
-    } else {
-      _aktivnoLetoEl.textContent = '';
-    }
   }
 });

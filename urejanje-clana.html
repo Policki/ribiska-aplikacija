@@ -126,7 +126,7 @@
                 <div class="card-title">Slika člana</div>
 
                 <div class="avatar-preview">
-                  <img id="avatar-img" src="https://via.placeholder.com/300x300.png?text=CLAN" alt="Slika člana" />
+                  <img id="avatar-img" src="https://via.placeholder.com/300x300.png?text=CLAN" alt="" />
                 </div>
 
                 <div class="avatar-drop" id="avatar-drop">
@@ -138,7 +138,6 @@
 
                 <div class="chip-row" style="display:flex; gap:10px; margin-top:10px; justify-content:center;">
                   <button type="button" class="btn btn-secondary" id="btn-avatar-remove">Odstrani</button>
-                  <button type="button" class="btn btn-primary" id="btn-avatar-suggest">Predlagaj člansko</button>
                 </div>
               </section>
 
@@ -171,6 +170,13 @@
                   <div class="form-group" style="grid-column: 1 / -1;">
                     <label for="naslov">Naslov</label>
                     <input id="naslov" name="naslov" type="text" placeholder="Ulica in hišna številka" />
+                  </div>
+
+                  <!-- ✅ NEW: Št. pošte -->
+                  <div class="form-group">
+                    <label for="posta">Št. pošte</label>
+                    <input id="posta" name="posta" type="text" inputmode="numeric" placeholder="npr. 3330" maxlength="4" />
+                    <div class="small-hint">Ob vnosu 4-mestne pošte se lahko kraj samodejno izpolni.</div>
                   </div>
 
                   <div class="form-group">

@@ -4,90 +4,100 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="styles.css" />
-<header class="header header--universal">
-  <div class="header-top">
-    <div class="header-inner">
-      <div class="logo-block">
-        <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+  </head>
+
+  <body class="page" data-page="seznam">
+    <header class="header header--universal">
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+          </div>
+
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
+        </div>
       </div>
 
-      <div class="header-right">
-        <div class="user-icon">👤</div>
-        <span id="header-username">UPORABNIK</span>
-        <button id="btn-logout" class="btn-logout">ODJAVA</button>
+      <nav id="app-nav" class="header-nav"></nav>
+    </header>
+
+    <main class="main">
+      <div class="main-inner full-width">
+        <div class="list-layout">
+          <!-- LEVI FILTER PANEL -->
+          <aside class="filters">
+            <div class="filters-header">
+              <div class="filters-title">Filtri</div>
+              <button id="btn-reset-filters" class="btn btn-secondary btn-sm" type="button">
+                Ponastavi
+              </button>
+            </div>
+
+            <div class="filters-search">
+              <input
+                id="members-search"
+                type="search"
+                placeholder="Išči (ime, priimek, članska, email, tel, naslov, pošta, kraj…)"
+              />
+            </div>
+
+            <div class="filters-actions">
+              <button id="btn-export-xlsx" class="btn btn-primary btn-sm" type="button">
+                Izvoz (.xlsx)
+              </button>
+              <button id="btn-export-csv" class="btn btn-secondary btn-sm" type="button">
+                Izvoz (CSV)
+              </button>
+            </div>
+
+            <!-- Dinamično: statusi, letnice, … -->
+            <div id="filters-dynamic" class="filters-dynamic"></div>
+
+            <!-- Izbira stolpcev -->
+            <details class="filter-group" open>
+              <summary>Stolpci (prikaz)</summary>
+              <div id="columns-box" class="checklist"></div>
+            </details>
+          </aside>
+
+          <!-- DESNO: TABELA -->
+          <section class="table-zone">
+            <div class="table-wrapper">
+              <table class="table" id="members-table">
+                <thead>
+                  <tr>
+                    <th class="col-zapst">ZAP.ŠT.</th>
+                    <th>STATUS</th>
+                    <th>SPOL</th>
+                    <th>ČLANSKA</th>
+                    <th>PRIIMEK</th>
+                    <th>IME</th>
+                    <th>NASLOV</th>
+                    <th>ŠT. POŠTE</th>
+                    <th>KRAJ</th>
+                    <th>EMAIL</th>
+                    <th>TELEFON</th>
+                    <th>ORODJA</th>
+                  </tr>
+                </thead>
+                <tbody id="members-tbody"></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
       </div>
-    </div>
-  </div>
+    </main>
 
-  <nav id="app-nav" class="header-nav"></nav>
-</header>
+    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
 
-<main class="main">
-  <div class="main-inner full-width">
-    <div class="list-layout">
-      <!-- LEVI FILTER PANEL -->
-      <aside class="filters">
-        <div class="filters-header">
-          <div class="filters-title">Filtri</div>
-          <button id="btn-reset-filters" class="btn btn-secondary btn-sm" type="button">
-            Ponastavi
-          </button>
-        </div>
+    <!-- SheetJS za pravi XLSX export -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-        <div class="filters-search">
-          <input id="members-search" type="search" placeholder="Išči (ime, priimek, članska, email, tel…)" />
-        </div>
-
-        <div class="filters-actions">
-          <button id="btn-export-xlsx" class="btn btn-primary btn-sm" type="button">
-            Izvoz (.xlsx)
-          </button>
-          <button id="btn-export-csv" class="btn btn-secondary btn-sm" type="button">
-            Izvoz (CSV)
-          </button>
-        </div>
-
-        <!-- Dinamično: statusi, letnice, … -->
-        <div id="filters-dynamic" class="filters-dynamic"></div>
-
-        <!-- Izbira stolpcev -->
-        <details class="filter-group" open>
-          <summary>Stolpci (prikaz)</summary>
-          <div id="columns-box" class="checklist"></div>
-        </details>
-      </aside>
-
-      <!-- DESNO: TABELA -->
-      <section class="table-zone">
-        <div class="table-wrapper">
-          <table class="table" id="members-table">
-            <thead>
-              <tr>
-                <th class="col-zapst">ZAP.ŠT.</th>
-                <th>STATUS</th>
-                <th>SPOL</th>
-                <th>ČLANSKA</th>
-                <th>PRIIMEK</th>
-                <th>IME</th>
-                <th>NASLOV</th>
-                <th>KRAJ</th>
-                <th>EMAIL</th>
-                <th>TELEFON</th>
-                <th>ORODJA</th>
-              </tr>
-            </thead>
-            <tbody id="members-tbody"></tbody>
-          </table>
-        </div>
-      </section>
-    </div>
-  </div>
-</main>
-
-<footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
-
-<!-- SheetJS za pravi XLSX export (opcijsko, priporočeno) -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
-<script src="core.js" defer></script>
-<script src="seznam.js" defer></script>
+    <script src="core.js" defer></script>
+    <script src="seznam.js" defer></script>
+  </body>
+</html>

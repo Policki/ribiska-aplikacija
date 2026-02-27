@@ -17,6 +17,10 @@ function handleUrejanjeClanaPage() {
 
   const pillClanska = document.getElementById("pill-clanska");
 
+  // ✅ NEW: reference za pošto/kraj (kraj je že v form)
+  const postaEl = document.getElementById("posta");
+  const krajEl = document.getElementById("kraj");
+
   let avatarDataUrl = null;
 
   const members = getMembers();
@@ -32,6 +36,7 @@ function handleUrejanjeClanaPage() {
   form.ime.value = member.ime || "";
   form.datumRojstva.value = member.datumRojstva || "";
   form.naslov.value = member.naslov || "";
+  if (form.posta) form.posta.value = member.posta || ""; // ✅ NEW
   form.kraj.value = member.kraj || "";
   form.telefon.value = member.telefon || "";
   form.email.value = member.email || "";
@@ -53,6 +58,63 @@ function handleUrejanjeClanaPage() {
     form.priimek.value = (form.priimek.value || "").toUpperCase();
     if (start !== null && end !== null) form.priimek.setSelectionRange(start, end);
   });
+
+  // ✅ NEW: Pošta -> samodejni kraj
+  let lastAutoKraj = "";
+
+  function normalizePosta(raw) {
+    return String(raw || "").replace(/\D/g, "").slice(0, 4);
+  }
+
+  // isti slovar kot pri vpisu (dopolni po potrebi)
+  const POSTA_TO_KRAJ = {
+    "3330": "Mozirje",
+    "3331": "Nazarje",
+    // "1000": "Ljubljana",
+    // "2000": "Maribor",
+  };
+
+  function lookupKrajByPosta(posta) {
+    const p = normalizePosta(posta);
+    return POSTA_TO_KRAJ[p] || "";
+  }
+
+  function maybeAutofillKraj() {
+    if (!postaEl || !krajEl) return;
+
+    const p = normalizePosta(postaEl.value);
+    postaEl.value = p;
+
+    const found = lookupKrajByPosta(p);
+    if (!found) return;
+
+    const currentKraj = String(krajEl.value || "").trim();
+
+    // prepiši samo, če je prazen ali je bil prej auto
+    if (!currentKraj || currentKraj === lastAutoKraj) {
+      krajEl.value = found;
+      lastAutoKraj = found;
+    }
+  }
+
+  if (postaEl) {
+    postaEl.addEventListener("input", () => {
+      if (normalizePosta(postaEl.value).length === 4) {
+        maybeAutofillKraj();
+      }
+    });
+
+    postaEl.addEventListener("blur", () => {
+      maybeAutofillKraj();
+    });
+  }
+
+  if (krajEl) {
+    krajEl.addEventListener("input", () => {
+      const v = String(krajEl.value || "").trim();
+      if (v && v !== lastAutoKraj) lastAutoKraj = "";
+    });
+  }
 
   // avatar: click drop -> open file
   if (avatarDrop && avatarInput) {
@@ -110,12 +172,21 @@ function handleUrejanjeClanaPage() {
 
     const data = readMemberForm(form);
 
+    // ✅ NEW: normaliziraj pošto na 4 cifre
+    data.posta = normalizePosta(data.posta);
+
     if (!data.priimek || !data.ime) {
       alert("Priimek in ime sta obvezna.");
       return;
     }
     if (!data.status || !data.spc) {
       alert("Status in SPC sta obvezna.");
+      return;
+    }
+
+    // opcijsko: validacija pošte
+    if (data.posta && !/^\d{4}$/.test(String(data.posta))) {
+      alert("Št. pošte mora vsebovati 4 številke.");
       return;
     }
 

@@ -6,7 +6,6 @@
     <title>Vpis člana – RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
 
-    <!-- Inline style samo za to stran (da ni treba spreminjati styles.css) -->
     <style>
       .page-title {
         display: flex;
@@ -16,15 +15,9 @@
         margin: 14px 0 10px 0;
         padding: 0 12px;
       }
-      .page-title h2 {
-        margin: 0;
-      }
-      .page-subtitle {
-        font-size: 13px;
-        opacity: 0.75;
-      }
+      .page-title h2 { margin: 0; }
+      .page-subtitle { font-size: 13px; opacity: 0.75; }
 
-      /* Layout */
       .vpis-layout {
         display: grid;
         grid-template-columns: 360px 1fr;
@@ -33,9 +26,7 @@
         padding: 12px;
       }
       @media (max-width: 980px) {
-        .vpis-layout {
-          grid-template-columns: 1fr;
-        }
+        .vpis-layout { grid-template-columns: 1fr; }
       }
 
       .card {
@@ -45,16 +36,9 @@
         box-shadow: 0 10px 30px rgba(0,0,0,.08);
         padding: 14px;
       }
-      .card-title {
-        font-weight: 900;
-        margin-bottom: 10px;
-      }
-      .muted {
-        font-size: 12px;
-        opacity: 0.75;
-      }
+      .card-title { font-weight: 900; margin-bottom: 10px; }
+      .muted { font-size: 12px; opacity: 0.75; }
 
-      /* Avatar */
       .avatar-wrap {
         display: grid;
         gap: 12px;
@@ -68,11 +52,7 @@
         border: 4px solid #0b4b4b;
         background: #fff;
       }
-      .avatar-preview img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
+      .avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
 
       .avatar-drop {
         width: 100%;
@@ -95,11 +75,8 @@
         gap: 8px;
         width: 100%;
       }
-      .btn-wide {
-        width: 100%;
-      }
+      .btn-wide { width: 100%; }
 
-      /* Form grid */
       .form-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -108,15 +85,8 @@
       @media (max-width: 980px) {
         .form-grid { grid-template-columns: 1fr; }
       }
-      .form-group label {
-        font-weight: 800;
-        letter-spacing: .02em;
-      }
-      .help {
-        margin-top: 4px;
-        font-size: 12px;
-        opacity: .72;
-      }
+      .form-group label { font-weight: 800; letter-spacing: .02em; }
+      .help { margin-top: 4px; font-size: 12px; opacity: .72; }
 
       .inline-actions {
         display: flex;
@@ -138,61 +108,53 @@
         background: #fff;
       }
 
-      .required-star {
-        color: #c0392b;
-        margin-left: 4px;
-      }
+      .required-star { color: #c0392b; margin-left: 4px; }
 
-      .divider {
-        margin: 12px 0;
-        height: 1px;
-        background: rgba(0,0,0,.10);
-      }
+      .divider { margin: 12px 0; height: 1px; background: rgba(0,0,0,.10); }
+
       .header-nav {
-       width: 100%;
-       background: var(--teal-dark);
+        width: 100%;
+        background: var(--teal-dark);
         border-top: 1px solid rgba(255,255,255,0.2);
       }
       .header-nav-inner {
-       max-width: none !important;
-       width: 100% !important;
+        max-width: none !important;
+        width: 100% !important;
         margin: 0 !important;
-       padding-left: 18px;
-       padding-right: 18px;
+        padding-left: 18px;
+        padding-right: 18px;
       }
-      .logo-img {
-       height: 48px;
-       width: auto;
-     } 
-
+      .logo-img { height: 48px; width: auto; }
     </style>
   </head>
 
   <body class="page" data-page="vpis-clana">
-  <header class="header header--universal">
-  <div class="header-top">
-    <div class="header-inner">
-      <div class="logo-block">
-        <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+    <header class="header header--universal">
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+          </div>
+
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
+        </div>
       </div>
 
-      <div class="header-right">
-        <div class="user-icon">👤</div>
-        <span id="header-username">UPORABNIK</span>
-        <button id="btn-logout" class="btn-logout">ODJAVA</button>
-      </div>
-    </div>
-  </div>
-
-  <nav id="app-nav" class="header-nav"></nav>
-</header>
+      <nav id="app-nav" class="header-nav"></nav>
+    </header>
 
     <main class="main">
       <div class="main-inner full-width">
         <div class="page-title">
           <div>
             <h2>Vpis novega člana</h2>
-            <div class="page-subtitle">Izpolni osnovne podatke. Obvezna polja so označena z <span class="required-star">*</span>.</div>
+            <div class="page-subtitle">
+              Izpolni osnovne podatke. Obvezna polja so označena z <span class="required-star">*</span>.
+            </div>
           </div>
 
           <div class="pill" title="Aktivno leto">
@@ -211,7 +173,7 @@
                   <img
                     id="avatar-img"
                     src="https://via.placeholder.com/300x300.png?text=CLAN"
-                    alt="Slika člana"
+                    alt=""
                   />
                 </div>
 
@@ -224,7 +186,6 @@
 
                 <div class="btn-row">
                   <button id="btn-avatar-remove" type="button" class="btn btn-secondary btn-wide">Odstrani</button>
-                  <button id="btn-generate-clanska" type="button" class="btn btn-primary btn-wide">Predlagaj člansko</button>
                 </div>
 
                 <div class="muted" style="text-align:center;">
@@ -262,6 +223,13 @@
                 <div class="form-group" style="grid-column: 1 / -1;">
                   <label for="naslov">Naslov</label>
                   <input id="naslov" name="naslov" type="text" placeholder="Ulica in hišna številka" />
+                </div>
+
+                <!-- ✅ NEW: POŠTA + KRAJ -->
+                <div class="form-group">
+                  <label for="posta">Št. pošte</label>
+                  <input id="posta" name="posta" type="text" inputmode="numeric" placeholder="npr. 3330" maxlength="4" />
+                  <div class="help">Ob vnosu 4-mestne pošte se lahko kraj samodejno izpolni.</div>
                 </div>
 
                 <div class="form-group">
@@ -331,8 +299,8 @@
       </div>
     </main>
 
-   <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
-   
+    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+
     <script src="core.js" defer></script>
     <script src="vpis-clana.js" defer></script>
   </body>

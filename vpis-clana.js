@@ -12,8 +12,10 @@ function handleVpisClanaPage() {
   const imeEl = document.getElementById("ime");
   const datumVpisaEl = document.getElementById("datumVpisa");
   const clanskaEl = document.getElementById("clanska");
-  const emailEl = document.getElementById("email");
   const telefonEl = document.getElementById("telefon");
+
+  const postaEl = document.getElementById("posta"); // ✅ NEW
+  const krajEl = document.getElementById("kraj");   // (že obstaja)
 
   // privzeto datum vpisa = danes
   if (datumVpisaEl && !datumVpisaEl.value) {
@@ -94,6 +96,66 @@ function handleVpisClanaPage() {
     });
   }
 
+  // ✅ NEW: Pošta -> samodejni kraj
+  let lastAutoKraj = ""; // da ne prepišemo ročnega vnosa po nepotrebnem
+
+  function normalizePosta(raw) {
+    return String(raw || "").replace(/\D/g, "").slice(0, 4);
+  }
+
+  // Slovar: dopolni po potrebi (ključ = "3330", vrednost = "Mozirje")
+  const POSTA_TO_KRAJ = {
+    "3330": "Mozirje",
+    "3331": "Nazarje",
+    // dodaj npr.:
+    // "1000": "Ljubljana",
+    // "2000": "Maribor",
+  };
+
+  function lookupKrajByPosta(posta) {
+    const p = normalizePosta(posta);
+    return POSTA_TO_KRAJ[p] || "";
+  }
+
+  function maybeAutofillKraj() {
+    if (!postaEl || !krajEl) return;
+
+    const p = normalizePosta(postaEl.value);
+    postaEl.value = p; // lepo “očisti” vnos
+
+    const found = lookupKrajByPosta(p);
+    if (!found) return;
+
+    const currentKraj = String(krajEl.value || "").trim();
+
+    // Če je kraj prazen ALI je bil prej avtomatsko vnešen, ga lahko prepišemo
+    if (!currentKraj || currentKraj === lastAutoKraj) {
+      krajEl.value = found;
+      lastAutoKraj = found;
+    }
+  }
+
+  if (postaEl) {
+    postaEl.addEventListener("input", () => {
+      // sproti, ko doseže 4 cifre
+      if (normalizePosta(postaEl.value).length === 4) {
+        maybeAutofillKraj();
+      }
+    });
+
+    postaEl.addEventListener("blur", () => {
+      maybeAutofillKraj();
+    });
+  }
+
+  // Če uporabnik ročno spremeni kraj, ne bomo več prepisovali
+  if (krajEl) {
+    krajEl.addEventListener("input", () => {
+      const v = String(krajEl.value || "").trim();
+      if (v && v !== lastAutoKraj) lastAutoKraj = "";
+    });
+  }
+
   // --- Predlagaj člansko (unikat)
   if (btnGenerateClanska && clanskaEl) {
     btnGenerateClanska.addEventListener("click", () => {
@@ -106,20 +168,19 @@ function handleVpisClanaPage() {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    // preberemo podatke preko obstoječe funkcije (core.js)
     const data = readMemberForm(form);
 
-    // dodatno: trim + normalize
     data.priimek = String(data.priimek || "").trim().toUpperCase();
     data.ime = toTitleCase(String(data.ime || "").trim());
     data.telefon = normalizePhone(String(data.telefon || "").trim());
     data.email = String(data.email || "").trim();
     data.clanska = String(data.clanska || "").trim();
 
-    // če datum vpisa prazen -> danes
+    // ✅ NEW: normalize posta
+    data.posta = normalizePosta(data.posta);
+
     if (!data.datumVpisa) data.datumVpisa = todayISO();
 
-    // Validacije
     const err = validateMemberInput(data, getMembers());
     if (err) {
       alert(err);
@@ -140,10 +201,7 @@ function handleVpisClanaPage() {
     members.push(member);
     saveMembers(members);
 
-    addHistory(
-      "Vpis člana",
-      `Dodan član: ${member.ime} ${member.priimek} (št. ${member.clanska}).`
-    );
+    addHistory("Vpis člana", `Dodan član: ${member.ime} ${member.priimek} (št. ${member.clanska}).`);
 
     alert("Član uspešno dodan.");
     window.location.href = "seznam.html";
@@ -163,7 +221,6 @@ function todayISO() {
 }
 
 function toTitleCase(s) {
-  // ohrani šumnike
   return s
     .toLowerCase()
     .split(/\s+/)
@@ -174,23 +231,18 @@ function toTitleCase(s) {
 
 function normalizePhone(raw) {
   if (!raw) return "";
-  // odstrani presledke/vezaje
   let s = raw.replaceAll(" ", "").replaceAll("-", "");
-  // če uporabnik vpiše 00386 -> +386
   if (s.startsWith("00386")) s = "+386" + s.slice(5);
-  // če uporabnik vpiše 386... -> +386...
   if (s.startsWith("386") && !s.startsWith("+386")) s = "+386" + s.slice(3);
   return s;
 }
 
 function suggestUniqueClanska(members) {
   const existing = new Set((members || []).map((m) => String(m.clanska || "").trim()));
-  // 6-mestne
   for (let i = 0; i < 2000; i++) {
     const candidate = String(100000 + Math.floor(Math.random() * 900000));
     if (!existing.has(candidate)) return candidate;
   }
-  // fallback: timestamp
   return String(Date.now()).slice(-6);
 }
 
@@ -200,21 +252,23 @@ function validateMemberInput(data, members) {
   if (!data.status) return "Status je obvezen.";
   if (!data.spc) return "SPC (spol) je obvezen.";
 
-  // članska: številčna 6–7
   const cl = String(data.clanska || "");
   if (!/^\d{6,7}$/.test(cl)) {
     return "Članska številka mora vsebovati 6–7 številk (brez črk).";
   }
 
-  // duplikat članske
   const dup = (members || []).some((m) => String(m.clanska || "").trim() === cl);
   if (dup) {
     return "Članska številka že obstaja. Klikni 'Predlagaj člansko' ali vnesi drugo.";
   }
 
-  // email (če je vpisan)
   if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
     return "E-mail ni v pravilni obliki.";
+  }
+
+  // ✅ NEW: če je pošta vpisana, naj bo 4-mestna
+  if (data.posta && !/^\d{4}$/.test(String(data.posta))) {
+    return "Št. pošte mora vsebovati 4 številke.";
   }
 
   return null;
@@ -234,11 +288,7 @@ document.addEventListener("DOMContentLoaded", () => {
   handleVpisClanaPage();
   startReminderWatcher();
 
-  // aktivno leto (badge + footer)
   const leto = (typeof AktivnoLeto === "function") ? AktivnoLeto() : "";
   const badgeEl = document.getElementById("aktivno-leto");
   if (badgeEl) badgeEl.textContent = leto;
-
-  const footerEl = document.getElementById("aktivno-leto-footer");
-  if (footerEl) footerEl.textContent = leto;
 });

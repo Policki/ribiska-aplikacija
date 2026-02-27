@@ -19,7 +19,7 @@ const STORAGE_KEYS = {
 };
 
 // Demo “seed” verzija: ko spremeniš string, se demo podatki ponovno prepišejo
-const DEMO_DATA_VERSION = "demo_members_v4_seed_35";
+const DEMO_DATA_VERSION = "demo_members_v5_seed_35_posta";
 
 function getJSON(key, fallback) {
   try {
@@ -75,12 +75,9 @@ function addHistory(action, details) {
 
   const entry = {
     id: Date.now(),
-    // za prikaz (kot prej)
     time: now.toLocaleString("sl-SI"),
-    // za filtriranje/grupiranje (novo)
     iso: now.toISOString(),
-    date: now.toISOString().slice(0, 10), // YYYY-MM-DD
-    // kdo je naredil
+    date: now.toISOString().slice(0, 10),
     username: user?.username || "neznano",
     action,
     details,
@@ -88,7 +85,6 @@ function addHistory(action, details) {
 
   list.unshift(entry);
 
-  // opcijsko: omeji velikost zgodovine (da localStorage ne poči)
   const MAX = 3000;
   if (list.length > MAX) list.length = MAX;
 
@@ -98,7 +94,6 @@ function addHistory(action, details) {
 // ---------- DEMO DATA ----------
 
 function ensureDemoData() {
-  // MEMBERS: vedno prepiši demo podatke, če se verzija spremeni
   const currentDemoVer = localStorage.getItem("rd_demo_version");
   if (currentDemoVer !== DEMO_DATA_VERSION) {
     setJSON(STORAGE_KEYS.MEMBERS, buildDemoMembers(35));
@@ -128,28 +123,13 @@ function ensureDemoData() {
   // EVENTS
   if (!getJSON(STORAGE_KEYS.EVENTS, null)) {
     const demoEvents = [
-      {
-        id: 1,
-        naslov: "Tekmovanje na Savinji",
-        datum: "2025-05-10",
-        opis: "Letno tekmovanje v revirju A.",
-      },
-      {
-        id: 2,
-        naslov: "Čistilna akcija",
-        datum: "2025-04-06",
-        opis: "Ureditev brežin in pobiranje odpadkov.",
-      },
+      { id: 1, naslov: "Tekmovanje na Savinji", datum: "2025-05-10", opis: "Letno tekmovanje v revirju A." },
+      { id: 2, naslov: "Čistilna akcija", datum: "2025-04-06", opis: "Ureditev brežin in pobiranje odpadkov." },
     ];
     setJSON(STORAGE_KEYS.EVENTS, demoEvents);
   }
 
-  // HISTORY
-  if (!getJSON(STORAGE_KEYS.HISTORY, null)) {
-    setJSON(STORAGE_KEYS.HISTORY, []);
-  }
-
-  // ostali storage ključi
+  if (!getJSON(STORAGE_KEYS.HISTORY, null)) setJSON(STORAGE_KEYS.HISTORY, []);
   if (!getJSON(STORAGE_KEYS.OFFICIALS, null)) setJSON(STORAGE_KEYS.OFFICIALS, []);
   if (!getJSON(STORAGE_KEYS.WORK_HOURS, null)) setJSON(STORAGE_KEYS.WORK_HOURS, {});
   if (!getJSON(STORAGE_KEYS.FEES, null)) setJSON(STORAGE_KEYS.FEES, {});
@@ -179,9 +159,7 @@ function userHasModule(user, moduleKey) {
 }
 
 function getUserVisibleStatuses(user) {
-  if (!user || !user.visibleStatuses || user.visibleStatuses.includes("*")) {
-    return null; // vidi vse
-  }
+  if (!user || !user.visibleStatuses || user.visibleStatuses.includes("*")) return null;
   return user.visibleStatuses;
 }
 
@@ -262,7 +240,6 @@ function setWorkHoursYear(year, map) {
 // ---------- ČLANARINA storage ----------
 
 function feeForStatus(status) {
-  // prilagodi po svojih pravilih
   const map = {
     AA: 180,
     AM: 25,
@@ -297,73 +274,7 @@ function saveLicenses(list) {
   setJSON(STORAGE_KEYS.LICENSES, list);
 }
 
-// ---------- SKUPNE FORME / TABELE (Seznam+Arhiv, Vpis+Urejanje) ----------
-// (pusti, če jo uporabljaš na drugih straneh)
-
-function renderMembersTable({ onlyArchived = false } = {}) {
-  const tbody = document.getElementById("members-tbody");
-  if (!tbody) return;
-
-  const currentUser = getCurrentUser();
-  const visibleStatuses = getUserVisibleStatuses(currentUser);
-
-  let members = getMembers().filter((m) =>
-    onlyArchived ? m.arhiviran : !m.arhiviran
-  );
-
-  if (visibleStatuses) {
-    members = members.filter((m) => visibleStatuses.includes(m.status));
-  }
-
-  tbody.innerHTML = "";
-  members.forEach((m, index) => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${index + 1}</td>
-      <td>${m.status || ""}</td>
-      <td>${m.spc || ""}</td>
-      <td>${m.clanska || ""}</td>
-      <td>${m.priimek || ""}</td>
-      <td>${m.ime || ""}</td>
-      <td><a href="mailto:${m.email || ""}">${m.email || ""}</a></td>
-      <td>${m.telefon || ""}</td>
-      <td class="table-actions">
-        <span class="action-icon edit" title="Uredi">✏️</span>
-        <span class="action-icon delete" title="${onlyArchived ? "Izbriši" : "Arhiviraj"}">🗑️</span>
-      </td>
-    `;
-
-    tr.querySelector(".edit")?.addEventListener("click", () => {
-      window.location.href = `urejanje-clana.html?id=${m.id}`;
-    });
-
-    tr.querySelector(".delete")?.addEventListener("click", () => {
-      if (
-        onlyArchived
-          ? confirm("Ali res želiš trajno izbrisati člana?")
-          : confirm("Ali res želiš premakniti člana v arhiv?")
-      ) {
-        const list = getMembers();
-        const idx = list.findIndex((x) => x.id === m.id);
-        if (idx !== -1) {
-          if (onlyArchived) {
-            list.splice(idx, 1);
-            addHistory("Izbris člana", `${m.ime} ${m.priimek} trajno izbrisan iz arhiva.`);
-          } else {
-            list[idx].arhiviran = true;
-            list[idx].datumArhiva = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
-            list[idx].arhivLeto = new Date().getFullYear();
-            addHistory("Arhiviranje člana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
-          }
-          saveMembers(list);
-          renderMembersTable({ onlyArchived });
-        }
-      }
-    });
-
-    tbody.appendChild(tr);
-  });
-}
+// ---------- SKUPNE FORME ----------
 
 function readMemberForm(form) {
   return {
@@ -371,6 +282,7 @@ function readMemberForm(form) {
     ime: form.ime.value.trim(),
     datumRojstva: form.datumRojstva.value,
     naslov: form.naslov.value.trim(),
+    posta: (form.posta?.value || "").trim(),  // ✅ NEW
     kraj: form.kraj.value.trim(),
     telefon: form.telefon.value.trim(),
     email: form.email.value.trim(),
@@ -455,9 +367,7 @@ function showReminderToast(rem) {
     </div>
   `;
 
-  card.querySelector('[data-action="dismiss"]')?.addEventListener("click", () => {
-    card.remove();
-  });
+  card.querySelector('[data-action="dismiss"]')?.addEventListener("click", () => card.remove());
 
   card.querySelector('[data-action="done"]')?.addEventListener("click", () => {
     const list = getReminders();
@@ -491,7 +401,7 @@ function startReminderWatcher() {
       if (Number.isNaN(t)) return;
 
       const notifiedAt = r.notifiedAt ? Number(r.notifiedAt) : 0;
-      const shouldFire = t <= now && now - t <= 1000 * 60 * 30; // okno 30 min nazaj
+      const shouldFire = t <= now && now - t <= 1000 * 60 * 30;
       if (shouldFire && (!notifiedAt || notifiedAt < t)) {
         r.notifiedAt = now;
         showReminderToast(r);
@@ -542,9 +452,7 @@ function renderAppNav(user, activeKey) {
     const a = document.createElement("a");
     a.href = m.href;
     a.textContent = m.label;
-
     if (activeKey === m.key) a.classList.add("active");
-
     inner.appendChild(a);
   });
 }
@@ -554,20 +462,9 @@ function renderAppNav(user, activeKey) {
 // =======================
 
 function buildDemoMembers(count = 35) {
-  // Statusi, kot si navedel:
-  // AM mladinec
-  // AA polnoletni polnopravni član
-  // AP pripravnik
-  // AČ častni član
-  // ZAČ zaslužni častni član
-  // AŠI dijak/študent z opravljenim ribiškim izpitom
-  // DAA pridružen polnoletni član
-  // DAM pridruženi mladinec
-
   const statuses = ["AM", "AA", "AP", "AČ", "ZAČ", "AŠI", "DAA", "DAM"];
   const tipKarteChoices = ["Letna", "Dnevna"];
 
-  // Izmišljena (ne iz tvojih slik) slovenska imena/priimki
   const priimki = [
     "KRAJNC", "ZUPAN", "KOVAČIČ", "PETERNEL", "VIDMAR", "OBLAK", "KOS",
     "LUKAČ", "BOŽIČ", "PIRC", "HRIBAR", "KOREN", "GODEC", "KASTELIC",
@@ -593,12 +490,18 @@ function buildDemoMembers(count = 35) {
     "Velenje", "Polzela", "Prebold", "Žalec", "Šmartno ob Paki"
   ];
 
+  // ✅ NEW: demo pošta iz kraja (primer, dopolni po potrebi)
+  const KRAJ_TO_POSTA = {
+    "Mozirje": "3330",
+    "Nazarje": "3331",
+    // ostalo pusti prazno ali dopolni:
+  };
+
   const ulice = [
     "Savinja", "Cankarjeva", "Prešernova", "Trubarjeva", "Šolska", "Gozdna",
     "Planinska", "Sončna", "Lipova", "Mladinska", "Rečna", "Travniška"
   ];
 
-  // enostavna deterministična “random” funkcija (da je vedno isto pri istem DEMO_DATA_VERSION)
   const seed = hashString(DEMO_DATA_VERSION);
   const rnd = mulberry32(seed);
 
@@ -612,7 +515,6 @@ function buildDemoMembers(count = 35) {
     const ime = spc === "M" ? pick(imenaM, rnd) : pick(imenaZ, rnd);
     const priimek = pick(priimki, rnd);
 
-    // status: malo več AA, nekaj AM/AP, manj AČ/ZAČ
     const r = rnd();
     let status = "AA";
     if (r < 0.18) status = "AM";
@@ -624,30 +526,21 @@ function buildDemoMembers(count = 35) {
     else if (r < 0.74) status = "ZAČ";
     else status = "AA";
 
-    // datum rojstva glede na status
     const dob = makeDobForStatus(status, rnd);
-
-    // datum vpisa (2005–2025)
     const datumVpisa = randomDateISO(2005, 2025, rnd);
-
-    // članska: 6-mestna
     const clanska = String(100000 + Math.floor(rnd() * 900000));
 
-    // naslov
     const ulica = pick(ulice, rnd);
     const hisna = 1 + Math.floor(rnd() * 120);
     const naslov = `${ulica} ${hisna}`;
 
-    // kraj
     const kraj = pick(kraji, rnd);
+    const posta = KRAJ_TO_POSTA[kraj] || ""; // ✅ NEW
 
-    // email (fake)
     const emailUser = `${slug(ime)}.${slug(priimek)}${String(10 + Math.floor(rnd() * 90))}`;
     const email = `${emailUser}@example.com`;
 
-    // telefon (SI stil)
     const telefon = makeSITelefon(rnd);
-
     const tipKarte = rnd() < 0.8 ? "Letna" : pick(tipKarteChoices, rnd);
 
     members.push({
@@ -661,6 +554,7 @@ function buildDemoMembers(count = 35) {
       email,
       telefon,
       naslov,
+      posta, // ✅ NEW
       kraj,
       tipKarte,
       datumRojstva: dob,
@@ -674,19 +568,11 @@ function buildDemoMembers(count = 35) {
 }
 
 function makeDobForStatus(status, rnd) {
-  // AM/DAM mladi: 2008–2016
   if (status === "AM" || status === "DAM") return randomDateISO(2008, 2016, rnd);
-
-  // AŠI dijaki/študenti: 2001–2007
   if (status === "AŠI") return randomDateISO(2001, 2007, rnd);
-
-  // AČ/ZAČ starejši: 1940–1960
   if (status === "AČ" || status === "ZAČ") return randomDateISO(1940, 1960, rnd);
-
-  // AP/DAA/AA polnoletni: 1970–2005 (AP malo mlajši)
   if (status === "AP") return randomDateISO(1985, 2005, rnd);
   if (status === "DAA") return randomDateISO(1975, 2002, rnd);
-
   return randomDateISO(1970, 2003, rnd);
 }
 
@@ -698,7 +584,6 @@ function randomDateISO(yearFrom, yearTo, rnd) {
 }
 
 function makeSITelefon(rnd) {
-  // 03x / 04x / 05x / 07x
   const prefixes = ["031", "041", "051", "070"];
   const p = pick(prefixes, rnd);
   const rest = String(Math.floor(rnd() * 1000000)).padStart(6, "0");
@@ -720,7 +605,6 @@ function slug(str) {
     .replaceAll("-", "");
 }
 
-// deterministic PRNG
 function mulberry32(a) {
   return function () {
     let t = (a += 0x6d2b79f5);
