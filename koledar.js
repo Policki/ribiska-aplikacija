@@ -410,23 +410,20 @@ function handleKoledarPage() {
 
 document.addEventListener("DOMContentLoaded", () => {
   ensureDemoData();
-  startReminderWatcher();
-
   const user = requireAuth({ pageModuleKey: "koledar" });
   if (!user) return;
 
   initHeader(user);
-  handleKoledarPage();
   renderAppNav(user, "koledar");
-});
+  handleKoledarPage();
+  startReminderWatcher();
 
-document.addEventListener("DOMContentLoaded", () => {
-  const _aktivnoLetoEl = document.getElementById('aktivno-leto');
-  if (_aktivnoLetoEl) {
-    if (typeof AktivnoLeto === 'function') {  
-      try {        _aktivnoLetoEl.textContent = AktivnoLeto();
-      } catch (err) {        _aktivnoLetoEl.textContent = '';
-      }    } else {      _aktivnoLetoEl.textContent = '';
+  const letoEl = document.getElementById("aktivno-leto");
+  if (letoEl) {
+    try {
+      letoEl.textContent = typeof AktivnoLeto === "function" ? AktivnoLeto() : "";
+    } catch {
+      letoEl.textContent = "";
     }
   }
 });

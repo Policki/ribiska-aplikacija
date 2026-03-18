@@ -54,6 +54,14 @@ document.addEventListener("DOMContentLoaded", () => {
   ensureDemoData();
   const user = requireAuth();
   if (!user) return;
+
   initHeader(user);
+  renderAppNav(user);
   handleChangePasswordPage();
+  startReminderWatcher();
+
+  const letoEl = document.getElementById("aktivno-leto");
+  if (letoEl && typeof AktivnoLeto === "function") {
+    letoEl.textContent = AktivnoLeto();
+  }
 });

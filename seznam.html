@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Seznam članov – RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
 
@@ -27,6 +28,10 @@
 
     <main class="main">
       <div class="main-inner full-width">
+        <div class="page-intro">
+          <h2>Seznam članov</h2>
+          <div class="small-hint">Osrednji pregled članstva z iskanjem, filtri, prikazom stolpcev in hitrim izvozom podatkov.</div>
+        </div>
         <div class="list-layout">
           <!-- LEVI FILTER PANEL -->
           <aside class="filters">
@@ -87,6 +92,8 @@
                 <tbody id="members-tbody"></tbody>
               </table>
             </div>
+
+            <div id="members-summary" class="small-hint" style="margin-top:10px; padding:0 4px;"></div>
           </section>
         </div>
       </div>

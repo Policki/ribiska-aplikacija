@@ -2,6 +2,7 @@
 <html lang="sl">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Članarina – RD Mozirje</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -27,12 +28,16 @@
 
   <main class="main">
     <div class="main-inner full-width">
-      <h2>Članarina</h2>
+      <div class="page-stack">
+      <div class="page-intro">
+        <h2>Članarina</h2>
+        <div class="small-hint">Pregled plačil po članih, zaključevanje leta in vračanje plačnikov iz arhiva.</div>
+      </div>
 
-      <div class="card" style="margin: 14px 0;">
-        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:14px; flex-wrap:wrap;">
+      <div class="card page-card">
+        <div class="page-flex">
           <div>
-            <div class="card-title" style="margin-bottom:6px;">Navodila</div>
+            <div class="card-title">Navodila</div>
             <div style="font-size:14px; max-width:720px;">
               Klikni status → izberi:
               <b style="color:#c0392b;">NEPLAČAL</b>,
@@ -44,7 +49,7 @@
           </div>
 
           <div style="min-width:320px;">
-            <div class="card-title" style="margin-bottom:6px;">Orodja</div>
+            <div class="card-title">Orodja</div>
             <div class="grid-2">
               <div class="form-group">
                 <label for="fee-year">LETO</label>
@@ -63,12 +68,12 @@
               </div>
             </div>
 
-            <div id="fee-stats" class="small-hint" style="margin-top:8px;"></div>
+            <div id="fee-stats" class="small-hint"></div>
           </div>
         </div>
       </div>
 
-      <div class="table-wrapper">
+      <div class="table-wrapper page-table-wrap">
         <table class="table">
           <thead>
             <tr>
@@ -85,9 +90,7 @@
         </table>
       </div>
 
-      <br />
-
-      <details class="card" style="margin-top:14px;">
+      <details class="card page-card">
         <summary style="cursor:pointer; font-weight:900;">
           Neplačniki (privzeto zaprto) – možnost plačila in vrnitve iz arhiva v tem letu
         </summary>
@@ -112,6 +115,7 @@
           </table>
         </div>
       </details>
+      </div>
     </div>
   </main>
 

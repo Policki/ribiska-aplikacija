@@ -144,7 +144,7 @@
         </div>
       </div>
 
-      <nav id="app-nav" class="header-nav"></nav>
+       <nav id="app-nav" class="header-nav"></nav>
     </header>
 
     <main class="main">
@@ -285,9 +285,34 @@
 
                 <div class="form-group" style="grid-column: 1 / -1;">
                   <label for="clanska">Članska številka</label>
-                  <input id="clanska" name="clanska" type="text" required placeholder="npr. 123456" />
+                  <div style="display:flex; gap:10px; align-items:center;">
+                    <input id="clanska" name="clanska" type="text" required placeholder="npr. 123456" />
+                    <button id="btn-generate-clanska" type="button" class="btn btn-secondary" style="white-space:nowrap;">Predlagaj</button>
+                  </div>
                 </div>
               </div>
+              <div class="divider" style="grid-column: 1 / -1;"></div>
+
+              <div class="form-group" style="grid-column: 1 / -1;">
+  <label style="display:flex; gap:10px; align-items:center;">
+    <input id="ribiskiIzpit" name="ribiskiIzpit" type="checkbox" />
+    Opravljen ribiški izpit
+  </label>
+  <div class="help">Če je izpit opravljen, lahko dodaš datum.</div>
+              </div>
+
+<div class="form-group">
+  <label for="datumRibiskegaIzpita">Datum ribiškega izpita</label>
+  <input id="datumRibiskegaIzpita" name="datumRibiskegaIzpita" type="date" />
+</div>
+
+<div class="form-group">
+  <label style="display:flex; gap:10px; align-items:center;">
+    <input id="potrebujeIzkaznico" name="potrebujeIzkaznico" type="checkbox" />
+    Potrebuje člansko izkaznico
+  </label>
+  <div class="help">Če označiš, se član pojavi na strani “Naročilo izkaznic”.</div>
+</div>
 
               <div class="inline-actions">
                 <a href="seznam.html" class="btn btn-secondary">PREKLIČI</a>
@@ -302,6 +327,7 @@
     <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
 
     <script src="core.js" defer></script>
+    <script src="posta.js" defer></script>
     <script src="vpis-clana.js" defer></script>
   </body>
 </html>

@@ -1,11 +1,38 @@
 function handleDashboardPage(currentUser) {
   const cards = document.querySelectorAll(".dashboard-card");
+
   cards.forEach((card) => {
     const moduleKey = card.dataset.module;
     if (moduleKey && !userHasModule(currentUser, moduleKey)) {
-      card.style.display = "none";
+      card.classList.add("is-hidden");
+      card.setAttribute("aria-hidden", "true");
+      return;
     }
+
+    card.classList.remove("is-hidden");
+    card.removeAttribute("aria-hidden");
   });
+}
+
+function renderDashboardStats() {
+  const members = getMembers();
+  const reminders = getReminders().filter((item) => !item.done);
+
+  const aktivni = members.filter((m) => !m.arhiviran).length;
+  const arhivirani = members.filter((m) => m.arhiviran).length;
+  const cakajoceIzkaznice = members.filter(
+    (m) => m.potrebujeIzkaznico === true && m.izkaznicaUrejena !== true
+  ).length;
+
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = String(value);
+  };
+
+  setText("stat-aktivni", aktivni);
+  setText("stat-arhiv", arhivirani);
+  setText("stat-izkaznice", cakajoceIzkaznice);
+  setText("stat-opomniki", reminders.length);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -15,6 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initHeader(user);
   handleDashboardPage(user);
+  renderDashboardStats();
   const _aktivnoLetoEl = document.getElementById('aktivno-leto');
   if (_aktivnoLetoEl) {
     if (typeof AktivnoLeto === 'function') {

@@ -17,6 +17,8 @@ function handleDelovneUrePage() {
 
   if (!tbody || !selYear) return;
 
+  const currentUser = getCurrentUser();
+
   // UI stanje
   const ui = {
     year: currentYear(),
@@ -63,6 +65,15 @@ function handleDelovneUrePage() {
       if (hoursMap[m.id] == null) hoursMap[m.id] = 0;
     });
     return hoursMap;
+  }
+
+  function getVisibleMembers() {
+    let list = getMembers().filter((m) => !m.arhiviran);
+    const visibleStatuses = getUserVisibleStatuses(currentUser);
+    if (visibleStatuses) {
+      list = list.filter((m) => visibleStatuses.includes(m.status));
+    }
+    return list;
   }
 
   function getFilteredMembers(members, hoursMap) {
@@ -150,7 +161,7 @@ function handleDelovneUrePage() {
 
   function render() {
     const year = ui.year;
-    const membersAll = getMembers().filter((m) => !m.arhiviran);
+    const membersAll = getVisibleMembers();
 
     const hoursMap = normalizeHoursMapForMembers(getWorkHoursYear(year), membersAll);
 
@@ -234,7 +245,7 @@ function handleDelovneUrePage() {
   // -------------------------
   function exportCSV() {
     const year = ui.year;
-    const members = getMembers().filter((m) => !m.arhiviran);
+    const members = getVisibleMembers();
     const hoursMap = normalizeHoursMapForMembers(getWorkHoursYear(year), members);
 
     const rows = [];

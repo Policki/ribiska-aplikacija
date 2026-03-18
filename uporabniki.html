@@ -28,8 +28,9 @@
 
     <main class="main">
       <div class="main-inner full-width">
-        <div style="padding: 12px 12px 0 12px;">
-          <h2 style="margin:0;">Upravljanje uporabnikov</h2>
+        <div class="page-stack">
+        <div class="page-intro">
+          <h2>Upravljanje uporabnikov</h2>
           <div class="small-hint">Admin dodaja/ureja uporabnike, module, pravice in vidne statuse članov.</div>
         </div>
 
@@ -37,6 +38,9 @@
           <!-- FORM -->
           <section class="card">
             <div class="card-title" id="form-title">Dodaj uporabnika</div>
+            <div id="user-view-hint" class="small-hint" style="display:none; margin-bottom:10px;">
+              Podroben pogled uporabnika brez možnosti urejanja.
+            </div>
 
             <form id="user-form" autocomplete="off">
               <input type="hidden" id="edit-username" value="" />
@@ -62,7 +66,7 @@
 
               <div class="section-title">Vidni statusi članov</div>
               <div class="small-hint">Če nič ne izbereš → vidi vse statuse.</div>
-              <div class="check-grid" id="status-checks" style="margin-top:8px;"></div>
+              <div class="check-grid" id="status-checks"></div>
 
               <div class="chip-row">
                 <button type="button" class="chip-btn" id="status-all">Vsi</button>
@@ -87,9 +91,10 @@
                 <label><input id="canSeeHistory" type="checkbox" /> Lahko vidi zgodovino dejanj</label>
               </div>
 
-              <div class="chip-row" style="margin-top:12px;">
+              <div class="chip-row">
                 <button type="submit" class="btn btn-primary" id="btn-submit">DODAJ UPORABNIKA</button>
                 <button type="button" class="btn btn-secondary" id="btn-cancel-edit" style="display:none;">PREKLIČI UREJANJE</button>
+                <button type="button" class="btn btn-secondary" id="btn-close-view" style="display:none;">ZAPRI POGLED</button>
               </div>
             </form>
           </section>
@@ -114,6 +119,7 @@
               </table>
             </div>
           </section>
+        </div>
         </div>
       </div>
     </main>

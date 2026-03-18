@@ -19,7 +19,9 @@ function handleUporabnikiPage() {
 
   const btnSubmit = document.getElementById("btn-submit");
   const btnCancelEdit = document.getElementById("btn-cancel-edit");
+  const btnCloseView = document.getElementById("btn-close-view");
   const formTitle = document.getElementById("form-title");
+  const userViewHint = document.getElementById("user-view-hint");
 
   const statusHost = document.getElementById("status-checks");
   const moduleHost = document.getElementById("module-checks");
@@ -44,6 +46,7 @@ function handleUporabnikiPage() {
   const canArchiveMembers = document.getElementById("canArchiveMembers");
   const canManageUsers = document.getElementById("canManageUsers");
   const canSeeHistory = document.getElementById("canSeeHistory");
+  let isViewMode = false;
 
   // --- Config (same keys as in app)
   const STATUS_OPTIONS = [
@@ -71,6 +74,8 @@ function handleUporabnikiPage() {
     { key: "delovne-ure", label: "Delovne ure" },
     { key: "clanarina", label: "Članarina" },
     { key: "karte-cuvaji", label: "Letne karte in čuvaji" },
+    { key: "pripravniki-izpiti", label: "Pripravniki in izpiti" },
+    { key: "clanske-izkaznice", label: "Naročilo izkaznic" },
   ];
 
   // --- Build checkboxes
@@ -129,12 +134,24 @@ function handleUporabnikiPage() {
   }
 
   function resetFormToAdd() {
+    isViewMode = false;
     editUsernameEl.value = "";
     formTitle.textContent = "Dodaj uporabnika";
     btnSubmit.textContent = "DODAJ UPORABNIKA";
+    btnSubmit.style.display = "";
     btnCancelEdit.style.display = "none";
+    btnCloseView.style.display = "none";
+    userViewHint.style.display = "none";
 
     form.reset();
+    usernameEl.disabled = false;
+    form.querySelectorAll("input, select").forEach((el) => {
+      el.disabled = false;
+    });
+    form.querySelectorAll("button").forEach((el) => {
+      if (el.id === "btn-submit" || el.id === "btn-cancel-edit" || el.id === "btn-close-view") return;
+      el.disabled = false;
+    });
     // default: basic module dashboard
     setCheckedModules(["dashboard"]);
     // statuses: empty means all -> we leave all unchecked
@@ -142,10 +159,14 @@ function handleUporabnikiPage() {
   }
 
   function fillFormForEdit(user) {
+    isViewMode = false;
     editUsernameEl.value = user.username;
     formTitle.textContent = `Uredi uporabnika: ${user.username}`;
     btnSubmit.textContent = "SHRANI SPREMEMBE";
+    btnSubmit.style.display = "";
     btnCancelEdit.style.display = "inline-block";
+    btnCloseView.style.display = "none";
+    userViewHint.style.display = "none";
 
     usernameEl.value = user.username;
     usernameEl.disabled = true;
@@ -171,6 +192,24 @@ function handleUporabnikiPage() {
     canArchiveMembers.checked = !!user.permissions?.canArchiveMembers;
     canManageUsers.checked = !!user.permissions?.canManageUsers;
     canSeeHistory.checked = !!user.permissions?.canSeeHistory;
+  }
+
+  function fillFormForView(user) {
+    fillFormForEdit(user);
+    isViewMode = true;
+    formTitle.textContent = `Podroben pogled: ${user.username}`;
+    btnSubmit.style.display = "none";
+    btnCancelEdit.style.display = "none";
+    btnCloseView.style.display = "inline-block";
+    userViewHint.style.display = "block";
+
+    form.querySelectorAll("input, select").forEach((el) => {
+      el.disabled = true;
+    });
+    form.querySelectorAll("button").forEach((el) => {
+      if (el.id === "btn-close-view") return;
+      el.disabled = true;
+    });
   }
 
   function isSelf(username) {
@@ -223,7 +262,68 @@ function handleUporabnikiPage() {
           const list = getUsers().filter((x) => x.username !== u.username);
           saveUsers(list);
           addHistory("Uporabniki", `Izbrisan uporabnik ${u.username}.`);
-          renderUsers();
+          renderUsersWithView();
+          resetFormToAdd();
+          usernameEl.disabled = false;
+        }
+      });
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderUsersWithView() {
+    const users = getUsers();
+    tbody.innerHTML = "";
+
+    users.forEach((u, index) => {
+      const modulesText = u.modules?.includes("*") ? "Vsi" : (u.modules || []).join(", ");
+      const statusesText = (!u.visibleStatuses || u.visibleStatuses.includes("*")) ? "Vsi" : u.visibleStatuses.join(", ");
+
+      const perms = u.permissions || {};
+      const permsBadges = [
+        perms.canEditMembers ? `<span class="badge ok">Urejanje</span>` : `<span class="badge neutral">Brez urejanja</span>`,
+        perms.canArchiveMembers ? `<span class="badge ok">Arhiv</span>` : `<span class="badge neutral">Brez arhiva</span>`,
+        perms.canSeeHistory ? `<span class="badge ok">Zgodovina</span>` : `<span class="badge neutral">Brez zgodovine</span>`,
+        perms.canManageUsers ? `<span class="badge warn">Uporabniki</span>` : `<span class="badge neutral">Brez uporabnikov</span>`,
+      ].join(" ");
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td style="font-weight:900;">${escapeHtml(u.username)}</td>
+        <td>${escapeHtml(modulesText)}</td>
+        <td>${escapeHtml(statusesText)}</td>
+        <td>${permsBadges}</td>
+        <td class="table-actions">
+          <span class="action-icon view" title="Podroben pogled">👁</span>
+          <span class="action-icon edit" title="Uredi">✎</span>
+          <span class="action-icon delete" title="Izbriši">🗑</span>
+        </td>
+      `;
+
+      tr.querySelector(".view").addEventListener("click", () => {
+        fillFormForView(u);
+      });
+
+      tr.querySelector(".edit").addEventListener("click", () => {
+        fillFormForEdit(u);
+      });
+
+      tr.querySelector(".delete").addEventListener("click", () => {
+        if (u.username === "admin") {
+          alert("Admina ne moreš izbrisati.");
+          return;
+        }
+        if (isSelf(u.username)) {
+          alert("Ne moreš izbrisati samega sebe.");
+          return;
+        }
+        if (confirm(`Izbrišem uporabnika "${u.username}"?`)) {
+          const list = getUsers().filter((x) => x.username !== u.username);
+          saveUsers(list);
+          addHistory("Uporabniki", `Izbrisan uporabnik ${u.username}.`);
+          renderUsersWithView();
           resetFormToAdd();
           usernameEl.disabled = false;
         }
@@ -270,13 +370,18 @@ function handleUporabnikiPage() {
     resetFormToAdd();
   });
 
+  btnCloseView.addEventListener("click", () => {
+    resetFormToAdd();
+  });
+
   // --- Initial render
-  renderUsers();
+  renderUsersWithView();
   resetFormToAdd();
 
   // --- Submit (add or edit)
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+    if (isViewMode) return;
 
     const editing = !!editUsernameEl.value;
     const username = String(usernameEl.value || "").trim();
@@ -328,7 +433,7 @@ function handleUporabnikiPage() {
       users.push(newUser);
       saveUsers(users);
       addHistory("Uporabniki", `Dodani uporabnik ${username}.`);
-      renderUsers();
+      renderUsersWithView();
       resetFormToAdd();
       return;
     }
@@ -355,7 +460,7 @@ function handleUporabnikiPage() {
     saveUsers(users);
     addHistory("Uporabniki", `Urejen uporabnik ${target.username}.`);
 
-    renderUsers();
+    renderUsersWithView();
     usernameEl.disabled = false;
     resetFormToAdd();
   });

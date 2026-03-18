@@ -2,6 +2,14 @@ function handleSeznamPage() {
   initMembersUI();
 }
 
+function normalizeTipKarteValue(value) {
+  const raw = String(value || "").trim().toLowerCase();
+  if (!raw) return "";
+  if (raw === "letna" || raw === "navadna") return "Navadna";
+  if (raw === "dnevna" || raw === "elrd") return "eLRD";
+  return String(value || "").trim();
+}
+
 /* =========================
    UI: filtri + tabela + export
 ========================= */
@@ -104,9 +112,14 @@ function renderEverything(state) {
     members = members.filter((m) => visibleStatuses.includes(m.status));
   }
 
+  members = members.map((m) => ({
+    ...m,
+    tipKarte: normalizeTipKarteValue(m.tipKarte),
+  }));
+
   renderDynamicFilters(members, state);
   renderColumnsBox(state);
-  renderTableWithState(members, state);
+  renderTableWithStateReadOnlyTools(members, state);
   applyColumnVisibility(state);
 }
 
@@ -118,6 +131,12 @@ function renderDynamicFilters(members, state) {
     Array.from(new Set(arr.filter((x) => x !== null && x !== undefined && String(x).trim() !== "")));
 
   const statuses = uniq(members.map((m) => m.status)).sort();
+  const statusCounts = members.reduce((acc, member) => {
+    const key = String(member.status || "").trim();
+    if (!key) return acc;
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
   const spcs = uniq(members.map((m) => m.spc)).sort();
   const tipKarte = uniq(members.map((m) => m.tipKarte)).sort();
   const kraji = uniq(members.map((m) => m.kraj)).sort();
@@ -130,7 +149,11 @@ function renderDynamicFilters(members, state) {
   ).sort();
 
   host.innerHTML = "";
-  host.appendChild(makeMultiFilterGroup("Status", "status", statuses, state));
+  host.appendChild(
+    makeMultiFilterGroup("Status", "status", statuses, state, {
+      getOptionLabel: (status) => `${status} (${statusCounts[status] || 0})`,
+    })
+  );
   host.appendChild(makeMultiFilterGroup("Spol", "spc", spcs, state));
   host.appendChild(makeMultiFilterGroup("Letnica rojstva", "birthYear", birthYears, state));
   host.appendChild(makeMultiFilterGroup("Tip karte", "tipKarte", tipKarte, state));
@@ -138,7 +161,8 @@ function renderDynamicFilters(members, state) {
   host.appendChild(makeMultiFilterGroup("Pošta", "posta", poste, state)); // ✅ NEW
 }
 
-function makeMultiFilterGroup(title, key, options, state) {
+function makeMultiFilterGroup(title, key, options, state, config = {}) {
+  const { getOptionLabel } = config;
   const details = document.createElement("details");
   details.className = "filter-group";
   details.open = key === "status";
@@ -172,7 +196,8 @@ function makeMultiFilterGroup(title, key, options, state) {
     const id = `flt-${key}-${String(opt).replaceAll(" ", "_")}`;
     const wrap = document.createElement("label");
     const checked = selected.has(String(opt));
-    wrap.innerHTML = `<input type="checkbox" id="${id}"> <span>${opt}</span>`;
+    const label = typeof getOptionLabel === "function" ? getOptionLabel(opt) : opt;
+    wrap.innerHTML = `<input type="checkbox" id="${id}"> <span>${label}</span>`;
     const inp = wrap.querySelector("input");
     inp.checked = checked;
 
@@ -256,6 +281,7 @@ function renderColumnsBox(state) {
 
 function renderTableWithState(members, state) {
   const tbody = document.getElementById("members-tbody");
+  const summaryEl = document.getElementById("members-summary");
   if (!tbody) return;
 
   const filtered = applyFilters(members, state).sort((a, b) => {
@@ -304,6 +330,75 @@ function renderTableWithState(members, state) {
 
     tbody.appendChild(tr);
   });
+
+  if (summaryEl) {
+    summaryEl.textContent = `Skupno število članov: ${filtered.length}`;
+  }
+}
+
+function renderTableWithStateReadOnlyTools(members, state) {
+  const tbody = document.getElementById("members-tbody");
+  const summaryEl = document.getElementById("members-summary");
+  const currentUser = getCurrentUser();
+  const canEditMembers = !!currentUser?.permissions?.canEditMembers;
+  const canArchiveMembers = !!currentUser?.permissions?.canArchiveMembers;
+  if (!tbody) return;
+
+  const filtered = applyFilters(members, state).sort((a, b) => {
+    const ap = (a.priimek || "").localeCompare((b.priimek || ""), "sl", { sensitivity: "base" });
+    if (ap !== 0) return ap;
+    return (a.ime || "").localeCompare((b.ime || ""), "sl", { sensitivity: "base" });
+  });
+
+  tbody.innerHTML = "";
+  filtered.forEach((m, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td class="col-zapst" data-col="zapst">${index + 1}</td>
+      <td data-col="status">${m.status || ""}</td>
+      <td data-col="spc">${m.spc || ""}</td>
+      <td data-col="clanska">${m.clanska || ""}</td>
+      <td data-col="priimek">${m.priimek || ""}</td>
+      <td data-col="ime">${m.ime || ""}</td>
+      <td data-col="naslov">${m.naslov || ""}</td>
+      <td data-col="posta">${m.posta || ""}</td>
+      <td data-col="kraj">${m.kraj || ""}</td>
+      <td data-col="email">${m.email ? `<a href="mailto:${m.email}">${m.email}</a>` : ""}</td>
+      <td data-col="telefon">${m.telefon || ""}</td>
+      <td class="table-actions" data-col="tools">
+        <span class="action-icon view" title="Podroben pogled">👁</span>
+        ${canEditMembers ? `<span class="action-icon edit" title="Uredi">✎</span>` : ""}
+        ${canArchiveMembers ? `<span class="action-icon delete" title="Arhiviraj">🗑</span>` : ""}
+      </td>
+    `;
+
+    tr.querySelector(".view").addEventListener("click", () => {
+      window.location.href = `urejanje-clana.html?id=${m.id}&mode=view`;
+    });
+
+    tr.querySelector(".edit")?.addEventListener("click", () => {
+      window.location.href = `urejanje-clana.html?id=${m.id}`;
+    });
+
+    tr.querySelector(".delete")?.addEventListener("click", () => {
+      if (confirm("Ali res želiš premakniti člana v arhiv?")) {
+        const list = getMembers();
+        const idx = list.findIndex((x) => x.id === m.id);
+        if (idx !== -1) {
+          list[idx].arhiviran = true;
+          addHistory("Arhiviranje člana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
+          saveMembers(list);
+          renderEverything(loadUIState());
+        }
+      }
+    });
+
+    tbody.appendChild(tr);
+  });
+
+  if (summaryEl) {
+    summaryEl.textContent = `Skupno število članov: ${filtered.length}`;
+  }
 }
 
 function applyFilters(members, state) {
@@ -412,7 +507,7 @@ function buildExportRows(allMembers) {
       m.posta || "",     // ✅ NEW
       m.kraj || "",
       clanarina != null ? String(clanarina) : "",
-      m.tipKarte || "",
+      normalizeTipKarteValue(m.tipKarte),
       m.email || "",
       m.telefon || "",
       rojstvo,
@@ -492,10 +587,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   handleSeznamPage();
   startReminderWatcher();
-});
 
-// footer leto
-document.addEventListener("DOMContentLoaded", () => {
   const el = document.getElementById("aktivno-leto");
   if (!el) return;
   try {

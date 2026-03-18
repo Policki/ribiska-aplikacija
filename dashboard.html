@@ -2,115 +2,182 @@
 <html lang="sl">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Dashboard – RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="page" data-page="dashboard">
-  <header class="header header--universal">
-  <div class="header-top">
-    <div class="header-inner">
-      <div class="logo-block">
-        <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
-      </div>
+    <header class="header header--universal">
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+          </div>
 
-      <div class="header-right">
-        <div class="user-icon">👤</div>
-        <span id="header-username">UPORABNIK</span>
-        <button id="btn-logout" class="btn-logout">ODJAVA</button>
-      </div>
-    </div>
-  </div>
-
-  <nav id="app-nav" class="header-nav"></nav>
-</header>
-
-    <main class="main-d">
-      <div class="main-inner full-width">
-        <div class="dashboard-grid">
-         <a class="dashboard-card" href="seznam.html" data-module="seznam">
-  <div class="dashboard-icon">
-    <img src="slike\whiotechecklist-icon-checklist-icon-png-list-icon-icon-checklist-png-white-115628702921pwhret57s-removebg-preview.png" alt="Seznam">
-  </div>
-  <div>SEZNAM</div>
-</a>
-
-<a class="dashboard-card" href="vpis-clana.html" data-module="vpis">
-  <div class="dashboard-icon">
-    <img src="slike\add-new-contact-dark-mode-glyph-ui-icon-create-phone-number-address-book-user-interface-design-white-silhouette-symbol-on-black-space-solid-pictogram-for-web-mobile-isolated-illustration-vector-remove.png" alt="vpis-clana">
-  </div>
-  <div>VPIS ČLANA</div>
-</a>
-
-<a class="dashboard-card" href="arhiv-clanstva.html" data-module="arhiv">
-  <div class="dashboard-icon">
-    <img src="slike\images-removebg-preview (1).png" alt="Arhiv">
-  </div>
-  <div>ARHIV ČLANSTVA</div>
-</a>
-
-<a class="dashboard-card" href="koledar.html" data-module="koledar">
-  <div class="dashboard-icon">
-    <img src="slike\download-hd-calendar-date-white-icon-png-701751694973928htmkwblsao-removebg-preview.png" alt="Koledar">
-  </div>
-  <div>KOLEDAR</div>
-</a>
-
-<a class="dashboard-card" href="uporabniki.html" data-module="uporabniki">
-  <div class="dashboard-icon">
-    <img src="slike\e888cd8d2708d8f0388198fd551a1a00-removebg-preview.png" alt="Uporabniki">
-  </div>
-  <div>UPORABNIKI</div>
-</a>
-
-<a class="dashboard-card" href="tiskanje.html" data-module="tiskanje">
-  <div class="dashboard-icon">
-    <img src="slike\images-removebg-preview (2).png" alt="Tiskanje">
-  </div>
-  <div>TISKANJE</div>
-</a>
-
-<a class="dashboard-card" href="zgodovina-dejanj.html" data-module="zgodovina">
-  <div class="dashboard-icon">
-    <img src="slike\781-7815113_history-icon-white-png.png" alt="zgodovina-dejanj">
-  </div>
-  <div>ZGODOVINA DEJANJ</div>
-</a>
-
-<a class="dashboard-card" href="funkcionarji.html" data-module="funkcionarji">
-  <div class="dashboard-icon">
-    <img src="slike\unnamed-removebg-preview.png" alt="FUNKCIONARJI">
-  </div>
-  <div>FUNKCIONARJI</div>
-</a>
-
-<a class="dashboard-card" href="priznanja.html" data-module="priznanja">
-  <div class="dashboard-icon">
-    <img src="slike\prenos-removebg-preview.png" alt="PRIZNANJA">
-  </div>
-  <div>PRIZNANJA</div>
-</a>
-
-<a class="dashboard-card" href="delovne-ure.html" data-module="delovne-ure">
-  <div class="dashboard-icon">
-    <img src="slike\Green_Modern_Tree_Logo_Design-removebg-preview.png" alt="DELOVNE-URE">
-  </div>
-  <div>DELOVNE URE</div>
-</a>
-
-<a class="dashboard-card" href="clanarina.html" data-module="clanarina">
-  <div class="dashboard-icon">
-    <img src="slike\white-cash-payment-hand-icon-free-png-7017516950364721cb6oxvedb-removebg-preview.png" alt="CLANARINA">
-  </div>
-  <div>ČLANARINA</div>
-</a>
-
-<a class="dashboard-card" href="karte-čuvaji.html" data-module="karte-cuvaji">
-  <div class="dashboard-icon">
-    <img src="slike\image__2_-removebg-preview.png" alt="KARTE-CUVAJI">
-  </div>
-  <div>LETNE KARTE <br> IN ČUVAJI</div>
-</a>
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
         </div>
+      </div>
+
+      <nav id="app-nav" class="header-nav"></nav>
+    </header>
+
+    <main class="main main-dashboard">
+      <div class="main-inner full-width dashboard-shell">
+        <section class="dashboard-hero">
+          <div class="dashboard-hero-copy">
+            <p class="dashboard-eyebrow">Ribiška družina Mozirje</p>
+            <h1>Pregled članstva in hitri dostop do vseh modulov</h1>
+            <p class="dashboard-lead">
+              Vsi ključni podatki so zbrani na enem mestu, moduli pa ostanejo vidni glede na pravice prijavljenega uporabnika.
+            </p>
+          </div>
+
+          <div class="dashboard-stats">
+            <article class="dashboard-stat-card">
+              <span class="dashboard-stat-label">Aktivni člani</span>
+              <strong id="stat-aktivni">0</strong>
+            </article>
+            <article class="dashboard-stat-card">
+              <span class="dashboard-stat-label">Arhivirani</span>
+              <strong id="stat-arhiv">0</strong>
+            </article>
+            <article class="dashboard-stat-card">
+              <span class="dashboard-stat-label">Izkaznice v čakanju</span>
+              <strong id="stat-izkaznice">0</strong>
+            </article>
+            <article class="dashboard-stat-card">
+              <span class="dashboard-stat-label">Aktivni opomniki</span>
+              <strong id="stat-opomniki">0</strong>
+            </article>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <div class="dashboard-section-head">
+            <div>
+              <h2>Moduli</h2>
+              <p>Hitro odpri posamezen del aplikacije.</p>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <a class="dashboard-card" href="seznam.html" data-module="seznam">
+              <div class="dashboard-icon">
+                <img src="slike/whiotechecklist-icon-checklist-icon-png-list-icon-icon-checklist-png-white-115628702921pwhret57s-removebg-preview.png" alt="Seznam" />
+              </div>
+              <div class="dashboard-card-title">Seznam</div>
+              <div class="dashboard-card-subtitle">Pregled članov in iskanje po evidenci.</div>
+            </a>
+
+            <a class="dashboard-card" href="vpis-clana.html" data-module="vpis">
+              <div class="dashboard-icon">
+                <img src="slike/add-new-contact-dark-mode-glyph-ui-icon-create-phone-number-address-book-user-interface-design-white-silhouette-symbol-on-black-space-solid-pictogram-for-web-mobile-isolated-illustration-vector-remove.png" alt="Vpis člana" />
+              </div>
+              <div class="dashboard-card-title">Vpis člana</div>
+              <div class="dashboard-card-subtitle">Dodaj nove člane s samodejnim predizpolnjevanjem.</div>
+            </a>
+
+            <a class="dashboard-card" href="arhiv-clanstva.html" data-module="arhiv">
+              <div class="dashboard-icon">
+                <img src="slike/images-removebg-preview (1).png" alt="Arhiv članstva" />
+              </div>
+              <div class="dashboard-card-title">Arhiv članstva</div>
+              <div class="dashboard-card-subtitle">Vrni ali preglej arhivirane člane po letih.</div>
+            </a>
+
+            <a class="dashboard-card" href="koledar.html" data-module="koledar">
+              <div class="dashboard-icon">
+                <img src="slike/download-hd-calendar-date-white-icon-png-701751694973928htmkwblsao-removebg-preview.png" alt="Koledar" />
+              </div>
+              <div class="dashboard-card-title">Koledar</div>
+              <div class="dashboard-card-subtitle">Dogodki, termini in opomniki na enem mestu.</div>
+            </a>
+
+            <a class="dashboard-card" href="uporabniki.html" data-module="uporabniki">
+              <div class="dashboard-icon">
+                <img src="slike/e888cd8d2708d8f0388198fd551a1a00-removebg-preview.png" alt="Uporabniki" />
+              </div>
+              <div class="dashboard-card-title">Uporabniki</div>
+              <div class="dashboard-card-subtitle">Upravljanje dostopov, modulov in dovoljenj.</div>
+            </a>
+
+            <a class="dashboard-card" href="tiskanje.html" data-module="tiskanje">
+              <div class="dashboard-icon">
+                <img src="slike/images-removebg-preview (2).png" alt="Tiskanje" />
+              </div>
+              <div class="dashboard-card-title">Tiskanje</div>
+              <div class="dashboard-card-subtitle">Priprava izpisov in administrativnih dokumentov.</div>
+            </a>
+
+            <a class="dashboard-card" href="zgodovina-dejanj.html" data-module="zgodovina">
+              <div class="dashboard-icon">
+                <img src="slike/781-7815113_history-icon-white-png.png" alt="Zgodovina dejanj" />
+              </div>
+              <div class="dashboard-card-title">Zgodovina dejanj</div>
+              <div class="dashboard-card-subtitle">Sledi spremembam in administrativnim posegom.</div>
+            </a>
+
+            <a class="dashboard-card" href="funkcionarji.html" data-module="funkcionarji">
+              <div class="dashboard-icon">
+                <img src="slike/unnamed-removebg-preview.png" alt="Funkcionarji" />
+              </div>
+              <div class="dashboard-card-title">Funkcionarji</div>
+              <div class="dashboard-card-subtitle">Pregled odgovornih oseb in organizacije društva.</div>
+            </a>
+
+            <a class="dashboard-card" href="priznanja.html" data-module="priznanja">
+              <div class="dashboard-icon">
+                <img src="slike/prenos-removebg-preview.png" alt="Priznanja" />
+              </div>
+              <div class="dashboard-card-title">Priznanja</div>
+              <div class="dashboard-card-subtitle">Evidenca priznanj in zaslug članov.</div>
+            </a>
+
+            <a class="dashboard-card" href="delovne-ure.html" data-module="delovne-ure">
+              <div class="dashboard-icon">
+                <img src="slike/Green_Modern_Tree_Logo_Design-removebg-preview.png" alt="Delovne ure" />
+              </div>
+              <div class="dashboard-card-title">Delovne ure</div>
+              <div class="dashboard-card-subtitle">Letni pregled opravljenih ur po članih.</div>
+            </a>
+
+            <a class="dashboard-card" href="clanarina.html" data-module="clanarina">
+              <div class="dashboard-icon">
+                <img src="slike/white-cash-payment-hand-icon-free-png-7017516950364721cb6oxvedb-removebg-preview.png" alt="Članarina" />
+              </div>
+              <div class="dashboard-card-title">Članarina</div>
+              <div class="dashboard-card-subtitle">Stanja plačil, označevanje in pregled dolgov.</div>
+            </a>
+
+            <a class="dashboard-card" href="karte-čuvaji.html" data-module="karte-cuvaji">
+              <div class="dashboard-icon">
+                <img src="slike/image__2_-removebg-preview.png" alt="Letne karte in čuvaji" />
+              </div>
+              <div class="dashboard-card-title">Letne karte in čuvaji</div>
+              <div class="dashboard-card-subtitle">Usklajen pregled kart, čuvajev in statusov.</div>
+            </a>
+
+            <a class="dashboard-card" href="pripravniki-izpiti.html" data-module="pripravniki-izpiti">
+              <div class="dashboard-icon">
+                <img src="slike/68c8279b-d8c4-40cc-9959-778b1fc1e071-removebg-preview.png" alt="Pripravniki in izpiti" />
+              </div>
+              <div class="dashboard-card-title">Pripravniki in izpiti</div>
+              <div class="dashboard-card-subtitle">Napredovanje pripravnikov in pregledi izpitov.</div>
+            </a>
+
+            <a class="dashboard-card" href="narocilo-izkaznic.html" data-module="clanske-izkaznice">
+              <div class="dashboard-icon">
+                <img src="slike/0b5f0853-e858-4728-840c-3bbaa60c328b-removebg-preview.png" alt="Naročilo članskih izkaznic" />
+              </div>
+              <div class="dashboard-card-title">Naročilo članskih izkaznic</div>
+              <div class="dashboard-card-subtitle">Seznam članov, ki še čakajo na izkaznico.</div>
+            </a>
+          </div>
+        </section>
       </div>
     </main>
 

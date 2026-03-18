@@ -2,48 +2,57 @@
 <html lang="sl">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Sprememba gesla – RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="page" data-page="change-password">
-    <header class="header">
-      <div class="header-inner">
-        <div class="logo-block">
-            <img src="slike\rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img"/>
-          <div class="logo-placeholder"></div>
-        </div>
-        <div class="header-right">
-          <div class="user-icon">👤</div>
-          <span id="header-username">UPORABNIK</span>
-          <button id="btn-logout" class="btn-logout">ODJAVA</button>
+    <header class="header header--universal">
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+          </div>
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
         </div>
       </div>
+      <nav id="app-nav" class="header-nav"></nav>
     </header>
 
     <main class="main">
       <div class="main-inner full-width">
-        <h2>Sprememba gesla</h2>
-        <br />
-        <div id="change-pass-error" class="error-msg"></div>
-        <form id="change-password-form">
-          <div class="form-group">
-            <label for="oldPassword">STARO GESLO</label>
-            <input id="oldPassword" name="oldPassword" type="password" />
+        <div class="page-stack">
+          <div class="page-intro">
+            <h2>Sprememba gesla</h2>
+            <div class="small-hint">Posodobi prijavne podatke za trenutno prijavljenega uporabnika.</div>
           </div>
-          <div class="form-group">
-            <label for="newPassword1">NOVO GESLO</label>
-            <input id="newPassword1" name="newPassword1" type="password" />
+
+          <div class="card page-card" style="max-width:680px;">
+            <div id="change-pass-error" class="error-msg" style="color:#c0392b; margin-bottom:12px;"></div>
+
+            <form id="change-password-form">
+              <div class="form-group">
+                <label for="oldPassword">STARO GESLO</label>
+                <input id="oldPassword" name="oldPassword" type="password" />
+              </div>
+              <div class="form-group">
+                <label for="newPassword1">NOVO GESLO</label>
+                <input id="newPassword1" name="newPassword1" type="password" />
+              </div>
+              <div class="form-group">
+                <label for="newPassword2">PONOVI NOVO GESLO</label>
+                <input id="newPassword2" name="newPassword2" type="password" />
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary">SHRANI NOVO GESLO</button>
+              </div>
+            </form>
           </div>
-          <div class="form-group">
-            <label for="newPassword2">PONOVI NOVO GESLO</label>
-            <input id="newPassword2" name="newPassword2" type="password" />
-          </div>
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-              SHRANI NOVO GESLO
-            </button>
-          </div>
-        </form>
+        </div>
       </div>
     </main>
 

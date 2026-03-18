@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pripravniki in izpiti – RD Mozirje</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="page" data-page="pripravniki-izpiti">
+  <header class="header header--universal">
+    <div class="header-top">
+      <div class="header-inner">
+        <div class="logo-block">
+          <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+        </div>
+
+        <div class="header-right">
+          <div class="user-icon">👤</div>
+          <span id="header-username">UPORABNIK</span>
+          <button id="btn-logout" class="btn-logout">ODJAVA</button>
+        </div>
+      </div>
+    </div>
+
+    <nav id="app-nav" class="header-nav"></nav>
+  </header>
+
+  <main class="main">
+    <div class="main-inner full-width">
+      <div class="page-stack">
+      <div class="page-intro">
+        <h2>Pripravniki in izpiti</h2>
+        <div class="small-hint">
+          Prikazani so aktivni člani brez opravljenega ribiškega izpita ter predlogi za prehod AM → AP (do 30. 9. tekočega leta dopolnijo 16 let).
+        </div>
+      </div>
+
+      <div class="card page-card">
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="pei-search">HITRO ISKANJE</label>
+            <input id="pei-search" type="text" placeholder="priimek, ime, članska…" />
+          </div>
+
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <button id="pei-export-csv" class="btn btn-secondary" type="button">IZVOZI CSV</button>
+          </div>
+        </div>
+
+        <div class="chip-row">
+          <button id="pei-tab-noexam" class="chip-btn primary" type="button">Brez izpita</button>
+          <button id="pei-tab-suggest" class="chip-btn" type="button">Predlog AM → AP</button>
+        </div>
+      </div>
+
+      <div class="table-wrapper page-table-wrap">
+        <table class="table">
+          <thead id="pei-thead"></thead>
+          <tbody id="pei-tbody"></tbody>
+        </table>
+      </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+
+  <script src="core.js" defer></script>
+  <script src="pripravniki-izpiti.js" defer></script>
+</body>
+</html>

@@ -28,8 +28,9 @@
 
     <main class="main">
       <div class="main-inner full-width">
-        <div style="padding: 12px 12px 0 12px;">
-          <h2 style="margin:0;">Tiskanje</h2>
+        <div class="page-stack">
+        <div class="page-intro">
+          <h2>Tiskanje</h2>
           <div class="small-hint">
             Izberi, katere člane in katere stolpce želiš natisniti. Predogled se sproti posodablja.
           </div>
@@ -66,7 +67,7 @@
 
             <div class="section-title">Statusi (filter)</div>
             <div class="small-hint">Če nič ne izbereš → velja “vsi dovoljenih statusov” za trenutno prijavljenega uporabnika.</div>
-            <div class="check-grid" id="print-status-checks" style="margin-top:8px;"></div>
+            <div class="check-grid" id="print-status-checks"></div>
 
             <div class="chip-row">
               <button type="button" class="chip-btn" id="ps-all">Vsi</button>
@@ -76,7 +77,7 @@
 
             <div class="section-title">Stolpci (kaj se natisne)</div>
             <div class="small-hint">Izberi stolpce, ki jih želiš na listu.</div>
-            <div class="check-grid" id="print-col-checks" style="margin-top:8px;"></div>
+            <div class="check-grid" id="print-col-checks"></div>
 
             <div class="chip-row">
               <button type="button" class="chip-btn primary" id="pc-all">Vsi stolpci</button>
@@ -85,7 +86,7 @@
               <button type="button" class="chip-btn" id="pc-none">Počisti</button>
             </div>
 
-            <div class="chip-row" style="margin-top:12px;">
+            <div class="chip-row">
               <button id="btn-print" class="btn btn-primary" type="button">Natisni</button>
               <button id="btn-open-preview" class="btn btn-secondary" type="button">Odpri predogled</button>
             </div>
@@ -96,13 +97,14 @@
             <div class="card-title">Predogled</div>
             <div class="small-hint" id="preview-meta">—</div>
 
-            <div class="table-wrapper" style="margin-top:10px; max-height: 65vh;">
+            <div class="table-wrapper" style="margin-top:10px; max-height:65vh;">
               <table class="table">
                 <thead id="preview-thead"></thead>
                 <tbody id="preview-tbody"></tbody>
               </table>
             </div>
           </section>
+        </div>
         </div>
       </div>
     </main>

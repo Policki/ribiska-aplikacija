@@ -2,6 +2,7 @@
 <html lang="sl">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Letne karte in čuvaji – RD Mozirje</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -27,12 +28,16 @@
 
   <main class="main">
     <div class="main-inner full-width">
-      <h2>Letne karte in čuvaji</h2>
+      <div class="page-stack">
+      <div class="page-intro">
+        <h2>Letne karte in čuvaji</h2>
+        <div class="small-hint">Uvoz, ročni vnos in arhiviranje evidenc letnih kart po posameznih sezonah.</div>
+      </div>
 
-      <div class="card" style="margin: 14px 0;">
-        <div style="display:flex; gap:14px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;">
+      <div class="card page-card">
+        <div class="page-flex">
           <div style="min-width:320px;">
-            <div class="card-title" style="margin-bottom:6px;">Orodja</div>
+            <div class="card-title">Orodja</div>
 
             <div class="grid-2">
               <div class="form-group">
@@ -59,11 +64,11 @@
               </div>
             </div>
 
-            <div id="lic-stats" class="small-hint" style="margin-top:8px;"></div>
+            <div id="lic-stats" class="small-hint"></div>
           </div>
 
           <div style="min-width:360px; max-width:520px;">
-            <div class="card-title" style="margin-bottom:6px;">Uvoz iz Excela</div>
+            <div class="card-title">Uvoz iz Excela</div>
             <input id="licenses-file" type="file" accept=".xlsx,.xls,.csv" />
 
             <div class="small-hint" style="margin-top:8px;">
@@ -74,10 +79,10 @@
         </div>
       </div>
 
-      <div class="card" style="margin: 14px 0;">
+      <div class="card page-card">
         <div class="card-title">Ročno dodaj zapis</div>
 
-        <form id="license-form" style="margin-top: 10px;">
+        <form id="license-form" style="margin-top:10px;">
           <div class="grid-2">
             <div class="form-group">
               <label for="licenseFirst">IME</label>
@@ -116,7 +121,7 @@
         </form>
       </div>
 
-      <div class="table-wrapper">
+      <div class="table-wrapper page-table-wrap">
         <table class="table">
           <thead>
             <tr>
@@ -134,9 +139,7 @@
         </table>
       </div>
 
-      <br />
-
-      <details class="card" style="margin-top:14px;">
+      <details class="card page-card">
         <summary style="cursor:pointer; font-weight:900;">
           Arhiv let (privzeto zaprto)
         </summary>
@@ -147,6 +150,7 @@
 
         <div id="licenses-archive-host"></div>
       </details>
+      </div>
     </div>
   </main>
 

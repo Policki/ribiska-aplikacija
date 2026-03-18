@@ -2,6 +2,7 @@
 <html lang="sl">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Delovne ure – RD Mozirje</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -27,11 +28,15 @@
 
   <main class="main">
     <div class="main-inner full-width">
-      <h2>Delovne ure</h2>
+      <div class="page-stack">
+      <div class="page-intro">
+        <h2>Delovne ure</h2>
+        <div class="small-hint">Letni pregled opravljenih ur, izvoz in hitro urejanje evidenc članov.</div>
+      </div>
 
-      <div class="card" style="margin: 14px 0;">
-        <div style="display:flex; gap:16px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;">
-          <div style="display:flex; gap:18px; align-items:center;">
+      <div class="card page-card">
+        <div class="page-flex">
+          <div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap;">
             <div>
               <div id="workhours-donut" class="donut">
                 <span id="workhours-donut-text">0%</span>
@@ -80,7 +85,7 @@
         </div>
       </div>
 
-      <div class="table-wrapper">
+      <div class="table-wrapper page-table-wrap">
         <table class="table">
           <thead>
             <tr>
@@ -96,6 +101,7 @@
           </thead>
           <tbody id="workhours-tbody"></tbody>
         </table>
+      </div>
       </div>
     </div>
   </main>

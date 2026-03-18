@@ -282,7 +282,7 @@ function readMemberForm(form) {
     ime: form.ime.value.trim(),
     datumRojstva: form.datumRojstva.value,
     naslov: form.naslov.value.trim(),
-    posta: (form.posta?.value || "").trim(),  // ✅ NEW
+    posta: (form.posta?.value || "").trim(),
     kraj: form.kraj.value.trim(),
     telefon: form.telefon.value.trim(),
     email: form.email.value.trim(),
@@ -291,6 +291,9 @@ function readMemberForm(form) {
     status: form.status.value.trim(),
     spc: form.spc.value.trim(),
     clanska: form.clanska.value.trim(),
+    ribiskiIzpit: !!form.ribiskiIzpit?.checked,
+    datumRibiskegaIzpita: (form.datumRibiskegaIzpita?.value || "").trim(),
+    potrebujeIzkaznico: !!form.potrebujeIzkaznico?.checked,
   };
 }
 
@@ -441,6 +444,8 @@ function renderAppNav(user, activeKey) {
     { key: "delovne-ure", label: "DELOVNE URE", href: "delovne-ure.html" },
     { key: "clanarina", label: "ČLANARINA", href: "clanarina.html" },
     { key: "karte-cuvaji", label: "LETNE KARTE IN ČUVAJI", href: "karte-čuvaji.html" },
+    { key: "pripravniki-izpiti", label: "PRIPRAVNIKI IN IZPITI", href: "pripravniki-izpiti.html" },
+    { key: "clanske-izkaznice", label: "CLANSKE IZKAZNICE", href: "narocilo-izkaznic.html" },
   ];
 
   nav.innerHTML = `<div class="header-nav-inner"></div>`;
