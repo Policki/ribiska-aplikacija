@@ -14,12 +14,18 @@ function handleDashboardPage(currentUser) {
   });
 }
 
-function renderDashboardStats() {
+function renderDashboardStats(currentUser) {
   const members = getMembers();
   const reminders = getReminders().filter((item) => !item.done);
+  const visibleStatuses = getUserVisibleStatuses(currentUser);
+  const visibleMembers = visibleStatuses
+    ? members.filter((m) => visibleStatuses.includes(m.status))
+    : members;
 
   const aktivni = members.filter((m) => !m.arhiviran).length;
-  const arhivirani = members.filter((m) => m.arhiviran).length;
+  const cakajociTelefoni = visibleMembers.filter(
+    (m) => !m.arhiviran && String(m.telefon || "").trim() && m.telefonVpisan !== true
+  ).length;
   const cakajoceIzkaznice = members.filter(
     (m) => m.potrebujeIzkaznico === true && m.izkaznicaUrejena !== true
   ).length;
@@ -30,7 +36,7 @@ function renderDashboardStats() {
   };
 
   setText("stat-aktivni", aktivni);
-  setText("stat-arhiv", arhivirani);
+  setText("stat-telefoni", cakajociTelefoni);
   setText("stat-izkaznice", cakajoceIzkaznice);
   setText("stat-opomniki", reminders.length);
 }
@@ -42,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initHeader(user);
   handleDashboardPage(user);
-  renderDashboardStats();
+  renderDashboardStats(user);
   const _aktivnoLetoEl = document.getElementById('aktivno-leto');
   if (_aktivnoLetoEl) {
     if (typeof AktivnoLeto === 'function') {

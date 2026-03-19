@@ -162,6 +162,7 @@ function handleDelovneUrePage() {
   function render() {
     const year = ui.year;
     const membersAll = getVisibleMembers();
+    const mobileHost = document.getElementById("workhours-mobile-cards");
 
     const hoursMap = normalizeHoursMapForMembers(getWorkHoursYear(year), membersAll);
 
@@ -171,6 +172,7 @@ function handleDelovneUrePage() {
     const members = getFilteredMembers(membersAll, hoursMap);
 
     tbody.innerHTML = "";
+    if (mobileHost) mobileHost.innerHTML = "";
 
     members.forEach((m) => {
       const age = getAgeSafe(m);
@@ -207,10 +209,59 @@ function handleDelovneUrePage() {
       `;
 
       tbody.appendChild(tr);
+
+      if (mobileHost) {
+        const card = document.createElement("article");
+        card.className = "member-mobile-card";
+        card.innerHTML = `
+          <div class="member-mobile-card__head">
+            <div>
+              <div class="member-mobile-card__name">${escapeHtml(m.priimek || "")} ${escapeHtml(m.ime || "")}</div>
+              <div class="member-mobile-card__meta">
+                <span class="badge neutral">${escapeHtml(m.clanska || "Brez članske")}</span>
+                <span class="badge neutral">${mustDo ? "Mora opraviti" : "Ne rabi"}</span>
+              </div>
+            </div>
+            <div class="member-mobile-card__status ${ok ? "ok" : "warn"}">${ok ? "OK" : "Manjka"}</div>
+          </div>
+          <div class="member-mobile-card__body">
+            <div class="member-mobile-card__row">
+              <span>Starost</span>
+              <strong>${age === null ? "-" : age}</strong>
+            </div>
+            <div class="member-mobile-card__row">
+              <span>Ure</span>
+              <strong>${hours}</strong>
+            </div>
+          </div>
+          <div class="member-mobile-card__actions inline">
+            <input
+              type="number"
+              min="0"
+              step="1"
+              value="${hours}"
+              data-member-id="${m.id}"
+              class="wh-hours-input"
+              style="width:100%; padding:10px 12px; border-radius:12px; border:2px solid rgba(0,0,0,.15);"
+            >
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px;">
+              <button type="button" class="chip-btn wh-bump" data-delta="1" data-member-id="${m.id}">+1</button>
+              <button type="button" class="chip-btn wh-bump" data-delta="2" data-member-id="${m.id}">+2</button>
+              <button type="button" class="chip-btn wh-bump" data-delta="5" data-member-id="${m.id}">+5</button>
+            </div>
+          </div>
+        `;
+        mobileHost.appendChild(card);
+      }
     });
 
     // events: input (blur/change) + bump buttons
-    tbody.querySelectorAll(".wh-hours-input").forEach((inp) => {
+    const allHoursInputs = [
+      ...tbody.querySelectorAll(".wh-hours-input"),
+      ...(mobileHost ? Array.from(mobileHost.querySelectorAll(".wh-hours-input")) : []),
+    ];
+
+    allHoursInputs.forEach((inp) => {
       inp.addEventListener("change", () => {
         const id = Number(inp.dataset.memberId);
         setHours(year, hoursMap, id, inp.value);
@@ -222,7 +273,7 @@ function handleDelovneUrePage() {
         if (e.key === "Enter") {
           e.preventDefault();
           inp.dispatchEvent(new Event("change"));
-          const inputs = Array.from(tbody.querySelectorAll(".wh-hours-input"));
+          const inputs = allHoursInputs;
           const idx = inputs.indexOf(inp);
           const next = inputs[idx + 1];
           if (next) next.focus();
@@ -230,7 +281,12 @@ function handleDelovneUrePage() {
       });
     });
 
-    tbody.querySelectorAll(".wh-bump").forEach((btn) => {
+    const allBumps = [
+      ...tbody.querySelectorAll(".wh-bump"),
+      ...(mobileHost ? Array.from(mobileHost.querySelectorAll(".wh-bump")) : []),
+    ];
+
+    allBumps.forEach((btn) => {
       btn.addEventListener("click", () => {
         const id = Number(btn.dataset.memberId);
         const delta = Number(btn.dataset.delta || 0);

@@ -119,8 +119,88 @@ function renderEverything(state) {
 
   renderDynamicFilters(members, state);
   renderColumnsBox(state);
-  renderTableWithStateReadOnlyTools(members, state);
+  renderResponsiveMembers(members, state);
   applyColumnVisibility(state);
+}
+
+function getFilteredSortedMembers(members, state) {
+  return applyFilters(members, state).sort((a, b) => {
+    const ap = (a.priimek || "").localeCompare((b.priimek || ""), "sl", { sensitivity: "base" });
+    if (ap !== 0) return ap;
+    return (a.ime || "").localeCompare((b.ime || ""), "sl", { sensitivity: "base" });
+  });
+}
+
+function renderResponsiveMembers(members, state) {
+  renderTableWithStateReadOnlyTools(members, state);
+
+  const cardsHost = document.getElementById("members-mobile-cards");
+  const currentUser = getCurrentUser();
+  const canEditMembers = !!currentUser?.permissions?.canEditMembers;
+  const canArchiveMembers = !!currentUser?.permissions?.canArchiveMembers;
+  if (!cardsHost) return;
+
+  const filtered = getFilteredSortedMembers(members, state);
+  cardsHost.innerHTML = "";
+
+  filtered.forEach((m, index) => {
+    const card = document.createElement("article");
+    card.className = "member-mobile-card";
+    card.innerHTML = `
+      <div class="member-mobile-card__head">
+        <div>
+          <div class="member-mobile-card__name">${escapeHtml(String(m.priimek || "").trim())} ${escapeHtml(String(m.ime || "").trim())}</div>
+          <div class="member-mobile-card__meta">
+            <span class="badge neutral">${escapeHtml(m.status || "Brez statusa")}</span>
+            <span class="badge neutral">${escapeHtml(m.clanska || "Brez članske")}</span>
+          </div>
+        </div>
+        <div class="member-mobile-card__index">#${index + 1}</div>
+      </div>
+      <div class="member-mobile-card__body">
+        <div class="member-mobile-card__row">
+          <span>Telefon</span>
+          <strong>${escapeHtml(m.telefon || "-")}</strong>
+        </div>
+        <div class="member-mobile-card__row">
+          <span>E-mail</span>
+          <strong>${m.email ? `<a href="mailto:${escapeHtml(m.email)}">${escapeHtml(m.email)}</a>` : "-"}</strong>
+        </div>
+        <div class="member-mobile-card__row">
+          <span>Naslov</span>
+          <strong>${escapeHtml([m.naslov, m.posta, m.kraj].filter(Boolean).join(", ") || "-")}</strong>
+        </div>
+        <div class="member-mobile-card__row">
+          <span>Spol / karta</span>
+          <strong>${escapeHtml([m.spc || "", normalizeTipKarteValue(m.tipKarte) || ""].filter(Boolean).join(" / ") || "-")}</strong>
+        </div>
+      </div>
+      <div class="member-mobile-card__actions">
+        <button type="button" class="btn btn-secondary member-mobile-view">Podroben pogled</button>
+        ${canEditMembers ? `<button type="button" class="btn btn-primary member-mobile-edit">Uredi</button>` : ""}
+        ${canArchiveMembers ? `<button type="button" class="btn btn-secondary member-mobile-delete">Arhiviraj</button>` : ""}
+      </div>
+    `;
+
+    card.querySelector(".member-mobile-view")?.addEventListener("click", () => {
+      window.location.href = `urejanje-clana.html?id=${m.id}&mode=view`;
+    });
+    card.querySelector(".member-mobile-edit")?.addEventListener("click", () => {
+      window.location.href = `urejanje-clana.html?id=${m.id}`;
+    });
+    card.querySelector(".member-mobile-delete")?.addEventListener("click", () => {
+      if (!confirm("Ali res želiš premakniti člana v arhiv?")) return;
+      const list = getMembers();
+      const idx = list.findIndex((x) => x.id === m.id);
+      if (idx === -1) return;
+      list[idx].arhiviran = true;
+      addHistory("Arhiviranje člana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
+      saveMembers(list);
+      renderEverything(loadUIState());
+    });
+
+    cardsHost.appendChild(card);
+  });
 }
 
 function renderDynamicFilters(members, state) {

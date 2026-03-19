@@ -187,10 +187,17 @@ function handleUrejanjeClanaPage() {
     e.preventDefault();
 
     const data = readMemberForm(form);
+    const normalizePhoneLocal = (raw) => {
+      let s = String(raw || "").replaceAll(" ", "").replaceAll("-", "");
+      if (s.startsWith("00386")) s = `+386${s.slice(5)}`;
+      if (s.startsWith("386") && !s.startsWith("+386")) s = `+386${s.slice(3)}`;
+      return s;
+    };
 
     // normalizacija pošte (če imaš normalizePosta globalno, jo uporabi; sicer fallback)
     const normalizePostaLocal = (raw) => String(raw || "").replace(/\D/g, "").slice(0, 4);
     data.posta = normalizePostaLocal(data.posta);
+    data.telefon = normalizePhoneLocal(data.telefon);
 
     if (!data.priimek || !data.ime) {
       alert("Priimek in ime sta obvezna.");
@@ -214,6 +221,8 @@ function handleUrejanjeClanaPage() {
     // ✅ če je nekdo NA NOVO označil "potrebuje izkaznico" -> naj gre v naročilo
     const prevNeeds = list[idx].potrebujeIzkaznico === true;
     const nextNeeds = data.potrebujeIzkaznico === true;
+    const prevPhone = normalizePhoneLocal(list[idx].telefon);
+    const nextPhone = data.telefon;
 
     list[idx] = {
       ...list[idx],
@@ -225,6 +234,12 @@ function handleUrejanjeClanaPage() {
     // če je na novo označil potrebuje izkaznico, poskrbi da se pojavi v naročilu
     if (!prevNeeds && nextNeeds) {
       list[idx].izkaznicaUrejena = false;
+    }
+
+    if (!nextPhone) {
+      list[idx].telefonVpisan = true;
+    } else if (nextPhone !== prevPhone) {
+      list[idx].telefonVpisan = false;
     }
 
     // če izpit ni označen, pobriši datum

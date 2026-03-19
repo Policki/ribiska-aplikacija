@@ -264,6 +264,7 @@ function handleClanarinaPage() {
   // =============================
   function render() {
     const year = ui.year;
+    const mobileHost = document.getElementById("fees-mobile-cards");
 
     ensureYearSnapshot(year);
 
@@ -286,6 +287,7 @@ function handleClanarinaPage() {
     const closed = isYearClosed(year);
 
     tbody.innerHTML = "";
+    if (mobileHost) mobileHost.innerHTML = "";
 
     members.forEach((m) => {
       const amount = feeAmountForMember(m);
@@ -318,6 +320,54 @@ function handleClanarinaPage() {
       `;
 
       tbody.appendChild(tr);
+
+      if (mobileHost) {
+        const card = document.createElement("article");
+        card.className = "member-mobile-card";
+        card.innerHTML = `
+          <div class="member-mobile-card__head">
+            <div>
+              <div class="member-mobile-card__name">${escapeHtml(m.priimek || "")} ${escapeHtml(m.ime || "")}</div>
+              <div class="member-mobile-card__meta">
+                <span class="badge ${badgeClassForState(st)}">${stateLabel(st)}</span>
+                <span class="badge neutral">${amount} EUR</span>
+              </div>
+            </div>
+            <div class="member-mobile-card__index">${escapeHtml(m.status || "-")}</div>
+          </div>
+          <div class="member-mobile-card__body">
+            <div class="member-mobile-card__row">
+              <span>Naslov</span>
+              <strong>${escapeHtml([m.naslov, m.kraj].filter(Boolean).join(", ") || "-")}</strong>
+            </div>
+          </div>
+          <div class="member-mobile-card__actions inline">
+            <button type="button" class="chip-btn fee-mobile-red">Neplačal</button>
+            <button type="button" class="chip-btn fee-mobile-green">Plačal TRR</button>
+            <button type="button" class="chip-btn fee-mobile-blue">Plačal CASH</button>
+          </div>
+          ${isAutoRenewMember(m) ? `<div class="member-mobile-card__note">ZAČ: avtomatski renew (0 EUR)</div>` : ""}
+          ${closed ? `<div class="member-mobile-card__note">Leto je zaključeno.</div>` : ""}
+        `;
+        if (isAutoRenewMember(m) || closed) {
+          card.querySelectorAll(".fee-mobile-red, .fee-mobile-green, .fee-mobile-blue").forEach((btn) => {
+            btn.disabled = true;
+          });
+        }
+        card.querySelector(".fee-mobile-red")?.addEventListener("click", () => {
+          setStatus(year, m.id, STATE.UNPAID);
+          render();
+        });
+        card.querySelector(".fee-mobile-green")?.addEventListener("click", () => {
+          setStatus(year, m.id, STATE.PAID_TRR);
+          render();
+        });
+        card.querySelector(".fee-mobile-blue")?.addEventListener("click", () => {
+          setStatus(year, m.id, STATE.PAID_CASH);
+          render();
+        });
+        mobileHost.appendChild(card);
+      }
     });
 
     // toggle picker

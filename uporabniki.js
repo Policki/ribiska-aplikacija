@@ -275,6 +275,8 @@ function handleUporabnikiPage() {
   function renderUsersWithView() {
     const users = getUsers();
     tbody.innerHTML = "";
+    const mobileHost = document.getElementById("users-mobile-cards");
+    if (mobileHost) mobileHost.innerHTML = "";
 
     users.forEach((u, index) => {
       const modulesText = u.modules?.includes("*") ? "Vsi" : (u.modules || []).join(", ");
@@ -330,6 +332,52 @@ function handleUporabnikiPage() {
       });
 
       tbody.appendChild(tr);
+
+      if (mobileHost) {
+        const card = document.createElement("article");
+        card.className = "member-mobile-card";
+        card.innerHTML = `
+          <div class="member-mobile-card__head">
+            <div>
+              <div class="member-mobile-card__name">${escapeHtml(u.username)}</div>
+              <div class="member-mobile-card__meta">
+                <span class="badge neutral">${u.modules?.includes("*") ? "Vsi moduli" : `${(u.modules || []).length} modulov`}</span>
+                <span class="badge neutral">${(!u.visibleStatuses || u.visibleStatuses.includes("*")) ? "Vsi statusi" : `${u.visibleStatuses.length} statusov`}</span>
+              </div>
+            </div>
+            <div class="member-mobile-card__index">#${index + 1}</div>
+          </div>
+          <div class="member-mobile-card__body">
+            <div class="member-mobile-card__row">
+              <span>Moduli</span>
+              <strong>${escapeHtml(modulesText || "-")}</strong>
+            </div>
+            <div class="member-mobile-card__row">
+              <span>Vidni statusi</span>
+              <strong>${escapeHtml(statusesText || "-")}</strong>
+            </div>
+            <div class="member-mobile-card__row">
+              <span>Pravice</span>
+              <strong>${escapeHtml([
+                perms.canEditMembers ? "Urejanje" : null,
+                perms.canArchiveMembers ? "Arhiv" : null,
+                perms.canSeeHistory ? "Zgodovina" : null,
+                perms.canManageUsers ? "Uporabniki" : null,
+              ].filter(Boolean).join(", ") || "Osnovne")}</strong>
+            </div>
+          </div>
+          <div class="member-mobile-card__actions">
+            <button type="button" class="btn btn-secondary mobile-view">Podroben pogled</button>
+            <button type="button" class="btn btn-primary mobile-edit">Uredi</button>
+            <button type="button" class="btn btn-secondary mobile-delete">Izbriši</button>
+          </div>
+        `;
+
+        card.querySelector(".mobile-view")?.addEventListener("click", () => fillFormForView(u));
+        card.querySelector(".mobile-edit")?.addEventListener("click", () => fillFormForEdit(u));
+        card.querySelector(".mobile-delete")?.addEventListener("click", () => tr.querySelector(".delete")?.click());
+        mobileHost.appendChild(card);
+      }
     });
   }
 

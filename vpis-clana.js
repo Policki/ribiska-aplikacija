@@ -138,6 +138,7 @@ function handleVpisClanaPage() {
       arhiviran: false,
       avatar: avatarDataUrl,
       izkaznicaUrejena: data.potrebujeIzkaznico ? false : undefined,
+      telefonVpisan: data.telefon ? false : true,
       ...data,
     };
 

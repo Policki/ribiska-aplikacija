@@ -321,6 +321,18 @@ body {
   color: #ffffff;
 }
 
+.dashboard-stat-card--link {
+  text-decoration: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.dashboard-stat-card--link:hover,
+.dashboard-stat-card--link:focus-visible {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+  box-shadow: 0 16px 28px rgba(0, 50, 50, 0.22);
+}
+
 .dashboard-stat-label {
   font-size: 12px;
   letter-spacing: 0.04em;
@@ -474,6 +486,7 @@ body {
   border: 1px solid rgba(0, 75, 75, 0.12);
   box-shadow: 0 16px 38px rgba(0, 55, 55, 0.08);
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table {
@@ -565,12 +578,18 @@ body {
 }
 
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
   width: 100%;
-  padding: 8px 10px;
-  border-radius: 999px;
+  padding: 10px 12px;
+  border-radius: 16px;
   border: 1px solid var(--grey-border);
   font-size: 14px;
+}
+
+.form-group textarea {
+  min-height: 120px;
+  resize: vertical;
 }
 
 .form-actions {
@@ -1093,6 +1112,113 @@ body {
   border-radius: 14px;
 }
 
+.member-mobile-list {
+  display: none;
+  gap: 12px;
+}
+
+.member-mobile-card {
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(0, 75, 75, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.98), rgba(242, 249, 246, 0.98));
+  box-shadow: 0 14px 30px rgba(0, 55, 55, 0.08);
+}
+
+.member-mobile-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.member-mobile-card__name {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #133232;
+}
+
+.member-mobile-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.member-mobile-card__index {
+  font-size: 12px;
+  font-weight: 900;
+  color: rgba(19, 50, 50, 0.65);
+  white-space: nowrap;
+}
+
+.member-mobile-card__body {
+  display: grid;
+  gap: 10px;
+}
+
+.member-mobile-card__row {
+  display: grid;
+  gap: 4px;
+}
+
+.member-mobile-card__row span {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: rgba(19, 50, 50, 0.62);
+}
+
+.member-mobile-card__row strong,
+.member-mobile-card__row a {
+  font-size: 14px;
+  line-height: 1.45;
+  color: #153434;
+  word-break: break-word;
+}
+
+.member-mobile-card__actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.member-mobile-card__actions.inline {
+  grid-template-columns: 1fr;
+}
+
+.member-mobile-card__note {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: rgba(19, 50, 50, 0.72);
+}
+
+.member-mobile-card__status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  padding: 7px 10px;
+  border-radius: 12px;
+  font-weight: 900;
+  background: rgba(0, 75, 75, 0.08);
+  color: #134040;
+}
+
+.member-mobile-card__status.ok {
+  background: rgba(46, 204, 113, 0.14);
+  color: #1f7a43;
+}
+
+.member-mobile-card__status.warn {
+  background: rgba(231, 76, 60, 0.14);
+  color: #a33426;
+}
+
 .col-zapst {
   width: 60px;
   max-width: 60px;
@@ -1324,6 +1450,33 @@ body {
   background: rgba(0, 0, 0, 0.12);
 }
 
+.phone-task-cell {
+  width: 104px;
+  text-align: center;
+}
+
+.phone-task-toggle {
+  width: 22px;
+  height: 22px;
+  accent-color: #2f7a3e;
+  cursor: pointer;
+}
+
+.phone-task-note {
+  margin: 4px 12px 0;
+  color: rgba(19, 50, 50, 0.72);
+  font-size: 14px;
+}
+
+.empty-state {
+  margin: 0 12px 14px;
+  padding: 18px 20px;
+  border-radius: 20px;
+  border: 1px dashed rgba(0, 75, 75, 0.2);
+  background: rgba(255, 255, 255, 0.85);
+  color: rgba(19, 50, 50, 0.74);
+}
+
 @media (max-width: 700px) {
   .page-intro {
     margin-left: 0;
@@ -1489,6 +1642,11 @@ body {
     border-radius: 16px;
   }
 
+  .filters {
+    padding: 14px;
+    border-radius: 18px;
+  }
+
   .btn {
     min-height: 42px;
     padding: 10px 16px;
@@ -1512,6 +1670,10 @@ body {
     padding: 8px 8px;
   }
 
+  .table-wrapper {
+    border-radius: 16px;
+  }
+
   .table-actions {
     gap: 10px;
     min-width: 110px;
@@ -1527,6 +1689,26 @@ body {
 
   .page-flex {
     gap: 12px;
+  }
+
+  .page-flex > * {
+    min-width: 0;
+  }
+
+  .page-flex > [style*="min-width:320px"],
+  .page-flex > [style*="min-width:300px"] {
+    min-width: 0 !important;
+    width: 100%;
+  }
+
+  .grid-2,
+  .check-grid,
+  .filters-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .chip-row {
+    gap: 10px;
   }
 
   .calendar-toolbar {
@@ -1561,6 +1743,25 @@ body {
 }
 
 @media (max-width: 560px) {
+  .header--universal .header-top {
+    padding: 10px 0;
+  }
+
+  .header--universal .header-inner {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .header--universal .header-nav-inner {
+    padding: 8px 12px 10px;
+    gap: 8px;
+  }
+
+  .header-nav a {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
   .logo-img {
     height: 40px;
   }
@@ -1582,6 +1783,37 @@ body {
 
   .page-intro h2 {
     font-size: 1.35rem;
+  }
+
+  .page-intro,
+  .page-card,
+  .page-table-wrap,
+  .empty-state {
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+
+  .page-stack {
+    padding: 0 8px 16px;
+  }
+
+  .filters,
+  .card {
+    padding: 12px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea,
+  .cal-form input,
+  .cal-form textarea {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .cal-form textarea,
+  .form-group textarea {
+    min-height: 110px;
   }
 
   .filters-header,
@@ -1606,8 +1838,51 @@ body {
     width: 100%;
   }
 
+  .list-layout,
+  .users-layout {
+    padding: 8px;
+    gap: 10px;
+  }
+
+  .filters-search input {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .calendar-panel,
+  .calendar-side {
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .cal-btn {
+    min-height: 42px;
+  }
+
   .table {
     font-size: 12px;
+  }
+
+  .table-zone .table-wrapper {
+    display: none;
+  }
+
+  .member-mobile-list {
+    display: grid;
+  }
+
+  body[data-page="uporabniki"] .users-layout > .card:last-child .table-wrapper,
+  body[data-page="delovne-ure"] .table-wrapper.page-table-wrap,
+  body[data-page="clanarina"] .table-wrapper.page-table-wrap,
+  body[data-page="telefoni-clani"] #phone-table-wrap .table-wrapper {
+    display: none;
+  }
+
+  .page-table-wrap.member-mobile-list,
+  #workhours-mobile-cards.page-table-wrap,
+  #fees-mobile-cards.page-table-wrap {
+    display: grid;
+    margin-top: 0;
   }
 
   .table th,
@@ -1619,6 +1894,25 @@ body {
   .hist-list {
     padding-left: 10px;
     padding-right: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .page-intro h2 {
+    font-size: 1.2rem;
+  }
+
+  .dashboard-stat-card strong {
+    font-size: 1.5rem;
+  }
+
+  .table th,
+  .table td {
+    padding: 6px 5px;
+  }
+
+  .header-right {
+    gap: 10px;
   }
 }
 .hist-details { font-size: 13px; opacity: .85; }

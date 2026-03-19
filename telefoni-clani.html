@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="sl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Telefoni novih članov - RD Mozirje</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page" data-page="telefoni-clani">
+    <header class="header header--universal">
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+          </div>
+
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
+        </div>
+      </div>
+
+      <nav id="app-nav" class="header-nav"></nav>
+    </header>
+
+    <main class="main">
+      <div class="main-inner full-width">
+        <div class="page-stack">
+          <section class="page-intro">
+            <h2>Telefonske številke novih članov</h2>
+            <p>
+              Tukaj so prikazani člani s telefonsko številko, ki še čakajo na vpis v telefon.
+              Ko je številka shranjena, označi polje v zadnjem stolpcu.
+            </p>
+          </section>
+
+          <section class="page-card">
+            <div class="page-flex center">
+              <div class="small-hint">
+                Čakajočih vnosov: <strong id="phone-pending-count">0</strong>
+              </div>
+            </div>
+          </section>
+
+          <section id="phone-table-wrap" class="page-table-wrap">
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Priimek in ime</th>
+                    <th>Status</th>
+                    <th>Telefon</th>
+                    <th class="phone-task-cell">Vpisano</th>
+                  </tr>
+                </thead>
+                <tbody id="phone-members-body"></tbody>
+              </table>
+            </div>
+            <div id="phone-mobile-cards" class="member-mobile-list"></div>
+            <div class="phone-task-note">
+              Prikazani so samo člani s statusi, ki jih trenutni uporabnik lahko vidi.
+            </div>
+          </section>
+
+          <section id="phone-empty-state" class="empty-state" hidden>
+            Trenutno ni novih telefonskih številk, ki bi čakale na vpis v telefon.
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+
+    <script src="core.js" defer></script>
+    <script src="telefoni-clani.js" defer></script>
+  </body>
+</html>
