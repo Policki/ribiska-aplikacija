@@ -16,6 +16,7 @@ const STORAGE_KEYS = {
   LICENSES: "rd_licenses",
   GUARDS: "rd_guards",
   REMINDERS: "rd_reminders",
+  MEMBERSHIP_APPLICATIONS: "rd_membership_applications",
 };
 
 // Demo “seed” verzija: ko spremeniš string, se demo podatki ponovno prepišejo
@@ -53,6 +54,14 @@ function getMembers() {
 
 function saveMembers(members) {
   setJSON(STORAGE_KEYS.MEMBERS, members);
+}
+
+function getMembershipApplications() {
+  return getJSON(STORAGE_KEYS.MEMBERSHIP_APPLICATIONS, []);
+}
+
+function saveMembershipApplications(applications) {
+  setJSON(STORAGE_KEYS.MEMBERSHIP_APPLICATIONS, applications);
 }
 
 // ---------- EVENTS ----------
@@ -136,6 +145,7 @@ function ensureDemoData() {
   if (!getJSON(STORAGE_KEYS.LICENSES, null)) setJSON(STORAGE_KEYS.LICENSES, []);
   if (!getJSON(STORAGE_KEYS.GUARDS, null)) setJSON(STORAGE_KEYS.GUARDS, []);
   if (!getJSON(STORAGE_KEYS.REMINDERS, null)) setJSON(STORAGE_KEYS.REMINDERS, []);
+  if (!getJSON(STORAGE_KEYS.MEMBERSHIP_APPLICATIONS, null)) setJSON(STORAGE_KEYS.MEMBERSHIP_APPLICATIONS, []);
 }
 
 // ---------- AUTH / PERMISSIONS ----------

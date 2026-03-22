@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="sl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pristopne vloge - RD Mozirje</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page" data-page="pristopne-vloge">
+    <header class="header header--universal">
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+          </div>
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
+        </div>
+      </div>
+      <nav id="app-nav" class="header-nav"></nav>
+    </header>
+
+    <main class="main">
+      <div class="main-inner full-width">
+        <div class="page-stack">
+          <section class="page-intro">
+            <h2>Pristopne vloge</h2>
+            <p>Pregled oddanih pristopnih izjav, admin potrditev in priprava za tisk.</p>
+          </section>
+          <section class="page-card">
+            <div class="page-actions">
+              <input id="application-search" type="search" placeholder="Išči po imenu, priimku, telefonu ali e-mailu" />
+            </div>
+          </section>
+          <section id="applications-list" class="page-table-wrap member-mobile-list" style="display:grid;"></section>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+
+    <script src="core.js" defer></script>
+    <script src="pristopne-vloge.js" defer></script>
+  </body>
+</html>

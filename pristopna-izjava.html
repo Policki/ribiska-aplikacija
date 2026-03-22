@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="sl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pristopna izjava - RD Mozirje</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page" data-page="pristopna-izjava">
+    <main class="main">
+      <div class="main-inner full-width">
+        <div class="page-stack">
+          <section class="page-intro">
+            <h2>Pristopna izjava za članstvo</h2>
+            <p>
+              Obrazec je prilagojen predvsem za telefon. Vnesite svoje podatke,
+              dodajte fotografijo in se na koncu podpišite na zaslonu.
+            </p>
+          </section>
+
+          <section class="card page-card application-card">
+            <form id="application-form">
+              <div class="application-grid">
+                <div class="full application-section-title">Osnovni podatki</div>
+
+                <div class="form-group">
+                  <label for="priimek">Priimek *</label>
+                  <input id="priimek" name="priimek" type="text" required placeholder="Na primer Novak" />
+                </div>
+
+                <div class="form-group">
+                  <label for="ime">Ime *</label>
+                  <input id="ime" name="ime" type="text" required placeholder="Na primer Marko" />
+                </div>
+
+                <div class="form-group">
+                  <label for="datumRojstva">Datum rojstva *</label>
+                  <input id="datumRojstva" name="datumRojstva" type="date" required />
+                </div>
+
+                <div class="form-group">
+                  <label for="spol">Spol *</label>
+                  <select id="spol" name="spol" required>
+                    <option value="">Izberi...</option>
+                    <option value="M">Moški</option>
+                    <option value="Ž">Ženski</option>
+                  </select>
+                </div>
+
+                <div class="form-group full">
+                  <label for="krajRojstva">Kraj rojstva *</label>
+                  <input id="krajRojstva" name="krajRojstva" type="text" required placeholder="Na primer Celje" />
+                </div>
+
+                <div class="full application-section-title">Naslov in kontakt</div>
+
+                <div class="form-group full">
+                  <label for="naslov">Naslov bivališča *</label>
+                  <input id="naslov" name="naslov" type="text" required placeholder="Ulica in hišna številka" />
+                </div>
+
+                <div class="form-group">
+                  <label for="posta">Poštna koda *</label>
+                  <input id="posta" name="posta" type="text" inputmode="numeric" maxlength="4" required placeholder="3330" />
+                </div>
+
+                <div class="form-group">
+                  <label for="kraj">Naziv pošte *</label>
+                  <input id="kraj" name="kraj" type="text" required placeholder="Mozirje" />
+                </div>
+
+                <div class="form-group">
+                  <label for="telefon">Številka osebnega telefona *</label>
+                  <input id="telefon" name="telefon" type="tel" required placeholder="041 123 456" />
+                </div>
+
+                <div class="form-group">
+                  <label for="email">E-pošta *</label>
+                  <input id="email" name="email" type="email" required placeholder="ime.priimek@email.si" />
+                </div>
+
+                <div class="full application-section-title">Članstvo in dokumenti</div>
+
+                <div class="form-group">
+                  <label for="datumVloge">Datum oddaje *</label>
+                  <input id="datumVloge" name="datumVloge" type="date" required />
+                </div>
+
+                <div class="form-group">
+                  <label for="tipKarte">Tip letne karte *</label>
+                  <select id="tipKarte" name="tipKarte" required>
+                    <option value="">Izberi...</option>
+                    <option value="navadna">Navadna</option>
+                    <option value="eLRD">Elektronska - eLRD</option>
+                  </select>
+                </div>
+
+                <div class="form-group full">
+                  <label for="fotografija">Fotografija *</label>
+                  <input id="fotografija" name="fotografija" type="file" accept="image/*" required />
+                  <div class="small-hint">Dodajte jasno fotografijo za evidenco člana in pripravo dokumentacije.</div>
+                </div>
+
+                <div class="full application-section-title">Druga ribiška družina</div>
+
+                <div class="form-group full">
+                  <label for="drugaRdStatus">Ali ste bili ali ste še član druge ribiške družine v Sloveniji? *</label>
+                  <select id="drugaRdStatus" name="drugaRdStatus" required>
+                    <option value="">Izberi...</option>
+                    <option value="ne">Ne</option>
+                    <option value="bil">Bil sem član</option>
+                    <option value="se">Še sem član</option>
+                  </select>
+                </div>
+
+                <div id="druga-rd-fields" class="full application-grid" hidden>
+                  <div class="form-group">
+                    <label for="drugaRdOd">Član od</label>
+                    <input id="drugaRdOd" name="drugaRdOd" type="date" />
+                  </div>
+
+                  <div class="form-group" id="druga-rd-do-wrap">
+                    <label for="drugaRdDo">Član do</label>
+                    <input id="drugaRdDo" name="drugaRdDo" type="date" />
+                  </div>
+
+                  <div class="form-group full">
+                    <label for="drugaRdNaziv">Ribiška družina</label>
+                    <input id="drugaRdNaziv" name="drugaRdNaziv" type="text" placeholder="Naziv druge RD" />
+                  </div>
+
+                  <div class="form-group full">
+                    <label for="drugaRdClanska">Članska številka</label>
+                    <input id="drugaRdClanska" name="drugaRdClanska" type="text" placeholder="Če jo poznate" />
+                  </div>
+                </div>
+
+                <div class="full application-section-title">Ribiški izpit</div>
+
+                <div class="form-group full">
+                  <label for="ribiskiIzpitStatus">Ali ste že opravili ribiški izpit? *</label>
+                  <select id="ribiskiIzpitStatus" name="ribiskiIzpitStatus" required>
+                    <option value="">Izberi...</option>
+                    <option value="ne">Ne</option>
+                    <option value="da">Da</option>
+                  </select>
+                </div>
+
+                <div class="form-group full" id="ribiski-izpit-datum-wrap" hidden>
+                  <label for="datumRibiskegaIzpita">Datum opravljenega ribiškega izpita</label>
+                  <input id="datumRibiskegaIzpita" name="datumRibiskegaIzpita" type="date" />
+                </div>
+
+                <div class="form-group full">
+                  <label for="opombe">Opombe</label>
+                  <textarea id="opombe" name="opombe" rows="4" placeholder="Če želite, lahko tukaj dopišete dodatne informacije."></textarea>
+                </div>
+
+                <div class="full application-section-title">Soglasje in podpis</div>
+
+                <div class="form-group full">
+                  <label>Splošni pogoji včlanitve *</label>
+                  <div class="application-terms">
+                    Seznanjen sem, da se včlanitev v RD obravnava kot pogodbeni odnos, ki je podlaga za obdelavo
+                    zgoraj navedenih osebnih podatkov, ki so neločljivo povezani s samim članstvom v društvu ter
+                    uresničevanjem mojih pravic in dolžnosti člana. Seznanjen sem, da RD obdeluje moje osebne
+                    podatke v okviru veljavnih prepisov in v statutu ter drugih splošnih aktih opredeljenih
+                    namenov, ciljev in nalog delovanja. Seznanjen sem, da lahko kadarkoli odstopim od soglasja k
+                    posredovanju svojih osebnih podatkov. Seznanjen sem s obvestilom posameznikom glede
+                    obdelave po 13. členu splošne uredbe o varstvu podatkov (GDPR) glede obdelave osebnih
+                    podatkov ribičev – članov RD. Seznanjen sem, da sta tako Pravilnik RZS o varovanju osebnih
+                    podatkov kot tudi celotna politika obdelave in varovanja osebnih podatkov na RZS dostopna
+                    na spletni strani RZS: http://ribiska-zveza.si/dejavnosti/pravno-podrocje/varovanje-osebnihpodatkov-na-rzs ,
+                    kjer se lahko seznanim tudi z vsemi pravicami in postopki za njihovo uveljavitev.
+                    Zavedam se, da predstavlja navajanje zavajajočih ali netočnih podatkov v vlogi disciplinsko kršitev.
+                  </div>
+                  <label class="application-consent">
+                    <input id="termsAccepted" name="termsAccepted" type="checkbox" required />
+                    <span>Strinjam se z navedenimi pogoji in obdelavo podatkov.</span>
+                  </label>
+                </div>
+
+                <div class="form-group full">
+                  <label>Podpis vlagatelja *</label>
+                  <button type="button" id="btn-open-signature" class="signature-trigger">Podpišite se na zaslonu</button>
+                  <div id="signature-preview-wrap" class="signature-preview-wrap" hidden>
+                    <img id="signature-preview" class="signature-preview" alt="Predogled podpisa vlagatelja" />
+                  </div>
+                  <div id="signature-pad-status" class="small-hint">Podpis še ni dodan.</div>
+                  <div class="page-actions" style="margin-top:10px;">
+                    <button type="button" id="btn-reset-signature" class="btn btn-secondary" hidden>Izbriši podpis vlagatelja</button>
+                  </div>
+                </div>
+
+                <div id="parent-consent-block" class="form-group full" hidden>
+                  <label for="parentFullName">Mladoletna oseba: ime in priimek starša / skrbnika *</label>
+                  <input id="parentFullName" name="parentFullName" type="text" placeholder="Ime in priimek starša ali skrbnika" />
+                  <label style="margin-top:12px;">Podpis starša / skrbnika *</label>
+                  <button type="button" id="btn-open-parent-signature" class="signature-trigger">Podpis starša / skrbnika</button>
+                  <div id="parent-signature-preview-wrap" class="signature-preview-wrap" hidden>
+                    <img id="parent-signature-preview" class="signature-preview" alt="Predogled podpisa starša ali skrbnika" />
+                  </div>
+                  <div id="parent-signature-status" class="small-hint">Podpis starša še ni dodan.</div>
+                  <div class="page-actions" style="margin-top:10px;">
+                    <button type="button" id="btn-reset-parent-signature" class="btn btn-secondary" hidden>Izbriši podpis starša</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="page-actions" style="margin-top:18px;">
+                <button type="submit" class="btn btn-primary">Oddaj pristopno izjavo</button>
+              </div>
+            </form>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <div id="signature-overlay" class="signature-overlay" hidden>
+      <div id="signature-overlay-title" class="signature-overlay__title">Podpis</div>
+      <div class="signature-overlay__canvas-wrap">
+        <canvas id="signature-overlay-canvas" class="signature-overlay__canvas" width="1200" height="700"></canvas>
+      </div>
+      <div class="signature-overlay__actions">
+        <button type="button" id="btn-signature-done" class="btn btn-primary">Končano</button>
+        <button type="button" id="btn-signature-clear" class="btn btn-secondary">Počisti</button>
+      </div>
+    </div>
+
+    <script src="core.js" defer></script>
+    <script src="posta.js" defer></script>
+    <script src="pristopna-izjava.js" defer></script>
+  </body>
+</html>

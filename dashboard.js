@@ -16,7 +16,9 @@ function handleDashboardPage(currentUser) {
 
 function renderDashboardStats(currentUser) {
   const members = getMembers();
-  const reminders = getReminders().filter((item) => !item.done);
+  const pendingApplications = getMembershipApplications().filter(
+    (application) => application.adminConfirmedAt == null
+  ).length;
   const visibleStatuses = getUserVisibleStatuses(currentUser);
   const visibleMembers = visibleStatuses
     ? members.filter((m) => visibleStatuses.includes(m.status))
@@ -37,8 +39,8 @@ function renderDashboardStats(currentUser) {
 
   setText("stat-aktivni", aktivni);
   setText("stat-telefoni", cakajociTelefoni);
+  setText("stat-pristopne-vloge", pendingApplications);
   setText("stat-izkaznice", cakajoceIzkaznice);
-  setText("stat-opomniki", reminders.length);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
