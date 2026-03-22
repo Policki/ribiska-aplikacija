@@ -1,24 +1,56 @@
 function initSignaturePad(canvas) {
   const ctx = canvas.getContext("2d");
-  ctx.lineWidth = 3;
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-  ctx.strokeStyle = "#0b4b4b";
-
   let drawing = false;
   let hasStroke = false;
+  let currentStrokeStyle = "#0b4b4b";
+
+  function applyBrush() {
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = currentStrokeStyle;
+  }
+
+  function resizeCanvas() {
+    const rect = canvas.getBoundingClientRect();
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    const width = Math.max(1, Math.round(rect.width * ratio));
+    const height = Math.max(1, Math.round(rect.height * ratio));
+    const snapshot = hasStroke ? canvas.toDataURL("image/png") : "";
+
+    if (canvas.width === width && canvas.height === height) {
+      applyBrush();
+      return;
+    }
+
+    canvas.width = width;
+    canvas.height = height;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    applyBrush();
+
+    if (snapshot) {
+      const img = new Image();
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        hasStroke = true;
+      };
+      img.src = snapshot;
+    }
+  }
 
   const point = (event) => {
     const rect = canvas.getBoundingClientRect();
-    const src = event.touches ? event.touches[0] : event;
     return {
-      x: ((src.clientX - rect.left) / rect.width) * canvas.width,
-      y: ((src.clientY - rect.top) / rect.height) * canvas.height,
+      x: ((event.clientX - rect.left) / rect.width) * canvas.width,
+      y: ((event.clientY - rect.top) / rect.height) * canvas.height,
     };
   };
 
   const start = (event) => {
     event.preventDefault();
+    if (event.pointerType) {
+      canvas.setPointerCapture?.(event.pointerId);
+    }
     drawing = true;
     const p = point(event);
     ctx.beginPath();
@@ -38,12 +70,13 @@ function initSignaturePad(canvas) {
     drawing = false;
   };
 
-  canvas.addEventListener("mousedown", start);
-  canvas.addEventListener("mousemove", move);
-  window.addEventListener("mouseup", end);
-  canvas.addEventListener("touchstart", start, { passive: false });
-  canvas.addEventListener("touchmove", move, { passive: false });
-  window.addEventListener("touchend", end);
+  resizeCanvas();
+  window.addEventListener("resize", resizeCanvas);
+  canvas.addEventListener("pointerdown", start, { passive: false });
+  canvas.addEventListener("pointermove", move, { passive: false });
+  canvas.addEventListener("pointerup", end);
+  canvas.addEventListener("pointercancel", end);
+  canvas.addEventListener("pointerleave", end);
 
   return {
     clear() {
@@ -55,6 +88,9 @@ function initSignaturePad(canvas) {
     },
     hasSignature() {
       return hasStroke;
+    },
+    resize() {
+      resizeCanvas();
     },
     async loadDataURL(dataUrl) {
       this.clear();
@@ -168,6 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     overlay.hidden = false;
     document.body.style.overflow = "hidden";
+    overlayPad.resize();
     await overlayPad.loadDataURL(target === "parent" ? parentSignatureData : applicantSignatureData);
   }
 

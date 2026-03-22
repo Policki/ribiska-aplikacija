@@ -1284,6 +1284,16 @@ body {
   cursor: pointer;
 }
 
+body[data-page="pristopna-izjava"] .page-intro {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body[data-page="pristopna-izjava"] .page-intro p {
+  font-size: 15px;
+}
+
 .signature-preview-wrap {
   margin-top: 12px;
   padding: 10px;
@@ -1559,11 +1569,19 @@ body {
     align-items: stretch;
   }
 
+  body[data-page="pristopna-izjava"] .page-stack {
+    padding: 0 0 18px;
+  }
+
   body[data-page="pristopna-izjava"] .page-intro {
-    margin-bottom: 10px;
+    margin: 10px 8px;
+    padding: 16px 14px;
+    border-radius: 20px;
   }
 
   .application-card {
+    margin: 0 8px 12px;
+    padding: 14px;
     border-radius: 22px;
   }
 
@@ -1588,8 +1606,20 @@ body {
     border-radius: 16px;
   }
 
+  body[data-page="pristopna-izjava"] .form-group input[type="file"] {
+    min-height: 0;
+    padding: 10px 0;
+    border-radius: 0;
+  }
+
   .application-terms {
     max-height: 260px;
+    font-size: 14px;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .application-consent {
     font-size: 14px;
   }
 
@@ -1610,6 +1640,17 @@ body {
     position: sticky;
     bottom: 0;
     padding: 10px 8px max(10px, env(safe-area-inset-bottom));
+  }
+
+  .signature-trigger {
+    min-height: 58px;
+    border-radius: 16px;
+    font-size: 16px;
+  }
+
+  .signature-preview-wrap {
+    padding: 8px;
+    border-radius: 14px;
   }
 }
 
