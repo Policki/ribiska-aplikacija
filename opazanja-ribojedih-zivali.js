@@ -1,0 +1,329 @@
+function toTitleCase(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function canPrintObservations(user) {
+  return !!(user?.permissions?.canManageUsers || user?.permissions?.canSeeHistory || user?.username === "admin");
+}
+
+function readFilesAsDataUrls(files) {
+  return Promise.all(
+    Array.from(files || []).map(
+      (file) =>
+        new Promise((resolve, reject) => {
+          if (!file?.type?.startsWith("image/")) {
+            reject(new Error("Dovoljene so samo slike."));
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result || ""));
+          reader.onerror = () => reject(new Error("Napaka pri branju slike."));
+          reader.readAsDataURL(file);
+        })
+    )
+  );
+}
+
+function formatCoordinate(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return "";
+  return num.toFixed(6);
+}
+
+async function reverseGeocode(lat, lng) {
+  const response = await fetch(
+    `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lng)}`
+  );
+  if (!response.ok) throw new Error("Povratno iskanje lokacije ni uspelo.");
+  return response.json();
+}
+
+async function searchGeocode(query) {
+  const response = await fetch(
+    `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(query)}`
+  );
+  if (!response.ok) throw new Error("Iskanje lokacije ni uspelo.");
+  return response.json();
+}
+
+function renderObservationList(user) {
+  const host = document.getElementById("animal-observations-list");
+  if (!host) return;
+
+  const observations = getAnimalObservations().sort(
+    (a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || ""))
+  );
+
+  host.innerHTML = "";
+
+  if (!observations.length) {
+    host.innerHTML = `<article class="member-mobile-card"><div class="member-mobile-card__name">Trenutno še ni shranjenih opažanj.</div></article>`;
+    return;
+  }
+
+  observations.forEach((observation) => {
+    const card = document.createElement("article");
+    card.className = "member-mobile-card observation-card";
+    card.innerHTML = `
+      <div class="member-mobile-card__head">
+        <div>
+          <div class="member-mobile-card__name">${escapeHtml(observation.title || "")}</div>
+          <div class="member-mobile-card__meta">
+            <span class="badge neutral">${escapeHtml(observation.date || "")}</span>
+            <span class="badge neutral">${escapeHtml(observation.place || "")}</span>
+          </div>
+        </div>
+      </div>
+      <div class="member-mobile-card__body">
+        <div class="member-mobile-card__row">
+          <span>Opis</span>
+          <strong>${escapeHtml(observation.description || "-")}</strong>
+        </div>
+        <div class="member-mobile-card__row">
+          <span>Koordinate</span>
+          <strong>${observation.latitude && observation.longitude ? `${escapeHtml(observation.latitude)}, ${escapeHtml(observation.longitude)}` : "-"}</strong>
+        </div>
+        <div class="member-mobile-card__row">
+          <span>Dodano</span>
+          <strong>${escapeHtml(observation.createdBy || "-")}</strong>
+        </div>
+      </div>
+      <div class="observation-gallery">
+        ${(observation.images || [])
+          .map((image, index) => `<img src="${image}" alt="Opažanje ${index + 1}" class="observation-gallery__img" />`)
+          .join("")}
+      </div>
+      <div class="member-mobile-card__actions">
+        ${canPrintObservations(user) ? '<button type="button" class="btn btn-secondary btn-print-observation">Pripravi za tisk</button>' : ""}
+      </div>
+    `;
+
+    card.querySelector(".btn-print-observation")?.addEventListener("click", () => {
+      window.open(`opazanja-ribojedih-zivali-tisk.html?id=${observation.id}`, "_blank");
+    });
+
+    host.appendChild(card);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  ensureDemoData();
+  const user = requireAuth({ pageModuleKey: "opazanja-zivali" });
+  if (!user) return;
+
+  initHeader(user);
+  renderAppNav(user, "opazanja-zivali");
+  startReminderWatcher();
+
+  const yearEl = document.getElementById("aktivno-leto");
+  if (yearEl && typeof AktivnoLeto === "function") {
+    yearEl.textContent = AktivnoLeto();
+  }
+
+  const form = document.getElementById("animal-observation-form");
+  if (!form) return;
+
+  const dateField = document.getElementById("observation-date");
+  const placeField = document.getElementById("observation-place");
+  const mapSearchField = document.getElementById("observation-map-search");
+  const btnMapSearch = document.getElementById("btn-map-search");
+  const btnMapGeolocate = document.getElementById("btn-map-geolocate");
+  const mapStatus = document.getElementById("observation-map-status");
+  const latitudeField = document.getElementById("observation-latitude");
+  const longitudeField = document.getElementById("observation-longitude");
+
+  if (dateField && !dateField.value) {
+    dateField.value = todayISO();
+  }
+
+  form.title?.addEventListener("blur", () => {
+    form.title.value = toTitleCase(form.title.value);
+  });
+  placeField?.addEventListener("blur", () => {
+    placeField.value = toTitleCase(placeField.value);
+  });
+
+  let map = null;
+  let marker = null;
+
+  function setStatus(message) {
+    if (mapStatus) mapStatus.textContent = message;
+  }
+
+  function updateCoordinates(lat, lng) {
+    if (latitudeField) latitudeField.value = formatCoordinate(lat);
+    if (longitudeField) longitudeField.value = formatCoordinate(lng);
+  }
+
+  async function applyLocation(lat, lng, shouldFillPlace = false) {
+    updateCoordinates(lat, lng);
+    if (marker) {
+      marker.setLatLng([lat, lng]);
+    }
+    if (map) {
+      map.setView([lat, lng], Math.max(map.getZoom(), 15));
+    }
+
+    if (shouldFillPlace) {
+      try {
+        const reverse = await reverseGeocode(lat, lng);
+        const label =
+          reverse?.display_name ||
+          [
+            reverse?.address?.road,
+            reverse?.address?.village,
+            reverse?.address?.town,
+            reverse?.address?.city,
+          ]
+            .filter(Boolean)
+            .join(", ");
+        if (label && placeField && !placeField.value.trim()) {
+          placeField.value = toTitleCase(label);
+        }
+      } catch {
+        // Če reverse geocode ne uspe, koordinate vseeno ostanejo shranjene.
+      }
+    }
+
+    setStatus(`Izbrana lokacija: ${formatCoordinate(lat)}, ${formatCoordinate(lng)}`);
+  }
+
+  if (window.L) {
+    const defaultLat = 46.33944;
+    const defaultLng = 14.96333;
+
+    map = window.L.map("observation-map", {
+      zoomControl: true,
+    }).setView([defaultLat, defaultLng], 13);
+
+    window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: "&copy; OpenStreetMap",
+    }).addTo(map);
+
+    marker = window.L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
+    updateCoordinates(defaultLat, defaultLng);
+
+    map.on("click", (event) => {
+      applyLocation(event.latlng.lat, event.latlng.lng, true);
+    });
+
+    marker.on("dragend", () => {
+      const point = marker.getLatLng();
+      applyLocation(point.lat, point.lng, true);
+    });
+
+    setStatus("Lokacijo izberite s klikom na zemljevid, iskanjem ali z gumbom Moja lokacija.");
+  } else {
+    setStatus("Zemljevida ni bilo mogoče naložiti. Koordinate trenutno niso na voljo.");
+  }
+
+  btnMapSearch?.addEventListener("click", async () => {
+    const query = String(mapSearchField?.value || placeField?.value || "").trim();
+    if (!query) {
+      setStatus("Najprej vpišite naslov, kraj ali revir za iskanje.");
+      return;
+    }
+
+    try {
+      setStatus("Iščem lokacijo na zemljevidu...");
+      const results = await searchGeocode(query);
+      if (!results.length) {
+        setStatus("Lokacije ni bilo mogoče najti. Poskusite z bolj natančnim opisom.");
+        return;
+      }
+      const match = results[0];
+      const lat = Number(match.lat);
+      const lng = Number(match.lon);
+      if (placeField && !placeField.value.trim()) {
+        placeField.value = toTitleCase(match.display_name || query);
+      }
+      await applyLocation(lat, lng, false);
+      setStatus("Lokacija je bila najdena in označena na zemljevidu.");
+    } catch (error) {
+      setStatus(error?.message || "Iskanje lokacije trenutno ni uspelo.");
+    }
+  });
+
+  btnMapGeolocate?.addEventListener("click", () => {
+    if (!navigator.geolocation) {
+      setStatus("Ta naprava ne podpira samodejne lokacije.");
+      return;
+    }
+
+    setStatus("Pridobivam trenutno lokacijo...");
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        await applyLocation(position.coords.latitude, position.coords.longitude, true);
+        setStatus("Uporabljena je trenutna lokacija naprave.");
+      },
+      () => {
+        setStatus("Trenutne lokacije ni bilo mogoče pridobiti.");
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const imageInput = form.images;
+    if (!imageInput?.files?.length) {
+      alert("Dodajte vsaj eno sliko opažanja.");
+      return;
+    }
+
+    if (!latitudeField?.value || !longitudeField?.value) {
+      alert("Izberite lokacijo opažanja na zemljevidu.");
+      return;
+    }
+
+    try {
+      const images = await readFilesAsDataUrls(imageInput.files);
+      const observations = getAnimalObservations();
+      const observation = {
+        id: Date.now(),
+        title: toTitleCase(form.title.value),
+        date: form.date.value || todayISO(),
+        place: toTitleCase(placeField?.value || ""),
+        description: String(form.description.value || "").trim(),
+        latitude: latitudeField.value,
+        longitude: longitudeField.value,
+        images,
+        createdAt: new Date().toISOString(),
+        createdBy: user.username,
+      };
+
+      observations.unshift(observation);
+      saveAnimalObservations(observations);
+      addHistory("Opažanja živali", `Dodano opažanje: ${observation.title} (${observation.place}).`);
+
+      form.reset();
+      if (dateField) dateField.value = todayISO();
+      if (window.L && marker && map) {
+        const defaultLat = 46.33944;
+        const defaultLng = 14.96333;
+        marker.setLatLng([defaultLat, defaultLng]);
+        map.setView([defaultLat, defaultLng], 13);
+        updateCoordinates(defaultLat, defaultLng);
+      }
+      setStatus("Lokacijo izberite s klikom na zemljevid, iskanjem ali z gumbom Moja lokacija.");
+      renderObservationList(user);
+      alert("Opažanje je uspešno shranjeno.");
+    } catch (error) {
+      alert(error?.message || "Pri shranjevanju opažanja je prišlo do napake.");
+    }
+  });
+
+  renderObservationList(user);
+});

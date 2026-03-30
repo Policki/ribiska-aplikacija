@@ -17,6 +17,7 @@ const STORAGE_KEYS = {
   GUARDS: "rd_guards",
   REMINDERS: "rd_reminders",
   MEMBERSHIP_APPLICATIONS: "rd_membership_applications",
+  ANIMAL_OBSERVATIONS: "rd_animal_observations",
 };
 
 // Demo “seed” verzija: ko spremeniš string, se demo podatki ponovno prepišejo
@@ -62,6 +63,14 @@ function getMembershipApplications() {
 
 function saveMembershipApplications(applications) {
   setJSON(STORAGE_KEYS.MEMBERSHIP_APPLICATIONS, applications);
+}
+
+function getAnimalObservations() {
+  return getJSON(STORAGE_KEYS.ANIMAL_OBSERVATIONS, []);
+}
+
+function saveAnimalObservations(observations) {
+  setJSON(STORAGE_KEYS.ANIMAL_OBSERVATIONS, observations);
 }
 
 // ---------- EVENTS ----------
@@ -146,6 +155,7 @@ function ensureDemoData() {
   if (!getJSON(STORAGE_KEYS.GUARDS, null)) setJSON(STORAGE_KEYS.GUARDS, []);
   if (!getJSON(STORAGE_KEYS.REMINDERS, null)) setJSON(STORAGE_KEYS.REMINDERS, []);
   if (!getJSON(STORAGE_KEYS.MEMBERSHIP_APPLICATIONS, null)) setJSON(STORAGE_KEYS.MEMBERSHIP_APPLICATIONS, []);
+  if (!getJSON(STORAGE_KEYS.ANIMAL_OBSERVATIONS, null)) setJSON(STORAGE_KEYS.ANIMAL_OBSERVATIONS, []);
 }
 
 // ---------- AUTH / PERMISSIONS ----------
@@ -456,6 +466,7 @@ function renderAppNav(user, activeKey) {
     { key: "karte-cuvaji", label: "LETNE KARTE IN ČUVAJI", href: "karte-čuvaji.html" },
     { key: "pripravniki-izpiti", label: "PRIPRAVNIKI IN IZPITI", href: "pripravniki-izpiti.html" },
     { key: "clanske-izkaznice", label: "CLANSKE IZKAZNICE", href: "narocilo-izkaznic.html" },
+    { key: "opazanja-zivali", label: "OPAZANJA ZIVALI", href: "opazanja-ribojedih-zivali.html" },
   ];
 
   nav.innerHTML = `<div class="header-nav-inner"></div>`;

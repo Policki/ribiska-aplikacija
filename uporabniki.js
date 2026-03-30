@@ -50,21 +50,20 @@ function handleUporabnikiPage() {
 
   // --- Config (same keys as in app)
   const STATUS_OPTIONS = [
-    { key: "AA", label: "AA – polnoletni polnopravni" },
-    { key: "AM", label: "AM – mladinec" },
-    { key: "AP", label: "AP – pripravnik" },
-    { key: "AŠI", label: "AŠI – dijak/študent (izpit)" },
-    { key: "DAA", label: "DAA – pridružen polnoletni" },
-    { key: "DAM", label: "DAM – pridružen mladinec" },
-    { key: "AČ", label: "AČ – častni" },
-    { key: "ZAČ", label: "ZAČ – zaslužni častni" },
-  ];
+    { key: "AA", label: "AA â€“ polnoletni polnopravni" },
+    { key: "AM", label: "AM â€“ mladinec" },
+    { key: "AP", label: "AP â€“ pripravnik" },
+    { key: "AĹ I", label: "AĹ I â€“ dijak/Ĺˇtudent (izpit)" },
+    { key: "DAA", label: "DAA â€“ pridruĹľen polnoletni" },
+    { key: "DAM", label: "DAM â€“ pridruĹľen mladinec" },
+    { key: "AÄŚ", label: "AÄŚ â€“ ÄŤastni" },
+    { key: "ZAÄŚ", label: "ZAÄŚ â€“ zasluĹľni ÄŤastni" },  ];
 
   const MODULE_OPTIONS = [
     { key: "dashboard", label: "Dashboard" },
-    { key: "seznam", label: "Seznam članov" },
-    { key: "vpis", label: "Vpis člana" },
-    { key: "arhiv", label: "Arhiv članstva" },
+    { key: "seznam", label: "Seznam ÄŤlanov" },
+    { key: "vpis", label: "Vpis ÄŤlana" },
+    { key: "arhiv", label: "Arhiv ÄŤlanstva" },
     { key: "koledar", label: "Koledar" },
     { key: "uporabniki", label: "Uporabniki" },
     { key: "tiskanje", label: "Tiskanje" },
@@ -72,10 +71,11 @@ function handleUporabnikiPage() {
     { key: "funkcionarji", label: "Funkcionarji" },
     { key: "priznanja", label: "Priznanja" },
     { key: "delovne-ure", label: "Delovne ure" },
-    { key: "clanarina", label: "Članarina" },
-    { key: "karte-cuvaji", label: "Letne karte in čuvaji" },
+    { key: "clanarina", label: "ÄŚlanarina" },
+    { key: "karte-cuvaji", label: "Letne karte in ÄŤuvaji" },
     { key: "pripravniki-izpiti", label: "Pripravniki in izpiti" },
-    { key: "clanske-izkaznice", label: "Naročilo izkaznic" },
+    { key: "clanske-izkaznice", label: "NaroÄŤilo izkaznic" },
+    { key: "opazanja-zivali", label: "Opažanja živali" },
   ];
 
   // --- Build checkboxes
@@ -240,8 +240,8 @@ function handleUporabnikiPage() {
         <td>${escapeHtml(statusesText)}</td>
         <td>${permsBadges}</td>
         <td class="table-actions">
-          <span class="action-icon edit" title="Uredi">✏️</span>
-          <span class="action-icon delete" title="Izbriši">🗑️</span>
+          <span class="action-icon edit" title="Uredi">âśŹď¸Ź</span>
+          <span class="action-icon delete" title="IzbriĹˇi">đź—‘ď¸Ź</span>
         </td>
       `;
 
@@ -251,14 +251,14 @@ function handleUporabnikiPage() {
 
       tr.querySelector(".delete").addEventListener("click", () => {
         if (u.username === "admin") {
-          alert("Admina ne moreš izbrisati.");
+          alert("Admina ne moreĹˇ izbrisati.");
           return;
         }
         if (isSelf(u.username)) {
-          alert("Ne moreš izbrisati samega sebe.");
+          alert("Ne moreĹˇ izbrisati samega sebe.");
           return;
         }
-        if (confirm(`Izbrišem uporabnika "${u.username}"?`)) {
+        if (confirm(`IzbriĹˇem uporabnika "${u.username}"?`)) {
           const list = getUsers().filter((x) => x.username !== u.username);
           saveUsers(list);
           addHistory("Uporabniki", `Izbrisan uporabnik ${u.username}.`);
@@ -298,9 +298,9 @@ function handleUporabnikiPage() {
         <td>${escapeHtml(statusesText)}</td>
         <td>${permsBadges}</td>
         <td class="table-actions">
-          <span class="action-icon view" title="Podroben pogled">👁</span>
-          <span class="action-icon edit" title="Uredi">✎</span>
-          <span class="action-icon delete" title="Izbriši">🗑</span>
+          <span class="action-icon view" title="Podroben pogled">đź‘</span>
+          <span class="action-icon edit" title="Uredi">âśŽ</span>
+          <span class="action-icon delete" title="IzbriĹˇi">đź—‘</span>
         </td>
       `;
 
@@ -314,14 +314,14 @@ function handleUporabnikiPage() {
 
       tr.querySelector(".delete").addEventListener("click", () => {
         if (u.username === "admin") {
-          alert("Admina ne moreš izbrisati.");
+          alert("Admina ne moreĹˇ izbrisati.");
           return;
         }
         if (isSelf(u.username)) {
-          alert("Ne moreš izbrisati samega sebe.");
+          alert("Ne moreĹˇ izbrisati samega sebe.");
           return;
         }
-        if (confirm(`Izbrišem uporabnika "${u.username}"?`)) {
+        if (confirm(`IzbriĹˇem uporabnika "${u.username}"?`)) {
           const list = getUsers().filter((x) => x.username !== u.username);
           saveUsers(list);
           addHistory("Uporabniki", `Izbrisan uporabnik ${u.username}.`);
@@ -369,7 +369,7 @@ function handleUporabnikiPage() {
           <div class="member-mobile-card__actions">
             <button type="button" class="btn btn-secondary mobile-view">Podroben pogled</button>
             <button type="button" class="btn btn-primary mobile-edit">Uredi</button>
-            <button type="button" class="btn btn-secondary mobile-delete">Izbriši</button>
+            <button type="button" class="btn btn-secondary mobile-delete">IzbriĹˇi</button>
           </div>
         `;
 
@@ -390,7 +390,7 @@ function handleUporabnikiPage() {
   btnTogglePass.addEventListener("click", () => {
     const isPwd = passwordEl.type === "password";
     passwordEl.type = isPwd ? "text" : "password";
-    btnTogglePass.textContent = isPwd ? "Skrij" : "Pokaži";
+    btnTogglePass.textContent = isPwd ? "Skrij" : "PokaĹľi";
   });
 
   btnCopyPass.addEventListener("click", async () => {
@@ -436,11 +436,11 @@ function handleUporabnikiPage() {
     const password = String(passwordEl.value || "").trim();
 
     if (!username || !password) {
-      alert("Vnesi uporabniško ime in začasno geslo.");
+      alert("Vnesi uporabniĹˇko ime in zaÄŤasno geslo.");
       return;
     }
     if (!/^[a-zA-Z0-9._-]{2,30}$/.test(username)) {
-      alert("Uporabniško ime naj bo 2–30 znakov (črke/številke/._-), brez presledkov.");
+      alert("UporabniĹˇko ime naj bo 2â€“30 znakov (ÄŤrke/Ĺˇtevilke/._-), brez presledkov.");
       return;
     }
 
@@ -465,7 +465,7 @@ function handleUporabnikiPage() {
 
     if (!editing) {
       if (users.some((u) => u.username === username)) {
-        alert("Uporabnik s tem imenom že obstaja.");
+        alert("Uporabnik s tem imenom Ĺľe obstaja.");
         return;
       }
 
@@ -489,13 +489,13 @@ function handleUporabnikiPage() {
     // editing
     const target = users.find((u) => u.username === editUsernameEl.value);
     if (!target) {
-      alert("Uporabnika ni mogoče najti (osveži stran).");
+      alert("Uporabnika ni mogoÄŤe najti (osveĹľi stran).");
       return;
     }
 
-    // varovalo: če urejaš sebe, si ne smeš vzeti canManageUsers
+    // varovalo: ÄŤe urejaĹˇ sebe, si ne smeĹˇ vzeti canManageUsers
     if (isSelf(target.username) && target.permissions?.canManageUsers && !permissions.canManageUsers) {
-      alert("Ne moreš si odvzeti pravice 'Lahko upravlja uporabnike'.");
+      alert("Ne moreĹˇ si odvzeti pravice 'Lahko upravlja uporabnike'.");
       return;
     }
 
@@ -524,7 +524,7 @@ function generatePassword(len = 12) {
 }
 
 function cssSafe(s) {
-  return String(s).replaceAll("Š", "S").replaceAll("Č", "C").replaceAll("Ž", "Z").replaceAll("š", "s").replaceAll("č", "c").replaceAll("ž", "z");
+  return String(s).replaceAll("Ĺ ", "S").replaceAll("ÄŚ", "C").replaceAll("Ĺ˝", "Z").replaceAll("Ĺˇ", "s").replaceAll("ÄŤ", "c").replaceAll("Ĺľ", "z");
 }
 
 function escapeAttr(s) {

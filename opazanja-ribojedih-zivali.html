@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="sl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Opažanja ribojedih živali - RD Mozirje</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin=""
+    />
+  </head>
+  <body class="page" data-page="opazanja-zivali">
+    <header class="header header--universal">
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+          </div>
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
+        </div>
+      </div>
+      <nav id="app-nav" class="header-nav"></nav>
+    </header>
+
+    <main class="main">
+      <div class="main-inner full-width">
+        <div class="page-stack">
+          <section class="page-intro">
+            <h2>Opažanja ribojedih živali</h2>
+            <p>Vnesite opažanje, dodajte opis, kraj in slike. Lokacijo lahko poiščete po naslovu ali jo izberete neposredno na zemljevidu.</p>
+          </section>
+
+          <section class="page-card card">
+            <form id="animal-observation-form" class="application-grid">
+              <div class="full application-section-title">Novo opažanje</div>
+
+              <div class="form-group">
+                <label for="observation-title">Kaj je na sliki? *</label>
+                <input id="observation-title" name="title" type="text" required placeholder="Na primer Kormoran ob vodi" />
+              </div>
+
+              <div class="form-group">
+                <label for="observation-date">Datum opažanja *</label>
+                <input id="observation-date" name="date" type="date" required />
+              </div>
+
+              <div class="form-group full">
+                <label for="observation-place">Kraj opažanja *</label>
+                <input id="observation-place" name="place" type="text" required placeholder="Na primer revir Savinja - Mozirje" />
+              </div>
+
+              <div class="form-group full">
+                <label for="observation-description">Opis opažanja *</label>
+                <textarea id="observation-description" name="description" rows="4" required placeholder="Na kratko opišite, kaj ste videli."></textarea>
+              </div>
+
+              <div class="form-group full">
+                <label>Točna lokacija opažanja *</label>
+                <div class="observation-map-tools">
+                  <input id="observation-map-search" type="search" placeholder="Poiščite naslov, kraj ali revir" />
+                  <button type="button" id="btn-map-search" class="btn btn-secondary">Poišči na zemljevidu</button>
+                  <button type="button" id="btn-map-geolocate" class="btn btn-secondary">Moja lokacija</button>
+                </div>
+                <div id="observation-map-status" class="small-hint">Lokacijo izberite s klikom na zemljevid ali z iskanjem.</div>
+                <div id="observation-map" class="observation-map" aria-label="Zemljevid za izbor lokacije opažanja"></div>
+                <div class="observation-coordinates">
+                  <label class="form-group">
+                    <span>Latitude</span>
+                    <input id="observation-latitude" name="latitude" type="text" readonly required />
+                  </label>
+                  <label class="form-group">
+                    <span>Longitude</span>
+                    <input id="observation-longitude" name="longitude" type="text" readonly required />
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group full">
+                <label for="observation-images">Slike opažanja *</label>
+                <input id="observation-images" name="images" type="file" accept="image/*" multiple required />
+                <div class="small-hint">Dodate lahko več slik hkrati.</div>
+              </div>
+
+              <div class="full page-actions">
+                <button type="submit" class="btn btn-primary">Shrani opažanje</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="page-card">
+            <div class="page-flex center">
+              <div>
+                <h3 style="margin:0;">Shranjena opažanja</h3>
+                <p class="small-hint" style="margin:6px 0 0;">Pregled vseh vnosov in priprava za tisk.</p>
+              </div>
+            </div>
+          </section>
+
+          <section id="animal-observations-list" class="page-table-wrap member-mobile-list" style="display:grid;"></section>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      crossorigin=""
+    ></script>
+    <script src="core.js" defer></script>
+    <script src="opazanja-ribojedih-zivali.js" defer></script>
+  </body>
+</html>

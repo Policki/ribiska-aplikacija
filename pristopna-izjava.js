@@ -2,7 +2,7 @@ function initSignaturePad(canvas) {
   const ctx = canvas.getContext("2d");
   let drawing = false;
   let hasStroke = false;
-  let currentStrokeStyle = "#0b4b4b";
+  const currentStrokeStyle = "#0b4b4b";
 
   function applyBrush() {
     ctx.lineWidth = 3;
@@ -38,15 +38,15 @@ function initSignaturePad(canvas) {
     }
   }
 
-  const point = (event) => {
+  function point(event) {
     const rect = canvas.getBoundingClientRect();
     return {
       x: ((event.clientX - rect.left) / rect.width) * canvas.width,
       y: ((event.clientY - rect.top) / rect.height) * canvas.height,
     };
-  };
+  }
 
-  const start = (event) => {
+  function start(event) {
     event.preventDefault();
     if (event.pointerType) {
       canvas.setPointerCapture?.(event.pointerId);
@@ -55,20 +55,20 @@ function initSignaturePad(canvas) {
     const p = point(event);
     ctx.beginPath();
     ctx.moveTo(p.x, p.y);
-  };
+  }
 
-  const move = (event) => {
+  function move(event) {
     if (!drawing) return;
     event.preventDefault();
     const p = point(event);
     ctx.lineTo(p.x, p.y);
     ctx.stroke();
     hasStroke = true;
-  };
+  }
 
-  const end = () => {
+  function end() {
     drawing = false;
-  };
+  }
 
   resizeCanvas();
   window.addEventListener("resize", resizeCanvas);
@@ -85,9 +85,6 @@ function initSignaturePad(canvas) {
     },
     toDataURL() {
       return hasStroke ? canvas.toDataURL("image/png") : "";
-    },
-    hasSignature() {
-      return hasStroke;
     },
     resize() {
       resizeCanvas();
@@ -120,6 +117,49 @@ function readImageAsDataUrl(file) {
     reader.onerror = () => reject(new Error("Napaka pri branju slike."));
     reader.readAsDataURL(file);
   });
+}
+
+function toTitleCase(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function normalizePhone(value) {
+  let s = String(value || "").replaceAll(" ", "").replaceAll("-", "");
+  if (s.startsWith("00386")) s = `+386${s.slice(5)}`;
+  if (s.startsWith("386") && !s.startsWith("+386")) s = `+386${s.slice(3)}`;
+  return s;
+}
+
+function normalizePosta(value) {
+  return String(value || "").replace(/\D/g, "").slice(0, 4);
+}
+
+function normalizeEmail(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+async function tryLockLandscapeOrientation() {
+  try {
+    if (window.screen?.orientation?.lock && window.matchMedia("(max-width: 700px)").matches) {
+      await window.screen.orientation.lock("landscape");
+    }
+  } catch {
+    // Nekateri mobilni brskalniki zaklepa orientacije ne dovolijo.
+  }
+}
+
+function tryUnlockOrientation() {
+  try {
+    window.screen?.orientation?.unlock?.();
+  } catch {
+    // Nekateri mobilni brskalniki odklepa ne podpirajo.
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -172,6 +212,23 @@ document.addEventListener("DOMContentLoaded", () => {
     window.bindPostaKrajAuto(posta, kraj);
   }
 
+  const normalizeField = (field, formatter) => {
+    field?.addEventListener("blur", () => {
+      field.value = formatter(field.value);
+    });
+  };
+
+  normalizeField(form.ime, toTitleCase);
+  normalizeField(form.priimek, (value) => String(value || "").trim().toUpperCase());
+  normalizeField(form.krajRojstva, toTitleCase);
+  normalizeField(form.naslov, toTitleCase);
+  normalizeField(form.kraj, toTitleCase);
+  normalizeField(form.telefon, normalizePhone);
+  normalizeField(form.email, normalizeEmail);
+  normalizeField(form.posta, normalizePosta);
+  normalizeField(form.drugaRdNaziv, toTitleCase);
+  normalizeField(form.parentFullName, toTitleCase);
+
   const overlayPad = initSignaturePad(overlayCanvas);
   let applicantSignatureData = "";
   let parentSignatureData = "";
@@ -204,17 +261,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     overlay.hidden = false;
     document.body.style.overflow = "hidden";
+    await tryLockLandscapeOrientation();
     overlayPad.resize();
+    requestAnimationFrame(() => overlayPad.resize());
+    window.setTimeout(() => overlayPad.resize(), 180);
     await overlayPad.loadDataURL(target === "parent" ? parentSignatureData : applicantSignatureData);
   }
 
   function closeSignatureOverlay() {
     overlay.hidden = true;
     document.body.style.overflow = "";
+    tryUnlockOrientation();
   }
 
-  btnOpenSignature?.addEventListener("click", () => openSignatureOverlay("applicant"));
-  btnOpenParentSignature?.addEventListener("click", () => openSignatureOverlay("parent"));
+  btnOpenSignature?.addEventListener("click", () => {
+    openSignatureOverlay("applicant");
+  });
+  btnOpenParentSignature?.addEventListener("click", () => {
+    openSignatureOverlay("parent");
+  });
 
   btnDone?.addEventListener("click", () => {
     const data = overlayPad.toDataURL();
@@ -310,29 +375,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const applications = getMembershipApplications();
     const payload = {
       id: Date.now(),
-      priimek: form.priimek.value.trim().toUpperCase(),
-      ime: form.ime.value.trim(),
+      priimek: String(form.priimek.value || "").trim().toUpperCase(),
+      ime: toTitleCase(form.ime.value),
       datumRojstva: form.datumRojstva.value,
       spol: form.spol.value,
-      krajRojstva: form.krajRojstva.value.trim(),
-      naslov: form.naslov.value.trim(),
-      posta: form.posta.value.trim(),
-      kraj: form.kraj.value.trim(),
-      telefon: form.telefon.value.trim(),
-      email: form.email.value.trim(),
+      krajRojstva: toTitleCase(form.krajRojstva.value),
+      naslov: toTitleCase(form.naslov.value),
+      posta: normalizePosta(form.posta.value),
+      kraj: toTitleCase(form.kraj.value),
+      telefon: normalizePhone(form.telefon.value),
+      email: normalizeEmail(form.email.value),
       datumVloge: form.datumVloge.value,
       tipKarte: form.tipKarte.value,
       fotografija: photoData,
       drugaRdStatus: form.drugaRdStatus.value,
       drugaRdOd: form.drugaRdOd.value,
       drugaRdDo: form.drugaRdDo.value,
-      drugaRdNaziv: form.drugaRdNaziv.value.trim(),
+      drugaRdNaziv: toTitleCase(form.drugaRdNaziv.value),
       drugaRdClanska: form.drugaRdClanska.value.trim(),
       ribiskiIzpitStatus: form.ribiskiIzpitStatus.value,
       datumRibiskegaIzpita: form.datumRibiskegaIzpita.value,
       opombe: form.opombe.value.trim(),
       isMinor,
-      parentFullName: form.parentFullName?.value.trim() || "",
+      parentFullName: toTitleCase(form.parentFullName?.value || ""),
       termsAccepted: !!form.termsAccepted.checked,
       podpis: applicantSignatureData,
       parentPodpis: parentSignatureData,

@@ -29,6 +29,15 @@ document.addEventListener("DOMContentLoaded", () => {
     return String(d.getFullYear());
   };
 
+  const toTitleCase = (value) =>
+    String(value || "")
+      .trim()
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
   const line = (value, className = "") =>
     `<span class="application-inline-line ${className}">${value ? escapeHtml(String(value)) : "&nbsp;"}</span>`;
 
@@ -43,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const wasPrevious = application.drugaRdStatus === "bil";
   const stillOther = application.drugaRdStatus === "se";
   const examDone = application.ribiskiIzpitStatus === "da";
+  const applicationDate = formatDate(application.datumVloge || application.submittedAt || "");
 
   host.innerHTML = `
     <div class="application-print application-print--form">
@@ -55,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <table class="application-form-table">
           <tr>
             <td class="label">ime in priimek</td>
-            <td class="value" colspan="2">${escapeHtml(`${application.ime || ""} ${application.priimek || ""}`.trim())}</td>
+            <td class="value" colspan="2">${escapeHtml(`${toTitleCase(application.ime || "")} ${String(application.priimek || "").trim().toUpperCase()}`.trim())}</td>
           </tr>
           <tr>
             <td class="label">datum rojstva</td>
@@ -68,19 +78,19 @@ document.addEventListener("DOMContentLoaded", () => {
           </tr>
           <tr>
             <td class="label">kraj rojstva</td>
-            <td class="value" colspan="2">${escapeHtml(application.krajRojstva || "")}</td>
+            <td class="value" colspan="2">${escapeHtml(toTitleCase(application.krajRojstva || ""))}</td>
           </tr>
           <tr>
             <td class="label">naslov bivališča</td>
-            <td class="value" colspan="2">${escapeHtml(application.naslov || "")}</td>
+            <td class="value" colspan="2">${escapeHtml(toTitleCase(application.naslov || ""))}</td>
           </tr>
           <tr>
             <td class="label">poštna koda in ime dostavne pošte</td>
-            <td class="value" colspan="2">${escapeHtml([application.posta, application.kraj].filter(Boolean).join(" ") || "")}</td>
+            <td class="value" colspan="2">${escapeHtml([application.posta, toTitleCase(application.kraj || "")].filter(Boolean).join(" ") || "")}</td>
           </tr>
           <tr>
             <td class="label">e-pošta:</td>
-            <td class="value" colspan="2">${escapeHtml(application.email || "")}</td>
+            <td class="value" colspan="2">${escapeHtml(String(application.email || "").trim().toLowerCase())}</td>
           </tr>
           <tr>
             <td class="label">osebna fotografija (priloga)</td>
@@ -117,20 +127,20 @@ document.addEventListener("DOMContentLoaded", () => {
             <ul class="application-form-sublist">
               <li>Še nisem bil član nobene RD. ${noPrevious ? "<strong>X</strong>" : "&nbsp;"}</li>
               <li>
-                V Sloveniji sem bil član RD ${line(application.drugaRdNaziv, "long")} od leta ${line(formatYear(application.drugaRdOd), "small")}
+                V Sloveniji sem bil član RD ${line(toTitleCase(application.drugaRdNaziv || ""), "long")} od leta ${line(formatYear(application.drugaRdOd), "small")}
                 do leta ${line(formatYear(application.drugaRdDo), "small")} in (ustrezno obkroži): imam/sem imel člansko izkaznico
                 ${line(application.drugaRdClanska, "long")}. ${wasPrevious ? "<strong>X</strong>" : "&nbsp;"}
               </li>
               <li>
-                V Sloveniji sem še član RD ${line(application.drugaRdNaziv, "long")} od leta ${line(formatYear(application.drugaRdOd), "small")}
+                V Sloveniji sem še član RD ${line(toTitleCase(application.drugaRdNaziv || ""), "long")} od leta ${line(formatYear(application.drugaRdOd), "small")}
                 s člansko izkaznico ${line(application.drugaRdClanska, "long")}. Prispevek za glasilo bom plačeval v nosilni RD
-                ${line(application.drugaRdNaziv, "long")}. ${stillOther ? "<strong>X</strong>" : "&nbsp;"}
+                ${line(toTitleCase(application.drugaRdNaziv || ""), "long")}. ${stillOther ? "<strong>X</strong>" : "&nbsp;"}
               </li>
             </ul>
           </li>
           <li>
             Ribiški izpit sem opravil dne ${line(formatDate(application.datumRibiskegaIzpita || ""), "long")}
-            kot član RD ${line(examDone ? application.drugaRdNaziv || "" : "", "long")}.
+            kot član RD ${line(examDone ? toTitleCase(application.drugaRdNaziv || "") : "", "long")}.
           </li>
         </ul>
 
@@ -154,7 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </p>
 
         <div class="application-signature-row">
-          <p>V/Na ${line(application.kraj, "long")} dne ${line("", "small")}. ${line("", "small")}. 20${line("", "small")}</p>
+          <p>V/Na ${line(toTitleCase(application.kraj || ""), "long")} dne ${line(applicationDate, "long")}</p>
           <p>${signature(application.podpis)}</p>
           <div class="application-signature-caption">(lastnoročni podpis<sup>1</sup>)</div>
         </div>
@@ -163,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
           application.isMinor
             ? `
         <div class="application-signature-row">
-          <p>V primeru mladoletne osebe<sup>2</sup> podpisana starša oz. skrbnik ${line(application.parentFullName, "signature")}</p>
+          <p>V primeru mladoletne osebe<sup>2</sup> podpisana starša oz. skrbnik ${line(toTitleCase(application.parentFullName || ""), "signature")}</p>
           <p>, soglaša/a/m z njeno včlanitvijo v RD.</p>
           <p>${signature(application.parentPodpis)}</p>
           <div class="application-signature-caption">(lastnoročni podpis staršev ali skrbnika)</div>

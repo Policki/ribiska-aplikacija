@@ -82,7 +82,7 @@
                 <div class="full application-section-title">Članstvo in dokumenti</div>
 
                 <div class="form-group">
-                  <label for="datumVloge">Datum oddaje *</label>
+                  <label for="datumVloge">Datum vpisa *</label>
                   <input id="datumVloge" name="datumVloge" type="date" required />
                 </div>
 
@@ -182,12 +182,16 @@
 
                 <div class="form-group full">
                   <label>Podpis vlagatelja *</label>
-                  <button type="button" id="btn-open-signature" class="signature-trigger">Podpišite se na zaslonu</button>
+                  <button type="button" id="btn-open-signature" class="signature-trigger">
+                    <span class="signature-trigger__eyebrow">Digitalni podpis</span>
+                    <span class="signature-trigger__title">Odpri podpisni zaslon</span>
+                    <span class="signature-trigger__hint">Odpre se celozaslonski vodoravni pogled za podpis.</span>
+                  </button>
                   <div id="signature-preview-wrap" class="signature-preview-wrap" hidden>
                     <img id="signature-preview" class="signature-preview" alt="Predogled podpisa vlagatelja" />
                   </div>
                   <div id="signature-pad-status" class="small-hint">Podpis še ni dodan.</div>
-                  <div class="page-actions" style="margin-top:10px;">
+                  <div class="page-actions" style="margin-top: 10px;">
                     <button type="button" id="btn-reset-signature" class="btn btn-secondary" hidden>Izbriši podpis vlagatelja</button>
                   </div>
                 </div>
@@ -195,19 +199,23 @@
                 <div id="parent-consent-block" class="form-group full" hidden>
                   <label for="parentFullName">Mladoletna oseba: ime in priimek starša / skrbnika *</label>
                   <input id="parentFullName" name="parentFullName" type="text" placeholder="Ime in priimek starša ali skrbnika" />
-                  <label style="margin-top:12px;">Podpis starša / skrbnika *</label>
-                  <button type="button" id="btn-open-parent-signature" class="signature-trigger">Podpis starša / skrbnika</button>
+                  <label style="margin-top: 12px;">Podpis starša / skrbnika *</label>
+                  <button type="button" id="btn-open-parent-signature" class="signature-trigger">
+                    <span class="signature-trigger__eyebrow">Podpis starša / skrbnika</span>
+                    <span class="signature-trigger__title">Odpri podpisni zaslon</span>
+                    <span class="signature-trigger__hint">Podpis se odpre v celozaslonskem vodoravnem pogledu.</span>
+                  </button>
                   <div id="parent-signature-preview-wrap" class="signature-preview-wrap" hidden>
                     <img id="parent-signature-preview" class="signature-preview" alt="Predogled podpisa starša ali skrbnika" />
                   </div>
                   <div id="parent-signature-status" class="small-hint">Podpis starša še ni dodan.</div>
-                  <div class="page-actions" style="margin-top:10px;">
+                  <div class="page-actions" style="margin-top: 10px;">
                     <button type="button" id="btn-reset-parent-signature" class="btn btn-secondary" hidden>Izbriši podpis starša</button>
                   </div>
                 </div>
               </div>
 
-              <div class="page-actions" style="margin-top:18px;">
+              <div class="page-actions" style="margin-top: 18px;">
                 <button type="submit" class="btn btn-primary">Oddaj pristopno izjavo</button>
               </div>
             </form>
@@ -217,13 +225,16 @@
     </main>
 
     <div id="signature-overlay" class="signature-overlay" hidden>
-      <div id="signature-overlay-title" class="signature-overlay__title">Podpis</div>
-      <div class="signature-overlay__canvas-wrap">
-        <canvas id="signature-overlay-canvas" class="signature-overlay__canvas" width="1200" height="700"></canvas>
-      </div>
-      <div class="signature-overlay__actions">
-        <button type="button" id="btn-signature-done" class="btn btn-primary">Končano</button>
-        <button type="button" id="btn-signature-clear" class="btn btn-secondary">Počisti</button>
+      <div class="signature-overlay__stage">
+        <div id="signature-overlay-title" class="signature-overlay__title">Podpis</div>
+        <div class="signature-overlay__hint">S prstom se podpišite v prazno polje.</div>
+        <div class="signature-overlay__canvas-wrap">
+          <canvas id="signature-overlay-canvas" class="signature-overlay__canvas" width="1200" height="700"></canvas>
+        </div>
+        <div class="signature-overlay__actions">
+          <button type="button" id="btn-signature-done" class="btn btn-primary">Končano</button>
+          <button type="button" id="btn-signature-clear" class="btn btn-secondary">Počisti</button>
+        </div>
       </div>
     </div>
 
