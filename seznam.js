@@ -26,7 +26,7 @@ function defaultUIState() {
       birthYear: [],
       tipKarte: [],
       kraj: [],
-      posta: [], // ✅ NEW
+      posta: [], // Ă˘Ĺ›â€¦ NEW
     },
     // prikaz stolpcev
     columns: {
@@ -37,7 +37,7 @@ function defaultUIState() {
       priimek: true,
       ime: true,
       naslov: true,
-      posta: true, // ✅ NEW
+      posta: true, // Ă˘Ĺ›â€¦ NEW
       kraj: true,
       email: true,
       telefon: true,
@@ -107,7 +107,7 @@ function renderEverything(state) {
   // base members (ne-arhiv)
   let members = getMembers().filter((m) => !m.arhiviran);
 
-  // upoštevaj permission "visibleStatuses"
+  // upoÄąË‡tevaj permission "visibleStatuses"
   if (visibleStatuses) {
     members = members.filter((m) => visibleStatuses.includes(m.status));
   }
@@ -152,7 +152,7 @@ function renderResponsiveMembers(members, state) {
           <div class="member-mobile-card__name">${escapeHtml(String(m.priimek || "").trim())} ${escapeHtml(String(m.ime || "").trim())}</div>
           <div class="member-mobile-card__meta">
             <span class="badge neutral">${escapeHtml(m.status || "Brez statusa")}</span>
-            <span class="badge neutral">${escapeHtml(m.clanska || "Brez članske")}</span>
+            <span class="badge neutral">${escapeHtml(m.clanska || "Brez Ă„Ĺ¤lanske")}</span>
           </div>
         </div>
         <div class="member-mobile-card__index">#${index + 1}</div>
@@ -189,12 +189,12 @@ function renderResponsiveMembers(members, state) {
       window.location.href = `urejanje-clana.html?id=${m.id}`;
     });
     card.querySelector(".member-mobile-delete")?.addEventListener("click", () => {
-      if (!confirm("Ali res želiš premakniti člana v arhiv?")) return;
+      if (!confirm("Ali res ÄąÄľeliÄąË‡ premakniti Ă„Ĺ¤lana v arhiv?")) return;
       const list = getMembers();
       const idx = list.findIndex((x) => x.id === m.id);
       if (idx === -1) return;
       list[idx].arhiviran = true;
-      addHistory("Arhiviranje člana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
+      addHistory("Arhiviranje Ă„Ĺ¤lana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
       saveMembers(list);
       renderEverything(loadUIState());
     });
@@ -220,7 +220,7 @@ function renderDynamicFilters(members, state) {
   const spcs = uniq(members.map((m) => m.spc)).sort();
   const tipKarte = uniq(members.map((m) => m.tipKarte)).sort();
   const kraji = uniq(members.map((m) => m.kraj)).sort();
-  const poste = uniq(members.map((m) => m.posta)).sort((a, b) => String(a).localeCompare(String(b), "sl")); // ✅ NEW
+  const poste = uniq(members.map((m) => m.posta)).sort((a, b) => String(a).localeCompare(String(b), "sl")); // Ă˘Ĺ›â€¦ NEW
 
   const birthYears = uniq(
     members
@@ -238,7 +238,7 @@ function renderDynamicFilters(members, state) {
   host.appendChild(makeMultiFilterGroup("Letnica rojstva", "birthYear", birthYears, state));
   host.appendChild(makeMultiFilterGroup("Tip karte", "tipKarte", tipKarte, state));
   host.appendChild(makeMultiFilterGroup("Kraj", "kraj", kraji, state));
-  host.appendChild(makeMultiFilterGroup("Pošta", "posta", poste, state)); // ✅ NEW
+  host.appendChild(makeMultiFilterGroup("PoÄąË‡ta", "posta", poste, state)); // Ă˘Ĺ›â€¦ NEW
 }
 
 function makeMultiFilterGroup(title, key, options, state, config = {}) {
@@ -310,7 +310,7 @@ function renderColumnsBox(state) {
     ["priimek", "PRIIMEK"],
     ["ime", "IME"],
     ["naslov", "NASLOV"],
-    ["posta", "ŠT. POŠTE"], // ✅ NEW
+    ["posta", "ŠT. POŠTE"],
     ["kraj", "KRAJ"],
     ["email", "EMAIL"],
     ["telefon", "TELEFON"],
@@ -319,7 +319,6 @@ function renderColumnsBox(state) {
 
   box.innerHTML = "";
 
-  // "vsi stolpci"
   const allLabel = document.createElement("label");
   allLabel.innerHTML = `<input type="checkbox"> <span>Vsi stolpci</span>`;
   const allInp = allLabel.querySelector("input");
@@ -359,6 +358,10 @@ function renderColumnsBox(state) {
   });
 }
 
+function renderZapstCell(member, index, state) {
+  return `<div class="table-zapst">${index + 1}</div>`;
+}
+
 function renderTableWithState(members, state) {
   const tbody = document.getElementById("members-tbody");
   const summaryEl = document.getElementById("members-summary");
@@ -374,20 +377,20 @@ function renderTableWithState(members, state) {
   filtered.forEach((m, index) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td class="col-zapst" data-col="zapst">${index + 1}</td>
+      <td class="col-zapst" data-col="zapst">${renderZapstCell(m, index, state)}</td>
       <td data-col="status">${m.status || ""}</td>
       <td data-col="spc">${m.spc || ""}</td>
       <td data-col="clanska">${m.clanska || ""}</td>
       <td data-col="priimek">${m.priimek || ""}</td>
       <td data-col="ime">${m.ime || ""}</td>
       <td data-col="naslov">${m.naslov || ""}</td>
-      <td data-col="posta">${m.posta || ""}</td>   <!-- ✅ NEW -->
+      <td data-col="posta">${m.posta || ""}</td>   <!-- Ă˘Ĺ›â€¦ NEW -->
       <td data-col="kraj">${m.kraj || ""}</td>
       <td data-col="email">${m.email ? `<a href="mailto:${m.email}">${m.email}</a>` : ""}</td>
       <td data-col="telefon">${m.telefon || ""}</td>
       <td class="table-actions" data-col="tools">
-        <span class="action-icon edit" title="Uredi">✏️</span>
-        <span class="action-icon delete" title="Arhiviraj">🗑️</span>
+        <span class="action-icon edit" title="Uredi">Ă˘Ĺ›ĹąÄŹÂ¸Ĺą</span>
+        <span class="action-icon delete" title="Arhiviraj">Ä‘Ĺşâ€”â€ÄŹÂ¸Ĺą</span>
       </td>
     `;
 
@@ -396,12 +399,12 @@ function renderTableWithState(members, state) {
     });
 
     tr.querySelector(".delete").addEventListener("click", () => {
-      if (confirm("Ali res želiš premakniti člana v arhiv?")) {
+      if (confirm("Ali res ÄąÄľeliÄąË‡ premakniti Ă„Ĺ¤lana v arhiv?")) {
         const list = getMembers();
         const idx = list.findIndex((x) => x.id === m.id);
         if (idx !== -1) {
           list[idx].arhiviran = true;
-          addHistory("Arhiviranje člana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
+          addHistory("Arhiviranje Ă„Ĺ¤lana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
           saveMembers(list);
           renderEverything(loadUIState());
         }
@@ -412,7 +415,7 @@ function renderTableWithState(members, state) {
   });
 
   if (summaryEl) {
-    summaryEl.textContent = `Skupno število članov: ${filtered.length}`;
+    summaryEl.textContent = `Skupno ÄąË‡tevilo Ă„Ĺ¤lanov: ${filtered.length}`;
   }
 }
 
@@ -434,7 +437,7 @@ function renderTableWithStateReadOnlyTools(members, state) {
   filtered.forEach((m, index) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td class="col-zapst" data-col="zapst">${index + 1}</td>
+      <td class="col-zapst" data-col="zapst">${renderZapstCell(m, index, state)}</td>
       <td data-col="status">${m.status || ""}</td>
       <td data-col="spc">${m.spc || ""}</td>
       <td data-col="clanska">${m.clanska || ""}</td>
@@ -446,9 +449,9 @@ function renderTableWithStateReadOnlyTools(members, state) {
       <td data-col="email">${m.email ? `<a href="mailto:${m.email}">${m.email}</a>` : ""}</td>
       <td data-col="telefon">${m.telefon || ""}</td>
       <td class="table-actions" data-col="tools">
-        <span class="action-icon view" title="Podroben pogled">👁</span>
-        ${canEditMembers ? `<span class="action-icon edit" title="Uredi">✎</span>` : ""}
-        ${canArchiveMembers ? `<span class="action-icon delete" title="Arhiviraj">🗑</span>` : ""}
+        <span class="action-icon view" title="Podroben pogled">Ä‘Ĺşâ€Â</span>
+        ${canEditMembers ? `<span class="action-icon edit" title="Uredi">Ă˘Ĺ›Ĺ˝</span>` : ""}
+        ${canArchiveMembers ? `<span class="action-icon delete" title="Arhiviraj">Ä‘Ĺşâ€”â€</span>` : ""}
       </td>
     `;
 
@@ -461,12 +464,12 @@ function renderTableWithStateReadOnlyTools(members, state) {
     });
 
     tr.querySelector(".delete")?.addEventListener("click", () => {
-      if (confirm("Ali res želiš premakniti člana v arhiv?")) {
+      if (confirm("Ali res ÄąÄľeliÄąË‡ premakniti Ă„Ĺ¤lana v arhiv?")) {
         const list = getMembers();
         const idx = list.findIndex((x) => x.id === m.id);
         if (idx !== -1) {
           list[idx].arhiviran = true;
-          addHistory("Arhiviranje člana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
+          addHistory("Arhiviranje Ă„Ĺ¤lana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
           saveMembers(list);
           renderEverything(loadUIState());
         }
@@ -477,7 +480,7 @@ function renderTableWithStateReadOnlyTools(members, state) {
   });
 
   if (summaryEl) {
-    summaryEl.textContent = `Skupno število članov: ${filtered.length}`;
+    summaryEl.textContent = `Skupno ÄąË‡tevilo Ă„Ĺ¤lanov: ${filtered.length}`;
   }
 }
 
@@ -490,7 +493,7 @@ function applyFilters(members, state) {
   const selectedBirthYear = new Set(f.birthYear || []);
   const selectedTipKarte = new Set(f.tipKarte || []);
   const selectedKraj = new Set(f.kraj || []);
-  const selectedPosta = new Set(f.posta || []); // ✅ NEW
+  const selectedPosta = new Set(f.posta || []); // Ă˘Ĺ›â€¦ NEW
 
   return members.filter((m) => {
     if (selectedStatus.size && !selectedStatus.has(String(m.status || ""))) return false;
@@ -501,7 +504,7 @@ function applyFilters(members, state) {
 
     if (selectedTipKarte.size && !selectedTipKarte.has(String(m.tipKarte || ""))) return false;
     if (selectedKraj.size && !selectedKraj.has(String(m.kraj || ""))) return false;
-    if (selectedPosta.size && !selectedPosta.has(String(m.posta || ""))) return false; // ✅ NEW
+    if (selectedPosta.size && !selectedPosta.has(String(m.posta || ""))) return false; // Ă˘Ĺ›â€¦ NEW
 
     // search
     if (!s) return true;
@@ -512,7 +515,7 @@ function applyFilters(members, state) {
       m.email,
       m.telefon,
       m.naslov,
-      m.posta, // ✅ NEW
+      m.posta, // Ă˘Ĺ›â€¦ NEW
       m.kraj,
       m.status,
       m.spc,
@@ -539,7 +542,7 @@ function applyColumnVisibility(state) {
   });
 
   const ths = table.querySelectorAll("thead th");
-  // ✅ NEW: mapping mora ustrezati vrstnemu redu v thead
+  // Ă˘Ĺ›â€¦ NEW: mapping mora ustrezati vrstnemu redu v thead
   const mapping = ["zapst","status","spc","clanska","priimek","ime","naslov","posta","kraj","email","telefon","tools"];
   ths.forEach((th, idx) => {
     const k = mapping[idx];
@@ -562,9 +565,9 @@ function buildExportRows(allMembers) {
     "PRIIMEK",
     "IME",
     "NASLOV",
-    "POSTA",   // ✅ NEW
+    "POSTA",   // Ă˘Ĺ›â€¦ NEW
     "KRAJ",
-    "ČLANARINA",
+    "Ă„ĹšLANARINA",
     "KARTA",
     "EMAIL",
     "TELEF",
@@ -584,7 +587,7 @@ function buildExportRows(allMembers) {
       m.priimek || "",
       m.ime || "",
       m.naslov || "",
-      m.posta || "",     // ✅ NEW
+      m.posta || "",     // Ă˘Ĺ›â€¦ NEW
       m.kraj || "",
       clanarina != null ? String(clanarina) : "",
       normalizeTipKarteValue(m.tipKarte),
@@ -612,7 +615,7 @@ function exportMembersXLSX() {
   const { header, rows } = buildExportRows(all);
 
   if (typeof XLSX === "undefined") {
-    alert("XLSX knjižnica ni naložena. Uporabi CSV izvoz ali dodaj SheetJS script.");
+    alert("XLSX knjiÄąÄľnica ni naloÄąÄľena. Uporabi CSV izvoz ali dodaj SheetJS script.");
     return;
   }
 

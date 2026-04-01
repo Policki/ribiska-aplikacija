@@ -444,6 +444,46 @@ function escapeHtml(str) {
     .replaceAll("'", "&#039;");
 }
 
+function enhancePageIntroWithModuleIcon(moduleKey) {
+  const intro = document.querySelector(".page-intro");
+  const heading = intro?.querySelector("h2");
+  if (!intro || !heading || intro.dataset.iconEnhanced === "true") return;
+
+  const moduleIcons = {
+    seznam: "slike/whiotechecklist-icon-checklist-icon-png-list-icon-icon-checklist-png-white-115628702921pwhret57s-removebg-preview.png",
+    vpis: "slike/add-new-contact-dark-mode-glyph-ui-icon-create-phone-number-address-book-user-interface-design-white-silhouette-symbol-on-black-space-solid-pictogram-for-web-mobile-isolated-illustration-vector-remove.png",
+    arhiv: "slike/images-removebg-preview (1).png",
+    koledar: "slike/download-hd-calendar-date-white-icon-png-701751694973928htmkwblsao-removebg-preview.png",
+    uporabniki: "slike/e888cd8d2708d8f0388198fd551a1a00-removebg-preview.png",
+    tiskanje: "slike/images-removebg-preview (2).png",
+    zgodovina: "slike/781-7815113_history-icon-white-png.png",
+    funkcionarji: "slike/unnamed-removebg-preview.png",
+    priznanja: "slike/prenos-removebg-preview.png",
+    "delovne-ure": "slike/Green_Modern_Tree_Logo_Design-removebg-preview.png",
+    clanarina: "slike/white-cash-payment-hand-icon-free-png-7017516950364721cb6oxvedb-removebg-preview.png",
+    "karte-cuvaji": "slike/image__2_-removebg-preview.png",
+    "pripravniki-izpiti": "slike/68c8279b-d8c4-40cc-9959-778b1fc1e071-removebg-preview.png",
+    "clanske-izkaznice": "slike/0b5f0853-e858-4728-840c-3bbaa60c328b-removebg-preview.png",
+    "opazanja-zivali": "slike/ribojede.png",
+  };
+
+  const iconSrc = moduleIcons[moduleKey];
+  if (!iconSrc) return;
+
+  const wrap = document.createElement("div");
+  wrap.className = "page-intro-titlebar";
+
+  const icon = document.createElement("img");
+  icon.className = "page-intro-icon";
+  icon.src = iconSrc;
+  icon.alt = heading.textContent.trim();
+
+  heading.parentNode.insertBefore(wrap, heading);
+  wrap.appendChild(icon);
+  wrap.appendChild(heading);
+  intro.dataset.iconEnhanced = "true";
+}
+
 // ---------- NAV RENDER ----------
 
 function renderAppNav(user, activeKey) {
@@ -481,6 +521,8 @@ function renderAppNav(user, activeKey) {
     if (activeKey === m.key) a.classList.add("active");
     inner.appendChild(a);
   });
+
+  enhancePageIntroWithModuleIcon(activeKey);
 }
 
 // =======================

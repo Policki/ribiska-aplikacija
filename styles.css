@@ -419,6 +419,15 @@ body {
   height: auto;
 }
 
+.dashboard-card[data-module="opazanja-zivali"] .dashboard-icon {
+  width: 70px;
+  height: 70px;
+}
+
+.dashboard-card[data-module="opazanja-zivali"] .dashboard-icon img {
+  width: 82%;
+}
+
 .dashboard-card-title {
   font-size: 1.08rem;
   font-weight: 800;
@@ -1028,8 +1037,10 @@ body {
 
 .filters {
   position: sticky;
-  top: 12px;
+  top: 16px;
   align-self: start;
+  max-height: calc(100vh - 32px);
+  overflow: auto;
   background:
     linear-gradient(180deg, rgba(255,255,255,0.98), rgba(242, 249, 246, 0.98));
   border-radius: 20px;
@@ -1978,14 +1989,36 @@ body[data-page="pristopna-izjava"] .page-intro p {
 }
 
 .col-zapst {
-  width: 60px;
-  max-width: 60px;
+  width: 76px;
+  max-width: 76px;
   text-align: center;
 }
 
 .table td.col-zapst {
   text-align: center;
 }
+
+.table-zone .table tbody tr {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
+}
+
+.table-zone .table tbody tr:hover {
+  background: rgba(240, 247, 244, 0.9);
+}
+
+.table-zapst {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  min-height: 34px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(0, 75, 75, 0.08);
+  color: #123838;
+  font-weight: 900;
+}
+
 .header-nav {
   width: 100%;
 }
@@ -2155,9 +2188,35 @@ body[data-page="pristopna-izjava"] .page-intro p {
   border-radius: 24px;
   border: 1px solid rgba(0, 75, 75, 0.14);
   background:
+    radial-gradient(circle at left center, rgba(11, 75, 75, 0.24), transparent 24%),
+    linear-gradient(90deg, rgba(11, 75, 75, 0.20) 0%, rgba(11, 75, 75, 0.08) 18%, rgba(255, 255, 255, 0) 38%),
     radial-gradient(circle at top right, rgba(246, 218, 139, 0.22), transparent 34%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(240, 247, 244, 0.96));
   box-shadow: 0 16px 38px rgba(0, 55, 55, 0.08);
+}
+
+.page-intro-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.page-intro-icon {
+  width: 74px;
+  height: 74px;
+  flex: 0 0 74px;
+  object-fit: contain;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  filter: drop-shadow(0 10px 22px rgba(0, 55, 55, 0.18));
+}
+
+body[data-page="opazanja-zivali"] .page-intro-icon {
+  width: 92px;
+  height: 92px;
+  flex-basis: 92px;
 }
 
 .page-intro h2 {
@@ -2241,6 +2300,22 @@ body[data-page="pristopna-izjava"] .page-intro p {
     margin-right: 0;
     border-radius: 18px;
     padding: 18px;
+  }
+
+  .page-intro-titlebar {
+    gap: 12px;
+  }
+
+  .page-intro-icon {
+    width: 58px;
+    height: 58px;
+    flex-basis: 58px;
+  }
+
+  body[data-page="opazanja-zivali"] .page-intro-icon {
+    width: 72px;
+    height: 72px;
+    flex-basis: 72px;
   }
 
   .page-card,
