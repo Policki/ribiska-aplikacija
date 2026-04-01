@@ -57,6 +57,99 @@ function saveMembers(members) {
   setJSON(STORAGE_KEYS.MEMBERS, members);
 }
 
+function normalizeIdentityText(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ");
+}
+
+function normalizeIdentityPhone(value) {
+  let s = String(value || "").replaceAll(" ", "").replaceAll("-", "");
+  if (s.startsWith("00386")) s = `+386${s.slice(5)}`;
+  if (s.startsWith("386") && !s.startsWith("+386")) s = `+386${s.slice(3)}`;
+  return s;
+}
+
+function normalizeIdentityPosta(value) {
+  return String(value || "").replace(/\D/g, "").slice(0, 4);
+}
+
+function memberIdentityMatches(candidate, input) {
+  const samePriimek =
+    normalizeIdentityText(candidate?.priimek) &&
+    normalizeIdentityText(candidate?.priimek) === normalizeIdentityText(input?.priimek);
+  const sameIme =
+    normalizeIdentityText(candidate?.ime) &&
+    normalizeIdentityText(candidate?.ime) === normalizeIdentityText(input?.ime);
+  const sameBirth =
+    String(candidate?.datumRojstva || "").trim() &&
+    String(candidate?.datumRojstva || "").trim() === String(input?.datumRojstva || "").trim();
+  const samePhone =
+    normalizeIdentityPhone(candidate?.telefon) &&
+    normalizeIdentityPhone(candidate?.telefon) === normalizeIdentityPhone(input?.telefon);
+  const sameEmail =
+    normalizeIdentityText(candidate?.email) &&
+    normalizeIdentityText(candidate?.email) === normalizeIdentityText(input?.email);
+  const sameAddress =
+    normalizeIdentityText(candidate?.naslov) &&
+    normalizeIdentityText(candidate?.naslov) === normalizeIdentityText(input?.naslov) &&
+    normalizeIdentityPosta(candidate?.posta) === normalizeIdentityPosta(input?.posta);
+
+  if (samePriimek && sameIme && sameBirth) return true;
+  if (samePriimek && sameIme && (samePhone || sameEmail || sameAddress)) return true;
+  return false;
+}
+
+function findArchivedMemberCandidate(input, options = {}) {
+  const excludeId = Number(options.excludeId || 0) || null;
+  const members = getMembers().filter((member) => member.arhiviran);
+  return (
+    members.find((member) => {
+      if (excludeId && member.id === excludeId) return false;
+      return memberIdentityMatches(member, input);
+    }) || null
+  );
+}
+
+function describeArchivedMemberLocation(member) {
+  const year =
+    member?.arhivLeto ||
+    (() => {
+      const value = String(member?.datumArhiva || "").trim();
+      if (!value) return "";
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? "" : String(date.getFullYear());
+    })();
+
+  const bits = ["Arhiv članstva"];
+  if (year) bits.push(`leto ${year}`);
+  if (member?.clanska) bits.push(`članska št. ${member.clanska}`);
+  return bits.join(", ");
+}
+
+function restoreArchivedMemberWithData(archivedMemberId, newData = {}, options = {}) {
+  const members = getMembers();
+  const idx = members.findIndex((member) => member.id === archivedMemberId);
+  if (idx === -1) return null;
+
+  const current = members[idx];
+  const restored = {
+    ...current,
+    ...newData,
+    id: current.id,
+    zapSt: current.zapSt || current.id,
+    arhiviran: false,
+    ponovniVpisOd: options.ponovniVpisOd || newData.datumVpisa || new Date().toISOString().slice(0, 10),
+  };
+
+  members[idx] = restored;
+  saveMembers(members);
+  return restored;
+}
+
 function getMembershipApplications() {
   return getJSON(STORAGE_KEYS.MEMBERSHIP_APPLICATIONS, []);
 }
@@ -464,6 +557,7 @@ function enhancePageIntroWithModuleIcon(moduleKey) {
     "karte-cuvaji": "slike/image__2_-removebg-preview.png",
     "pripravniki-izpiti": "slike/68c8279b-d8c4-40cc-9959-778b1fc1e071-removebg-preview.png",
     "clanske-izkaznice": "slike/0b5f0853-e858-4728-840c-3bbaa60c328b-removebg-preview.png",
+    obvescanje: "slike/images-removebg-preview.png",
     "opazanja-zivali": "slike/ribojede.png",
   };
 
@@ -506,6 +600,7 @@ function renderAppNav(user, activeKey) {
     { key: "karte-cuvaji", label: "LETNE KARTE IN ČUVAJI", href: "karte-čuvaji.html" },
     { key: "pripravniki-izpiti", label: "PRIPRAVNIKI IN IZPITI", href: "pripravniki-izpiti.html" },
     { key: "clanske-izkaznice", label: "CLANSKE IZKAZNICE", href: "narocilo-izkaznic.html" },
+    { key: "obvescanje", label: "OBVESCANJE", href: "obvescanje.html" },
     { key: "opazanja-zivali", label: "OPAZANJA ZIVALI", href: "opazanja-ribojedih-zivali.html" },
   ];
 

@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
   ensureDemoData();
-  const user = requireAuth({ pageModuleKey: "dashboard" });
+  const user = requireAuth({ pageModuleKey: "obvescanje" });
   if (!user) return;
 
   initHeader(user);
-  renderAppNav(user, "dashboard");
+  renderAppNav(user, "obvescanje");
   startReminderWatcher();
 
   const yearEl = document.getElementById("aktivno-leto");

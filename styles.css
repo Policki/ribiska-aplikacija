@@ -1674,7 +1674,8 @@ body[data-page="pristopna-izjava"] .page-intro p {
   display: block;
   width: 100%;
   height: 140px;
-  object-fit: cover;
+  object-fit: contain;
+  object-position: center;
 }
 
 .application-form-note {

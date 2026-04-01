@@ -123,7 +123,7 @@ function handleVpisClanaPage() {
     if (!data.datumVpisa) data.datumVpisa = todayISO();
     if (!data.ribiskiIzpit) data.datumRibiskegaIzpita = "";
 
-    const err = validateMemberInput(data, getMembers());
+    const err = validateMemberInput(data, getMembers().filter((member) => !member.arhiviran));
     if (err) {
       alert(err);
       return;
@@ -141,6 +141,9 @@ function handleVpisClanaPage() {
       telefonVpisan: data.telefon ? false : true,
       ...data,
     };
+
+    const restoreResult = maybeRestoreArchivedMember(data, member);
+    if (restoreResult?.blocked || restoreResult?.restored) return;
 
     members.push(member);
     saveMembers(members);
@@ -191,6 +194,48 @@ function suggestUniqueClanska(members) {
   }
 
   return String(Date.now()).slice(-6);
+}
+
+function maybeRestoreArchivedMember(data, memberDraft) {
+  const archived = typeof findArchivedMemberCandidate === "function" ? findArchivedMemberCandidate(data) : null;
+  if (!archived) return null;
+
+  const archiveLocation =
+    typeof describeArchivedMemberLocation === "function"
+      ? describeArchivedMemberLocation(archived)
+      : "Arhiv članstva";
+
+  const shouldRestore = confirm(
+    [
+      `V arhivu že obstaja verjetno enak član: ${archived.ime || ""} ${archived.priimek || ""}`.trim(),
+      archived.datumRojstva ? `Datum rojstva: ${archived.datumRojstva}` : null,
+      `Najden v: ${archiveLocation}`,
+      "",
+      "Ali ga želiš vrniti med aktivne?",
+    ]
+      .filter(Boolean)
+      .join("\n")
+  );
+
+  if (!shouldRestore) return null;
+
+  const validationError = validateMemberInput(data, getMembers().filter((member) => member.id !== archived.id));
+  if (validationError) {
+    alert(validationError);
+    return { blocked: true };
+  }
+
+  const restored =
+    typeof restoreArchivedMemberWithData === "function"
+      ? restoreArchivedMemberWithData(archived.id, memberDraft, { ponovniVpisOd: data.datumVpisa || todayISO() })
+      : null;
+
+  if (!restored) return { blocked: true };
+
+  addHistory("Vrnitev člana", `Član ${restored.ime} ${restored.priimek} je bil vrnjen iz arhiva med aktivne.`);
+  alert(`Član je bil vrnjen med aktivne.\n${archiveLocation}`);
+  window.location.href = "seznam.html";
+  return { restored: true };
 }
 
 function validateMemberInput(data, members) {

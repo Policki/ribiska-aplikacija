@@ -86,6 +86,10 @@ function renderObservationList(user) {
       </div>
       <div class="member-mobile-card__body">
         <div class="member-mobile-card__row">
+          <span>Prijavil</span>
+          <strong>${escapeHtml(`${observation.firstName || ""} ${observation.lastName || ""}`.trim() || "-")}</strong>
+        </div>
+        <div class="member-mobile-card__row">
           <span>Opis</span>
           <strong>${escapeHtml(observation.description || "-")}</strong>
         </div>
@@ -133,6 +137,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("animal-observation-form");
   if (!form) return;
 
+  const firstNameField = document.getElementById("observation-first-name");
+  const lastNameField = document.getElementById("observation-last-name");
   const dateField = document.getElementById("observation-date");
   const placeField = document.getElementById("observation-place");
   const mapSearchField = document.getElementById("observation-map-search");
@@ -146,6 +152,12 @@ document.addEventListener("DOMContentLoaded", () => {
     dateField.value = todayISO();
   }
 
+  firstNameField?.addEventListener("blur", () => {
+    firstNameField.value = toTitleCase(firstNameField.value);
+  });
+  lastNameField?.addEventListener("blur", () => {
+    lastNameField.value = toTitleCase(lastNameField.value);
+  });
   form.title?.addEventListener("blur", () => {
     form.title.value = toTitleCase(form.title.value);
   });
@@ -293,6 +305,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const observations = getAnimalObservations();
       const observation = {
         id: Date.now(),
+        firstName: toTitleCase(firstNameField?.value || ""),
+        lastName: toTitleCase(lastNameField?.value || ""),
         title: toTitleCase(form.title.value),
         date: form.date.value || todayISO(),
         place: toTitleCase(placeField?.value || ""),

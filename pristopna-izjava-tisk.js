@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
   host.innerHTML = `
     <div class="application-print application-print--form">
       <div class="application-print__page">
-        <h1 class="application-form-title">VLOGA ZA SPREJEM V ČLANSTVO RIBIŠKE DRUŽINE</h1>
+        <h1 class="application-form-title">VLOGA ZA SPREJEM V RIBIŠKO DRUŽINO MOZIRJE</h1>
         <div class="application-form-underline"></div>
 
         <p class="application-form-intro"><strong>Obvezni podatki</strong> (pravna podlaga: 5. člen Pravilnika RZS o varovanju osebnih podatkov-pogodbeni temelj)</p>

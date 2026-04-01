@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <header class="animal-print__header">
         <h1>Zabeleženo opažanje</h1>
         <div class="animal-print__meta">
+          <div><span>Ime in priimek</span><strong>${escapeHtml(`${observation.firstName || ""} ${observation.lastName || ""}`.trim() || "-")}</strong></div>
           <div><span>Kaj je na sliki</span><strong>${escapeHtml(observation.title || "-")}</strong></div>
           <div><span>Kraj</span><strong>${escapeHtml(observation.place || "-")}</strong></div>
           <div><span>Datum</span><strong>${escapeHtml(formatDate(observation.date || ""))}</strong></div>

@@ -1,4 +1,4 @@
-function handleSeznamPage() {
+﻿function handleSeznamPage() {
   initMembersUI();
 }
 
@@ -26,7 +26,7 @@ function defaultUIState() {
       birthYear: [],
       tipKarte: [],
       kraj: [],
-      posta: [], // Ă˘Ĺ›â€¦ NEW
+      posta: [],
     },
     // prikaz stolpcev
     columns: {
@@ -37,7 +37,7 @@ function defaultUIState() {
       priimek: true,
       ime: true,
       naslov: true,
-      posta: true, // Ă˘Ĺ›â€¦ NEW
+      posta: true,
       kraj: true,
       email: true,
       telefon: true,
@@ -107,7 +107,7 @@ function renderEverything(state) {
   // base members (ne-arhiv)
   let members = getMembers().filter((m) => !m.arhiviran);
 
-  // upoÄąË‡tevaj permission "visibleStatuses"
+  // upoštevaj permission "visibleStatuses"
   if (visibleStatuses) {
     members = members.filter((m) => visibleStatuses.includes(m.status));
   }
@@ -152,7 +152,7 @@ function renderResponsiveMembers(members, state) {
           <div class="member-mobile-card__name">${escapeHtml(String(m.priimek || "").trim())} ${escapeHtml(String(m.ime || "").trim())}</div>
           <div class="member-mobile-card__meta">
             <span class="badge neutral">${escapeHtml(m.status || "Brez statusa")}</span>
-            <span class="badge neutral">${escapeHtml(m.clanska || "Brez Ă„Ĺ¤lanske")}</span>
+            <span class="badge neutral">${escapeHtml(m.clanska || "Brez članske")}</span>
           </div>
         </div>
         <div class="member-mobile-card__index">#${index + 1}</div>
@@ -189,12 +189,12 @@ function renderResponsiveMembers(members, state) {
       window.location.href = `urejanje-clana.html?id=${m.id}`;
     });
     card.querySelector(".member-mobile-delete")?.addEventListener("click", () => {
-      if (!confirm("Ali res ÄąÄľeliÄąË‡ premakniti Ă„Ĺ¤lana v arhiv?")) return;
+      if (!confirm("Ali res želiš premakniti člana v arhiv?")) return;
       const list = getMembers();
       const idx = list.findIndex((x) => x.id === m.id);
       if (idx === -1) return;
       list[idx].arhiviran = true;
-      addHistory("Arhiviranje Ă„Ĺ¤lana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
+      addHistory("Arhiviranje člana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
       saveMembers(list);
       renderEverything(loadUIState());
     });
@@ -220,7 +220,7 @@ function renderDynamicFilters(members, state) {
   const spcs = uniq(members.map((m) => m.spc)).sort();
   const tipKarte = uniq(members.map((m) => m.tipKarte)).sort();
   const kraji = uniq(members.map((m) => m.kraj)).sort();
-  const poste = uniq(members.map((m) => m.posta)).sort((a, b) => String(a).localeCompare(String(b), "sl")); // Ă˘Ĺ›â€¦ NEW
+  const poste = uniq(members.map((m) => m.posta)).sort((a, b) => String(a).localeCompare(String(b), "sl"));
 
   const birthYears = uniq(
     members
@@ -238,7 +238,7 @@ function renderDynamicFilters(members, state) {
   host.appendChild(makeMultiFilterGroup("Letnica rojstva", "birthYear", birthYears, state));
   host.appendChild(makeMultiFilterGroup("Tip karte", "tipKarte", tipKarte, state));
   host.appendChild(makeMultiFilterGroup("Kraj", "kraj", kraji, state));
-  host.appendChild(makeMultiFilterGroup("PoÄąË‡ta", "posta", poste, state)); // Ă˘Ĺ›â€¦ NEW
+  host.appendChild(makeMultiFilterGroup("Po\u0161ta", "posta", poste, state));
 }
 
 function makeMultiFilterGroup(title, key, options, state, config = {}) {
@@ -303,7 +303,7 @@ function renderColumnsBox(state) {
   if (!box) return;
 
   const cols = [
-    ["zapst", "ZAP.ŠT."],
+    ["zapst", "ZAP. ŠT."],
     ["status", "STATUS"],
     ["spc", "SPOL"],
     ["clanska", "ČLANSKA"],
@@ -384,13 +384,13 @@ function renderTableWithState(members, state) {
       <td data-col="priimek">${m.priimek || ""}</td>
       <td data-col="ime">${m.ime || ""}</td>
       <td data-col="naslov">${m.naslov || ""}</td>
-      <td data-col="posta">${m.posta || ""}</td>   <!-- Ă˘Ĺ›â€¦ NEW -->
+      <td data-col="posta">${m.posta || ""}</td>
       <td data-col="kraj">${m.kraj || ""}</td>
       <td data-col="email">${m.email ? `<a href="mailto:${m.email}">${m.email}</a>` : ""}</td>
       <td data-col="telefon">${m.telefon || ""}</td>
       <td class="table-actions" data-col="tools">
-        <span class="action-icon edit" title="Uredi">Ă˘Ĺ›ĹąÄŹÂ¸Ĺą</span>
-        <span class="action-icon delete" title="Arhiviraj">Ä‘Ĺşâ€”â€ÄŹÂ¸Ĺą</span>
+        <span class="action-icon edit" title="Uredi">✎</span>
+        <span class="action-icon delete" title="Arhiviraj">🗑</span>
       </td>
     `;
 
@@ -399,12 +399,12 @@ function renderTableWithState(members, state) {
     });
 
     tr.querySelector(".delete").addEventListener("click", () => {
-      if (confirm("Ali res ÄąÄľeliÄąË‡ premakniti Ă„Ĺ¤lana v arhiv?")) {
+      if (confirm("Ali res želiš premakniti člana v arhiv?")) {
         const list = getMembers();
         const idx = list.findIndex((x) => x.id === m.id);
         if (idx !== -1) {
           list[idx].arhiviran = true;
-          addHistory("Arhiviranje Ă„Ĺ¤lana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
+          addHistory("Arhiviranje člana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
           saveMembers(list);
           renderEverything(loadUIState());
         }
@@ -415,7 +415,7 @@ function renderTableWithState(members, state) {
   });
 
   if (summaryEl) {
-    summaryEl.textContent = `Skupno ÄąË‡tevilo Ă„Ĺ¤lanov: ${filtered.length}`;
+    summaryEl.textContent = `Skupno število članov: ${filtered.length}`;
   }
 }
 
@@ -449,9 +449,9 @@ function renderTableWithStateReadOnlyTools(members, state) {
       <td data-col="email">${m.email ? `<a href="mailto:${m.email}">${m.email}</a>` : ""}</td>
       <td data-col="telefon">${m.telefon || ""}</td>
       <td class="table-actions" data-col="tools">
-        <span class="action-icon view" title="Podroben pogled">Ä‘Ĺşâ€Â</span>
-        ${canEditMembers ? `<span class="action-icon edit" title="Uredi">Ă˘Ĺ›Ĺ˝</span>` : ""}
-        ${canArchiveMembers ? `<span class="action-icon delete" title="Arhiviraj">Ä‘Ĺşâ€”â€</span>` : ""}
+        <span class="action-icon view" title="Podroben pogled">👁</span>
+        ${canEditMembers ? `<span class="action-icon edit" title="Uredi">✎</span>` : ""}
+        ${canArchiveMembers ? `<span class="action-icon delete" title="Arhiviraj">🗑</span>` : ""}
       </td>
     `;
 
@@ -464,12 +464,12 @@ function renderTableWithStateReadOnlyTools(members, state) {
     });
 
     tr.querySelector(".delete")?.addEventListener("click", () => {
-      if (confirm("Ali res ÄąÄľeliÄąË‡ premakniti Ă„Ĺ¤lana v arhiv?")) {
+      if (confirm("Ali res želiš premakniti člana v arhiv?")) {
         const list = getMembers();
         const idx = list.findIndex((x) => x.id === m.id);
         if (idx !== -1) {
           list[idx].arhiviran = true;
-          addHistory("Arhiviranje Ă„Ĺ¤lana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
+          addHistory("Arhiviranje člana", `${m.ime} ${m.priimek} premaknjen v arhiv.`);
           saveMembers(list);
           renderEverything(loadUIState());
         }
@@ -480,7 +480,7 @@ function renderTableWithStateReadOnlyTools(members, state) {
   });
 
   if (summaryEl) {
-    summaryEl.textContent = `Skupno ÄąË‡tevilo Ă„Ĺ¤lanov: ${filtered.length}`;
+    summaryEl.textContent = `Skupno število članov: ${filtered.length}`;
   }
 }
 
@@ -493,7 +493,7 @@ function applyFilters(members, state) {
   const selectedBirthYear = new Set(f.birthYear || []);
   const selectedTipKarte = new Set(f.tipKarte || []);
   const selectedKraj = new Set(f.kraj || []);
-  const selectedPosta = new Set(f.posta || []); // Ă˘Ĺ›â€¦ NEW
+  const selectedPosta = new Set(f.posta || []);
 
   return members.filter((m) => {
     if (selectedStatus.size && !selectedStatus.has(String(m.status || ""))) return false;
@@ -504,7 +504,7 @@ function applyFilters(members, state) {
 
     if (selectedTipKarte.size && !selectedTipKarte.has(String(m.tipKarte || ""))) return false;
     if (selectedKraj.size && !selectedKraj.has(String(m.kraj || ""))) return false;
-    if (selectedPosta.size && !selectedPosta.has(String(m.posta || ""))) return false; // Ă˘Ĺ›â€¦ NEW
+    if (selectedPosta.size && !selectedPosta.has(String(m.posta || ""))) return false;
 
     // search
     if (!s) return true;
@@ -515,7 +515,7 @@ function applyFilters(members, state) {
       m.email,
       m.telefon,
       m.naslov,
-      m.posta, // Ă˘Ĺ›â€¦ NEW
+    m.posta,
       m.kraj,
       m.status,
       m.spc,
@@ -542,7 +542,7 @@ function applyColumnVisibility(state) {
   });
 
   const ths = table.querySelectorAll("thead th");
-  // Ă˘Ĺ›â€¦ NEW: mapping mora ustrezati vrstnemu redu v thead
+  // mapping mora ustrezati vrstnemu redu v thead
   const mapping = ["zapst","status","spc","clanska","priimek","ime","naslov","posta","kraj","email","telefon","tools"];
   ths.forEach((th, idx) => {
     const k = mapping[idx];
@@ -565,9 +565,9 @@ function buildExportRows(allMembers) {
     "PRIIMEK",
     "IME",
     "NASLOV",
-    "POSTA",   // Ă˘Ĺ›â€¦ NEW
+    "POSTA",
     "KRAJ",
-    "Ă„ĹšLANARINA",
+    "LETNA ČLANARINA",
     "KARTA",
     "EMAIL",
     "TELEF",
@@ -587,7 +587,7 @@ function buildExportRows(allMembers) {
       m.priimek || "",
       m.ime || "",
       m.naslov || "",
-      m.posta || "",     // Ă˘Ĺ›â€¦ NEW
+      m.posta || "",
       m.kraj || "",
       clanarina != null ? String(clanarina) : "",
       normalizeTipKarteValue(m.tipKarte),
@@ -615,7 +615,7 @@ function exportMembersXLSX() {
   const { header, rows } = buildExportRows(all);
 
   if (typeof XLSX === "undefined") {
-    alert("XLSX knjiÄąÄľnica ni naloÄąÄľena. Uporabi CSV izvoz ali dodaj SheetJS script.");
+    alert("XLSX knjižnica ni naložena. Uporabi CSV izvoz ali dodaj SheetJS script.");
     return;
   }
 

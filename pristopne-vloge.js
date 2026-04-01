@@ -89,11 +89,43 @@ function validateAdminMemberData(data, members, linkedMemberId) {
   return null;
 }
 
+function maybeRestoreArchivedApplicationMember(application, memberDraft) {
+  const archived = typeof findArchivedMemberCandidate === "function" ? findArchivedMemberCandidate(application) : null;
+  if (!archived) return null;
+
+  const archiveLocation =
+    typeof describeArchivedMemberLocation === "function"
+      ? describeArchivedMemberLocation(archived)
+      : "Arhiv članstva";
+
+  const shouldRestore = confirm(
+    [
+      `V arhivu že obstaja verjetno enak član: ${archived.ime || ""} ${archived.priimek || ""}`.trim(),
+      archived.datumRojstva ? `Datum rojstva: ${archived.datumRojstva}` : null,
+      `Najden v: ${archiveLocation}`,
+      "",
+      "Ali ga želiš vrniti med aktivne?",
+    ]
+      .filter(Boolean)
+      .join("\n")
+  );
+
+  if (!shouldRestore) return null;
+
+  const restored =
+    typeof restoreArchivedMemberWithData === "function"
+      ? restoreArchivedMemberWithData(archived.id, memberDraft, { ponovniVpisOd: memberDraft.datumVpisa || todayISO() })
+      : null;
+
+  return restored || { blocked: true };
+}
+
 function upsertMemberFromApplication(application, adminData) {
   const members = getMembers();
   const normalizedApplication = normalizeApplicationData(application);
   const linkedMemberId = Number(application.memberId || 0) || null;
-  const validationError = validateAdminMemberData(adminData, members, linkedMemberId);
+  const validationPool = linkedMemberId ? members : members.filter((member) => !member.arhiviran);
+  const validationError = validateAdminMemberData(adminData, validationPool, linkedMemberId);
 
   if (validationError) {
     alert(validationError);
@@ -128,6 +160,18 @@ function upsertMemberFromApplication(application, adminData) {
     datumRibiskegaIzpita: normalizedApplication.datumRibiskegaIzpita || "",
     potrebujeIzkaznico: adminData.potrebujeIzkaznico,
   };
+
+  if (existingIndex === -1) {
+    const validationError = validateAdminMemberData(adminData, members, null);
+    if (validationError) {
+      alert(validationError);
+      return null;
+    }
+
+    const restoredMember = maybeRestoreArchivedApplicationMember(normalizedApplication, member);
+    if (restoredMember?.blocked) return null;
+    if (restoredMember?.id) return restoredMember;
+  }
 
   if (existingIndex >= 0) {
     members[existingIndex] = {
