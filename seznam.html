@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="sl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Seznam članov – RD Mozirje</title>
+    <title>Seznam ÄŤlanov â€“ RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
 
@@ -16,7 +16,7 @@
           </div>
 
           <div class="header-right">
-            <div class="user-icon">👤</div>
+            <div class="user-icon">đź‘¤</div>
             <span id="header-username">UPORABNIK</span>
             <button id="btn-logout" class="btn-logout">ODJAVA</button>
           </div>
@@ -29,8 +29,8 @@
     <main class="main">
       <div class="main-inner full-width">
         <div class="page-intro">
-          <h2>Seznam članov</h2>
-          <div class="small-hint">Osrednji pregled članstva z iskanjem, filtri, prikazom stolpcev in hitrim izvozom podatkov.</div>
+          <h2>Seznam ÄŤlanov</h2>
+          <div class="small-hint">Osrednji pregled ÄŤlanstva z iskanjem, filtri, prikazom stolpcev in hitrim izvozom podatkov.</div>
         </div>
         <div class="list-layout">
           <!-- LEVI FILTER PANEL -->
@@ -46,7 +46,7 @@
               <input
                 id="members-search"
                 type="search"
-                placeholder="Išči (ime, priimek, članska, email, tel, naslov, pošta, kraj…)"
+                placeholder="IĹˇÄŤi (ime, priimek, ÄŤlanska, email, tel, naslov, poĹˇta, krajâ€¦)"
               />
             </div>
 
@@ -59,7 +59,7 @@
               </button>
             </div>
 
-            <!-- Dinamično: statusi, letnice, … -->
+            <!-- DinamiÄŤno: statusi, letnice, â€¦ -->
             <div id="filters-dynamic" class="filters-dynamic"></div>
 
             <!-- Izbira stolpcev -->
@@ -75,14 +75,14 @@
               <table class="table" id="members-table">
                 <thead>
                   <tr>
-                    <th class="col-zapst">ZAP.ŠT.</th>
+                    <th class="col-zapst">ZAP.Ĺ T.</th>
                     <th>STATUS</th>
                     <th>SPOL</th>
-                    <th>ČLANSKA</th>
+                    <th>ÄŚLANSKA</th>
                     <th>PRIIMEK</th>
                     <th>IME</th>
                     <th>NASLOV</th>
-                    <th>ŠT. POŠTE</th>
+                    <th>Ĺ T. POĹ TE</th>
                     <th>KRAJ</th>
                     <th>EMAIL</th>
                     <th>TELEFON</th>
@@ -100,7 +100,7 @@
       </div>
     </main>
 
-    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+    <footer class="footer">© <span id="aktivno-leto"></span> Ribiška družina Mozirje | Enej Poličnik</footer>
 
     <!-- SheetJS za pravi XLSX export -->
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -109,3 +109,4 @@
     <script src="seznam.js" defer></script>
   </body>
 </html>
+

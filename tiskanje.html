@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="sl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Tiskanje – RD Mozirje</title>
+    <title>Tiskanje â€“ RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
 
@@ -16,7 +16,7 @@
           </div>
 
           <div class="header-right">
-            <div class="user-icon">👤</div>
+            <div class="user-icon">đź‘¤</div>
             <span id="header-username">UPORABNIK</span>
             <button id="btn-logout" class="btn-logout">ODJAVA</button>
           </div>
@@ -32,7 +32,7 @@
         <div class="page-intro">
           <h2>Tiskanje</h2>
           <div class="small-hint">
-            Izberi, katere člane in katere stolpce želiš natisniti. Predogled se sproti posodablja.
+            Izberi, katere ÄŤlane in katere stolpce ĹľeliĹˇ natisniti. Predogled se sproti posodablja.
           </div>
         </div>
 
@@ -43,47 +43,47 @@
 
             <div class="form-group">
               <label for="print-title">Naslov dokumenta</label>
-              <input id="print-title" type="text" value="Seznam članov" />
-              <div class="small-hint">Naslov se izpiše na vrhu tiskane strani.</div>
+              <input id="print-title" type="text" value="Seznam ÄŤlanov" />
+              <div class="small-hint">Naslov se izpiĹˇe na vrhu tiskane strani.</div>
             </div>
 
             <div class="grid-2">
               <div class="form-group">
                 <label for="print-type">Vrsta seznama</label>
                 <select id="print-type">
-                  <option value="active" selected>Aktivni člani</option>
-                  <option value="archived">Arhivirani člani</option>
+                  <option value="active" selected>Aktivni ÄŤlani</option>
+                  <option value="archived">Arhivirani ÄŤlani</option>
                 </select>
               </div>
 
               <div class="form-group">
                 <label for="print-orientation">Usmeritev</label>
                 <select id="print-orientation">
-                  <option value="portrait">Pokončno</option>
-                  <option value="landscape" selected>Ležeče</option>
+                  <option value="portrait">PokonÄŤno</option>
+                  <option value="landscape" selected>LeĹľeÄŤe</option>
                 </select>
               </div>
             </div>
 
             <div class="section-title">Statusi (filter)</div>
-            <div class="small-hint">Če nič ne izbereš → velja “vsi dovoljenih statusov” za trenutno prijavljenega uporabnika.</div>
+            <div class="small-hint">ÄŚe niÄŤ ne izbereĹˇ â†’ velja â€śvsi dovoljenih statusovâ€ť za trenutno prijavljenega uporabnika.</div>
             <div class="check-grid" id="print-status-checks"></div>
 
             <div class="chip-row">
               <button type="button" class="chip-btn" id="ps-all">Vsi</button>
-              <button type="button" class="chip-btn" id="ps-none">Nič</button>
+              <button type="button" class="chip-btn" id="ps-none">NiÄŤ</button>
               <button type="button" class="chip-btn" id="ps-common">AA/AM/AP</button>
             </div>
 
             <div class="section-title">Stolpci (kaj se natisne)</div>
-            <div class="small-hint">Izberi stolpce, ki jih želiš na listu.</div>
+            <div class="small-hint">Izberi stolpce, ki jih ĹľeliĹˇ na listu.</div>
             <div class="check-grid" id="print-col-checks"></div>
 
             <div class="chip-row">
               <button type="button" class="chip-btn primary" id="pc-all">Vsi stolpci</button>
               <button type="button" class="chip-btn" id="pc-min">Minimalno</button>
               <button type="button" class="chip-btn" id="pc-contact">Kontakt</button>
-              <button type="button" class="chip-btn" id="pc-none">Počisti</button>
+              <button type="button" class="chip-btn" id="pc-none">PoÄŤisti</button>
             </div>
 
             <div class="chip-row">
@@ -95,7 +95,7 @@
           <!-- RIGHT: PREVIEW -->
           <section class="card">
             <div class="card-title">Predogled</div>
-            <div class="small-hint" id="preview-meta">—</div>
+            <div class="small-hint" id="preview-meta">â€”</div>
 
             <div class="table-wrapper" style="margin-top:10px; max-height:65vh;">
               <table class="table">
@@ -109,9 +109,10 @@
       </div>
     </main>
 
-    <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+    <footer class="footer">© <span id="aktivno-leto"></span> Ribiška družina Mozirje | Enej Poličnik</footer>
 
     <script src="core.js" defer></script>
     <script src="tiskanje.js" defer></script>
   </body>
 </html>
+

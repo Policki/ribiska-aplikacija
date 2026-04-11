@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="sl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Letne karte in čuvaji – RD Mozirje</title>
+  <title>Letne karte in ÄŤuvaji â€“ RD Mozirje</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -16,7 +16,7 @@
         </div>
 
         <div class="header-right">
-          <div class="user-icon">👤</div>
+          <div class="user-icon">đź‘¤</div>
           <span id="header-username">UPORABNIK</span>
           <button id="btn-logout" class="btn-logout">ODJAVA</button>
         </div>
@@ -30,8 +30,8 @@
     <div class="main-inner full-width">
       <div class="page-stack">
       <div class="page-intro">
-        <h2>Letne karte in čuvaji</h2>
-        <div class="small-hint">Uvoz, ročni vnos in arhiviranje evidenc letnih kart po posameznih sezonah.</div>
+        <h2>Letne karte in ÄŤuvaji</h2>
+        <div class="small-hint">Uvoz, roÄŤni vnos in arhiviranje evidenc letnih kart po posameznih sezonah.</div>
       </div>
 
       <div class="card page-card">
@@ -48,13 +48,13 @@
               <div class="form-group">
                 <label>&nbsp;</label>
                 <button id="btn-lic-close-year" type="button" class="btn btn-primary" style="width:100%;">
-                  ZAKLJUČI LETO
+                  ZAKLJUÄŚI LETO
                 </button>
               </div>
 
               <div class="form-group" style="grid-column:1/-1;">
                 <label for="lic-search">HITRO ISKANJE</label>
-                <input id="lic-search" type="text" placeholder="ime, priimek, številka…" />
+                <input id="lic-search" type="text" placeholder="ime, priimek, Ĺˇtevilkaâ€¦" />
               </div>
 
               <div class="form-group" style="grid-column:1/-1;">
@@ -72,15 +72,15 @@
             <input id="licenses-file" type="file" accept=".xlsx,.xls,.csv" />
 
             <div class="small-hint" style="margin-top:8px;">
-              Podprt je tvoj format (stolpci: <b>ime</b>, <b>priimek</b>, <b>Zap.St.</b>, <b>revir0/1/2</b> …).
-              Številka karte se vzame iz <b>Zap.St.</b> (ali iz stolpca “dovolilnica/stevilka”, če obstaja).
+              Podprt je tvoj format (stolpci: <b>ime</b>, <b>priimek</b>, <b>Zap.St.</b>, <b>revir0/1/2</b> â€¦).
+              Ĺ tevilka karte se vzame iz <b>Zap.St.</b> (ali iz stolpca â€śdovolilnica/stevilkaâ€ť, ÄŤe obstaja).
             </div>
           </div>
         </div>
       </div>
 
       <div class="card page-card">
-        <div class="card-title">Ročno dodaj zapis</div>
+        <div class="card-title">RoÄŤno dodaj zapis</div>
 
         <form id="license-form" style="margin-top:10px;">
           <div class="grid-2">
@@ -95,7 +95,7 @@
             </div>
 
             <div class="form-group">
-              <label for="licenseNumber">ŠT. KARTE</label>
+              <label for="licenseNumber">Ĺ T. KARTE</label>
               <input id="licenseNumber" name="licenseNumber" type="text" />
             </div>
 
@@ -128,7 +128,7 @@
               <th>#</th>
               <th>IME</th>
               <th>PRIIMEK</th>
-              <th>ŠT. KARTE</th>
+              <th>Ĺ T. KARTE</th>
               <th>REVIR0</th>
               <th>REVIR1</th>
               <th>REVIR2</th>
@@ -145,7 +145,7 @@
         </summary>
 
         <div class="small-hint" style="margin:10px 0;">
-          Tukaj so shranjeni zaključeni seznami po letih. Aktivni seznam za novo leto je prazen.
+          Tukaj so shranjeni zakljuÄŤeni seznami po letih. Aktivni seznam za novo leto je prazen.
         </div>
 
         <div id="licenses-archive-host"></div>
@@ -154,11 +154,12 @@
     </div>
   </main>
 
-  <footer class="footer">©Enej Poličnik&nbsp;<span id="aktivno-leto"></span></footer>
+  <footer class="footer">© <span id="aktivno-leto"></span> Ribiška družina Mozirje | Enej Poličnik</footer>
 
-  <!-- SheetJS (xlsx) - če nimaš interneta, si to datoteko potegni lokalno -->
+  <!-- SheetJS (xlsx) - ÄŤe nimaĹˇ interneta, si to datoteko potegni lokalno -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="core.js" defer></script>
   <script src="karte-cuvaji.js" defer></script>
 </body>
 </html>
+

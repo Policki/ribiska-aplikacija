@@ -416,6 +416,12 @@ function AktivnoLeto() {
   return leto.toString();
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("#aktivno-leto").forEach((el) => {
+    if (!el.textContent.trim()) el.textContent = AktivnoLeto();
+  });
+});
+
 // =======================
 // OPOMNIKI (GLOBAL)
 // =======================
