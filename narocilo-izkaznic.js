@@ -1,4 +1,4 @@
-function handleNarociloIzkaznicPage() {
+﻿function handleNarociloIzkaznicPage() {
   const user = requireAuth({ pageModuleKey: "clanske-izkaznice" });
   if (!user) return;
 

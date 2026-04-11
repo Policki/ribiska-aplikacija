@@ -1,4 +1,4 @@
-function handlePriznanjaPage() {
+﻿function handlePriznanjaPage() {
   // -----------------------------
   // LocalStorage ključi (lokalno, ne v core.js)
   // -----------------------------
@@ -544,7 +544,7 @@ function handlePriznanjaPage() {
         <td>${lastDate}</td>
         <td>${safe(p.note)}</td>
         <td class="table-actions">
-          <span class="action-icon delete" title="Odstrani predlog (bo spet predlagan ob naslednjem generiranju)">🗑️</span>
+          <span class="action-icon delete" title="Odstrani predlog (bo spet predlagan ob naslednjem generiranju)">🗑</span>
         </td>
       `;
 
@@ -595,7 +595,7 @@ function handlePriznanjaPage() {
         <td>${condDate}</td>
         <td>${safe(p.note)}</td>
         <td class="table-actions">
-          <span class="action-icon delete" title="Odstrani predlog (bo spet predlagan ob naslednjem generiranju)">🗑️</span>
+          <span class="action-icon delete" title="Odstrani predlog (bo spet predlagan ob naslednjem generiranju)">🗑</span>
         </td>
       `;
 
@@ -678,3 +678,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   handlePriznanjaPage();
 });
+

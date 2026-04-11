@@ -1,4 +1,4 @@
-// ---------- POMOŽNE FUNKCIJE LOCALSTORAGE ----------
+﻿// ---------- POMOŽNE FUNKCIJE LOCALSTORAGE ----------
 
 const STORAGE_KEYS = {
   CURRENT_USER: "rd_current_user",
@@ -355,7 +355,7 @@ function renderMembersTable({ onlyArchived = false } = {}) {
         <span class="action-icon edit" title="Uredi">✏️</span>
         <span class="action-icon delete" title="${
           onlyArchived ? "Izbriši" : "Arhiviraj"
-        }">🗑️</span>
+        }">🗑</span>
       </td>
     `;
 
@@ -679,7 +679,7 @@ function handleFunkcionarjiPage() {
         <td>${name}</td>
         <td>${o.role}</td>
         <td class="table-actions">
-          <span class="action-icon delete" title="Odstrani funkcionarja">🗑️</span>
+          <span class="action-icon delete" title="Odstrani funkcionarja">🗑</span>
         </td>
       `;
       tr.querySelector(".delete").addEventListener("click", () => {
@@ -827,7 +827,7 @@ function handleUporabnikiPage() {
         <td>${moduleText}</td>
         <td>${statusesText}</td>
         <td class="table-actions">
-          <span class="action-icon delete" title="Izbriši">🗑️</span>
+          <span class="action-icon delete" title="Izbriši">🗑</span>
         </td>
       `;
 
@@ -1174,7 +1174,7 @@ function handleKarteCuvajiPage() {
         <td>${x.name}</td>
         <td>${x.number}</td>
         <td class="table-actions">
-          <span class="action-icon delete" data-id="${x.id}">🗑️</span>
+          <span class="action-icon delete" data-id="${x.id}">🗑</span>
         </td>
       `;
       tbody.appendChild(tr);
@@ -1342,4 +1342,5 @@ document.addEventListener("DOMContentLoaded", () => {
       break;
   }
 });
+
 

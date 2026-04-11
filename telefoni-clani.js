@@ -1,4 +1,4 @@
-function getPendingPhoneMembers(currentUser) {
+﻿function getPendingPhoneMembers(currentUser) {
   let members = getMembers().filter(
     (member) =>
       !member.arhiviran &&

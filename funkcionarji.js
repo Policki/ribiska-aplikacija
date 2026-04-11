@@ -1,4 +1,4 @@
-function handleFunkcionarjiPage() {
+﻿function handleFunkcionarjiPage() {
   const selectMember = document.getElementById("official-member");
   const selectRole = document.getElementById("official-role");
   const tbody = document.getElementById("officials-tbody");
@@ -122,7 +122,7 @@ function handleFunkcionarjiPage() {
         <td>${naslov}</td>
         <td>${kraj}</td>
         <td class="table-actions">
-          <span class="action-icon delete" title="Odstrani funkcionarja">🗑️</span>
+          <span class="action-icon delete" title="Odstrani funkcionarja">🗑</span>
         </td>
       `;
 
@@ -192,3 +192,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   handleFunkcionarjiPage();
 });
+

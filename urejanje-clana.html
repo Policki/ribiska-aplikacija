@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Urejanje ÄŤlana â€“ RD Mozirje</title>
+    <title>Urejanje člana – RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
 
     <!-- samo za to stran (lahko tudi v styles.css) -->
@@ -120,7 +120,7 @@
           </div>
 
           <div class="header-right">
-            <div class="user-icon">đź‘¤</div>
+            <div class="user-icon">👤</div>
             <span id="header-username">UPORABNIK</span>
             <button id="btn-logout" class="btn-logout">ODJAVA</button>
           </div>
@@ -135,12 +135,12 @@
         <div class="page-pad">
           <div class="member-head">
             <div>
-              <h2 id="page-mode-title">Urejanje ÄŤlana</h2>
-              <div id="page-mode-hint" class="small-hint">Uredi podatke, sliko ali status ÄŤlana. Obvezna polja so oznaÄŤena z *.</div>
+              <h2 id="page-mode-title">Urejanje člana</h2>
+              <div id="page-mode-hint" class="small-hint">Uredi podatke, sliko ali status člana. Obvezna polja so označena z *.</div>
             </div>
 
             <div class="pill">
-              <span>ÄŚlanska:</span> <span id="pill-clanska">â€”</span>
+              <span>Članska:</span> <span id="pill-clanska">—</span>
             </div>
           </div>
 
@@ -148,7 +148,7 @@
             <div class="edit-layout">
               <!-- LEFT: AVATAR -->
               <section class="card">
-                <div class="card-title">Slika ÄŤlana</div>
+                <div class="card-title">Slika člana</div>
 
                 <div class="avatar-preview">
                   <img id="avatar-img" src="https://via.placeholder.com/300x300.png?text=CLAN" alt="" />
@@ -156,7 +156,7 @@
 
                 <div class="avatar-drop" id="avatar-drop">
                   Povleci sliko sem ali klikni za izbiro<br />
-                  <span class="small-hint">JPG/PNG/WebP â€˘ do 2 MB â€˘ priporoÄŤeno 300Ă—300</span>
+                  <span class="small-hint">JPG/PNG/WebP • do 2 MB • priporočeno 300×300</span>
                 </div>
 
                 <input id="avatar-input" type="file" accept="image/*" style="display:none;" />
@@ -168,13 +168,13 @@
 
               <!-- RIGHT: FIELDS -->
               <section class="card">
-                <div class="card-title">Podatki ÄŤlana</div>
+                <div class="card-title">Podatki člana</div>
 
                 <div class="grid-2">
                   <div class="form-group">
                     <label for="priimek">Priimek *</label>
                     <input id="priimek" name="priimek" type="text" required placeholder="npr. Kranjc" />
-                    <div class="small-hint">Samodejno pretvorjeno v velike ÄŤrke.</div>
+                    <div class="small-hint">Samodejno pretvorjeno v velike črke.</div>
                   </div>
 
                   <div class="form-group">
@@ -194,14 +194,14 @@
 
                   <div class="form-group" style="grid-column: 1 / -1;">
                     <label for="naslov">Naslov</label>
-                    <input id="naslov" name="naslov" type="text" placeholder="Ulica in hiĹˇna Ĺˇtevilka" />
+                    <input id="naslov" name="naslov" type="text" placeholder="Ulica in hišna številka" />
                   </div>
 
-                  <!-- âś… NEW: Ĺ t. poĹˇte -->
+                  <!-- ✅ NEW: Št. pošte -->
                   <div class="form-group">
-                    <label for="posta">Ĺ t. poĹˇte</label>
+                    <label for="posta">Št. pošte</label>
                     <input id="posta" name="posta" type="text" inputmode="numeric" placeholder="npr. 3330" maxlength="4" />
-                    <div class="small-hint">Ob vnosu 4-mestne poĹˇte se lahko kraj samodejno izpolni.</div>
+                    <div class="small-hint">Ob vnosu 4-mestne pošte se lahko kraj samodejno izpolni.</div>
                   </div>
 
                   <div class="form-group">
@@ -218,31 +218,31 @@
                   <div class="form-group">
                     <label for="status">Status (STAT) *</label>
                     <select id="status" name="status" required>
-                      <option value="">Izberi statusâ€¦</option>
-                      <option value="AA">AA â€“ polnoletni polnopravni ÄŤlan</option>
-                      <option value="AM">AM â€“ mladinec</option>
-                      <option value="AP">AP â€“ pripravnik</option>
-                      <option value="AÄŚ">AÄŚ â€“ ÄŤastni ÄŤlan</option>
-                      <option value="ZAÄŚ">ZAÄŚ â€“ zasluĹľni ÄŤastni ÄŤlan</option>
-                      <option value="AĹ I">AĹ I â€“ dijak/Ĺˇtudent z izpitom</option>
-                      <option value="DAA">DAA â€“ pridruĹľen polnoletni ÄŤlan</option>
-                      <option value="DAM">DAM â€“ pridruĹľen mladinec</option>
+                      <option value="">Izberi status…</option>
+                      <option value="AA">AA – polnoletni polnopravni član</option>
+                      <option value="AM">AM – mladinec</option>
+                      <option value="AP">AP – pripravnik</option>
+                      <option value="AČ">AČ – častni član</option>
+                      <option value="ZAČ">ZAČ – zaslužni častni član</option>
+                      <option value="AŠI">AŠI – dijak/študent z izpitom</option>
+                      <option value="DAA">DAA – pridružen polnoletni član</option>
+                      <option value="DAM">DAM – pridružen mladinec</option>
                     </select>
                   </div>
 
                   <div class="form-group">
                     <label for="spc">SPC (spol) *</label>
                     <select id="spc" name="spc" required>
-                      <option value="">Izberiâ€¦</option>
+                      <option value="">Izberi…</option>
                       <option value="M">M</option>
-                      <option value="Ĺ˝">Ĺ˝</option>
+                      <option value="Ž">Ž</option>
                     </select>
                   </div>
 
                   <div class="form-group">
                     <label for="tipKarte">Tip karte</label>
                     <select id="tipKarte" name="tipKarte">
-                      <option value="">â€”</option>
+                      <option value="">—</option>
                       <option value="navadna">Navadna</option>
                       <option value="eLRD">eLRD</option>
                     </select>
@@ -251,11 +251,11 @@
                   <div class="form-group">
                     <label for="datumVpisa">Datum vpisa</label>
                     <input id="datumVpisa" name="datumVpisa" type="date" />
-                    <div class="small-hint">Prvi vpis (ne spreminjaj, ÄŤe ni potrebno).</div>
+                    <div class="small-hint">Prvi vpis (ne spreminjaj, če ni potrebno).</div>
                   </div>
 
                   <div class="form-group">
-                    <label for="clanska">ÄŚlanska Ĺˇtevilka</label>
+                    <label for="clanska">Članska številka</label>
                     <input id="clanska" name="clanska" type="text" />
                   </div>
                 </div>
@@ -264,21 +264,21 @@
 <div class="form-group" style="grid-column: 1 / -1;">
   <label style="display:flex; gap:10px; align-items:center;">
     <input id="ribiskiIzpit" name="ribiskiIzpit" type="checkbox" />
-    Opravljen ribiĹˇki izpit
+    Opravljen ribiški izpit
   </label>
 </div>
 
 <div class="form-group">
-  <label for="datumRibiskegaIzpita">Datum ribiĹˇkega izpita</label>
+  <label for="datumRibiskegaIzpita">Datum ribiškega izpita</label>
   <input id="datumRibiskegaIzpita" name="datumRibiskegaIzpita" type="date" />
 </div>
 
 <div class="form-group">
   <label style="display:flex; gap:10px; align-items:center;">
     <input id="potrebujeIzkaznico" name="potrebujeIzkaznico" type="checkbox" />
-    Potrebuje ÄŤlansko izkaznico
+    Potrebuje člansko izkaznico
   </label>
-  <div class="small-hint">ÄŚe oznaÄŤiĹˇ, bo ÄŤlan v â€śNaroÄŤilo izkaznicâ€ť, dokler ni urejeno.</div>
+  <div class="small-hint">Če označiš, bo član v “Naročilo izkaznic”, dokler ni urejeno.</div>
 </div>
 
                 <div class="actions-row">
@@ -292,11 +292,13 @@
       </div>
     </main>
 
-    <footer class="footer">© <span id="aktivno-leto"></span> Ribiška družina Mozirje | Enej Poličnik</footer>
+    <footer class="footer">©&nbsp;<span id="aktivno-leto"></span>&nbsp;Ribiška družina Mozirje | Enej Poličnik</footer>
 
     <script src="core.js" defer></script>
     <script src="posta.js" defer></script>
     <script src="urejanje-clana.js" defer></script>
   </body>
 </html>
+
+
 

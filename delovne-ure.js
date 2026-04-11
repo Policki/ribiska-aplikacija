@@ -1,4 +1,4 @@
-function handleDelovneUrePage() {
+﻿function handleDelovneUrePage() {
   const tbody = document.getElementById("workhours-tbody");
   const donut = document.getElementById("workhours-donut");
   const donutText = document.getElementById("workhours-donut-text");

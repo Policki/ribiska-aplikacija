@@ -1,4 +1,4 @@
-function toTitleCase(value) {
+﻿function toTitleCase(value) {
   return String(value || "")
     .trim()
     .toLowerCase()

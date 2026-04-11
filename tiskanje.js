@@ -1,4 +1,4 @@
-function handleTiskanjePage() {
+﻿function handleTiskanjePage() {
   const elTitle = document.getElementById("print-title");
   const elType = document.getElementById("print-type");
   const elOrientation = document.getElementById("print-orientation");

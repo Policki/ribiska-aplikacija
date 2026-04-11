@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ÄŚlanarina â€“ RD Mozirje</title>
+  <title>Članarina – RD Mozirje</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -16,7 +16,7 @@
         </div>
 
         <div class="header-right">
-          <div class="user-icon">đź‘¤</div>
+          <div class="user-icon">👤</div>
           <span id="header-username">UPORABNIK</span>
           <button id="btn-logout" class="btn-logout">ODJAVA</button>
         </div>
@@ -30,8 +30,8 @@
     <div class="main-inner full-width">
       <div class="page-stack">
       <div class="page-intro">
-        <h2>ÄŚlanarina</h2>
-        <div class="small-hint">Pregled plaÄŤil po ÄŤlanih, zakljuÄŤevanje leta in vraÄŤanje plaÄŤnikov iz arhiva.</div>
+        <h2>Članarina</h2>
+        <div class="small-hint">Pregled plačil po članih, zaključevanje leta in vračanje plačnikov iz arhiva.</div>
       </div>
 
       <div class="card page-card">
@@ -39,12 +39,12 @@
           <div>
             <div class="card-title">Navodila</div>
             <div style="font-size:14px; max-width:720px;">
-              Klikni status â†’ izberi:
-              <b style="color:#c0392b;">NEPLAÄŚAL</b>,
-              <b style="color:#2ecc71;">PLAÄŚAL (TRR)</b>,
-              <b style="color:#2ecc71;">PLAÄŚAL (CASH)</b>.
+              Klikni status → izberi:
+              <b style="color:#c0392b;">NEPLAČAL</b>,
+              <b style="color:#2ecc71;">PLAČAL (TRR)</b>,
+              <b style="color:#2ecc71;">PLAČAL (CASH)</b>.
               <br />
-              Ko klikneĹˇ <b>ZAKLJUÄŚI LETO</b>, se vsi neplaÄŤniki premaknejo v arhiv ÄŤlanstva (odstop).
+              Ko klikneš <b>ZAKLJUČI LETO</b>, se vsi neplačniki premaknejo v arhiv članstva (odstop).
             </div>
           </div>
 
@@ -58,13 +58,13 @@
               <div class="form-group">
                 <label>&nbsp;</label>
                 <button id="btn-close-year" type="button" class="btn btn-primary" style="width:100%;">
-                  ZAKLJUÄŚI LETO
+                  ZAKLJUČI LETO
                 </button>
               </div>
 
               <div class="form-group" style="grid-column:1/-1;">
                 <label for="fee-search">HITRO ISKANJE</label>
-                <input id="fee-search" type="text" placeholder="priimek, ime, ÄŤlanskaâ€¦" />
+                <input id="fee-search" type="text" placeholder="priimek, ime, članska…" />
               </div>
             </div>
 
@@ -83,7 +83,7 @@
               <th>NASLOV</th>
               <th>KRAJ</th>
               <th>ZNESEK</th>
-              <th>PLAÄŚILO</th>
+              <th>PLAČILO</th>
             </tr>
           </thead>
           <tbody id="fees-tbody"></tbody>
@@ -93,11 +93,11 @@
 
       <details class="card page-card">
         <summary style="cursor:pointer; font-weight:900;">
-          NeplaÄŤniki (privzeto zaprto) â€“ moĹľnost plaÄŤila in vrnitve iz arhiva v tem letu
+          Neplačniki (privzeto zaprto) – možnost plačila in vrnitve iz arhiva v tem letu
         </summary>
 
         <div class="small-hint" style="margin:10px 0;">
-          ÄŚe ÄŤlan plaÄŤa med letom, ga lahko tukaj oznaÄŤiĹˇ kot plaÄŤan in se premakne nazaj med aktivne (samo za izbrano leto).
+          Če član plača med letom, ga lahko tukaj označiš kot plačan in se premakne nazaj med aktivne (samo za izbrano leto).
         </div>
 
         <div class="table-wrapper">
@@ -107,7 +107,7 @@
                 <th>#</th>
                 <th>PRIIMEK</th>
                 <th>IME</th>
-                <th>ÄŚLANSKA</th>
+                <th>ČLANSKA</th>
                 <th>ZNESEK</th>
                 <th>UKREP</th>
               </tr>
@@ -121,10 +121,12 @@
     </div>
   </main>
 
-  <footer class="footer">© <span id="aktivno-leto"></span> Ribiška družina Mozirje | Enej Poličnik</footer>
+  <footer class="footer">©&nbsp;<span id="aktivno-leto"></span>&nbsp;Ribiška družina Mozirje | Enej Poličnik</footer>
 
   <script src="core.js" defer></script>
   <script src="clanarina.js" defer></script>
 </body>
 </html>
+
+
 

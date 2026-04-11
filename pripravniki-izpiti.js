@@ -1,4 +1,4 @@
-function handlePripravnikiIzpitiPage() {
+﻿function handlePripravnikiIzpitiPage() {
   const user = requireAuth({ pageModuleKey: "pripravniki-izpiti" });
   if (!user) return;
 

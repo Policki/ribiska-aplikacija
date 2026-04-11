@@ -1,4 +1,4 @@
-function handleLoginPage() {
+﻿function handleLoginPage() {
   const form = document.getElementById("login-form");
   if (!form) return;
 

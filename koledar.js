@@ -1,4 +1,4 @@
-function handleKoledarPage() {
+﻿function handleKoledarPage() {
   const gridEl = document.getElementById("calendar-grid");
   const weekEl = document.getElementById("calendar-week");
   const titleEl = document.getElementById("cal-title");

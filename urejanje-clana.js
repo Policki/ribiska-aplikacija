@@ -1,4 +1,4 @@
-function handleUrejanjeClanaPage() {
+﻿function handleUrejanjeClanaPage() {
   const params = new URLSearchParams(window.location.search);
   const id = Number(params.get("id"));
   const isViewMode = params.get("mode") === "view";

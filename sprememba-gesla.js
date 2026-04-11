@@ -1,4 +1,4 @@
-function handleChangePasswordPage() {
+﻿function handleChangePasswordPage() {
   const form = document.getElementById("change-password-form");
   if (!form) return;
 

@@ -1,4 +1,4 @@
-function handleZgodovinaPage() {
+﻿function handleZgodovinaPage() {
   const currentUser = getCurrentUser();
   if (!currentUser) return;
 

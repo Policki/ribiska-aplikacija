@@ -1,4 +1,4 @@
-function handleClanarinaPage() {
+﻿function handleClanarinaPage() {
   // =============================
   // LocalStorage ključi (lokalno; core.js ne spreminjamo)
   // =============================

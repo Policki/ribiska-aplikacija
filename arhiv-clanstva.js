@@ -1,4 +1,4 @@
-function handleArhivPage() {
+﻿function handleArhivPage() {
   renderArchiveByYear();
 }
 

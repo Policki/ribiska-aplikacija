@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Uporabniki â€“ RD Mozirje</title>
+    <title>Uporabniki – RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
 
@@ -16,7 +16,7 @@
           </div>
 
           <div class="header-right">
-            <div class="user-icon">đź‘¤</div>
+            <div class="user-icon">👤</div>
             <span id="header-username">UPORABNIK</span>
             <button id="btn-logout" class="btn-logout">ODJAVA</button>
           </div>
@@ -31,7 +31,7 @@
         <div class="page-stack">
         <div class="page-intro">
           <h2>Upravljanje uporabnikov</h2>
-          <div class="small-hint">Admin dodaja/ureja uporabnike, module, pravice in vidne statuse ÄŤlanov.</div>
+          <div class="small-hint">Admin dodaja/ureja uporabnike, module, pravice in vidne statuse članov.</div>
         </div>
 
         <div class="users-layout">
@@ -39,7 +39,7 @@
           <section class="card">
             <div class="card-title" id="form-title">Dodaj uporabnika</div>
             <div id="user-view-hint" class="small-hint" style="display:none; margin-bottom:10px;">
-              Podroben pogled uporabnika brez moĹľnosti urejanja.
+              Podroben pogled uporabnika brez možnosti urejanja.
             </div>
 
             <form id="user-form" autocomplete="off">
@@ -47,31 +47,31 @@
 
               <div class="grid-2">
                 <div class="form-group">
-                  <label for="username">UPORABNIĹ KO IME</label>
+                  <label for="username">UPORABNIŠKO IME</label>
                   <input id="username" name="username" type="text" required placeholder="npr. tajnik" />
-                  <div class="small-hint">Brez presledkov. Npr. â€śtajnikâ€ť, â€śblagajnikâ€ť, â€śribiĹˇkiNadzorâ€ť.</div>
+                  <div class="small-hint">Brez presledkov. Npr. “tajnik”, “blagajnik”, “ribiškiNadzor”.</div>
                 </div>
 
                 <div class="form-group">
-                  <label for="password">ZAÄŚASNO GESLO</label>
-                  <input id="password" name="password" type="password" required placeholder="â€”" />
+                  <label for="password">ZAČASNO GESLO</label>
+                  <input id="password" name="password" type="password" required placeholder="—" />
                   <div class="chip-row">
                     <button type="button" class="chip-btn" id="btn-gen-pass">Generiraj</button>
-                    <button type="button" class="chip-btn" id="btn-toggle-pass">PokaĹľi</button>
+                    <button type="button" class="chip-btn" id="btn-toggle-pass">Pokaži</button>
                     <button type="button" class="chip-btn" id="btn-copy-pass">Kopiraj</button>
                   </div>
                   <div class="small-hint">Uporabnik bo ob prvi prijavi prisiljen spremeniti geslo.</div>
                 </div>
               </div>
 
-              <div class="section-title">Vidni statusi ÄŤlanov</div>
-              <div class="small-hint">ÄŚe niÄŤ ne izbereĹˇ â†’ vidi vse statuse.</div>
+              <div class="section-title">Vidni statusi članov</div>
+              <div class="small-hint">Če nič ne izbereš → vidi vse statuse.</div>
               <div class="check-grid" id="status-checks"></div>
 
               <div class="chip-row">
                 <button type="button" class="chip-btn" id="status-all">Vsi</button>
-                <button type="button" class="chip-btn" id="status-none">NiÄŤ</button>
-                <button type="button" class="chip-btn" id="status-common">NajpogostejĹˇi (AA/AM/AP)</button>
+                <button type="button" class="chip-btn" id="status-none">Nič</button>
+                <button type="button" class="chip-btn" id="status-common">Najpogostejši (AA/AM/AP)</button>
               </div>
 
               <div class="section-title">Moduli, ki jih uporabnik vidi</div>
@@ -80,20 +80,20 @@
               <div class="chip-row">
                 <button type="button" class="chip-btn primary" id="modules-all">Vsi moduli</button>
                 <button type="button" class="chip-btn" id="modules-readonly">Osnovno (seznam + koledar)</button>
-                <button type="button" class="chip-btn" id="modules-none">PoÄŤisti</button>
+                <button type="button" class="chip-btn" id="modules-none">Počisti</button>
               </div>
 
               <div class="section-title">Pravice uporabnika</div>
               <div class="check-grid">
-                <label><input id="canEditMembers" type="checkbox" /> Lahko ureja ÄŤlane</label>
-                <label><input id="canArchiveMembers" type="checkbox" /> Lahko arhivira / briĹˇe iz arhiva</label>
+                <label><input id="canEditMembers" type="checkbox" /> Lahko ureja člane</label>
+                <label><input id="canArchiveMembers" type="checkbox" /> Lahko arhivira / briše iz arhiva</label>
                 <label><input id="canManageUsers" type="checkbox" /> Lahko upravlja uporabnike</label>
                 <label><input id="canSeeHistory" type="checkbox" /> Lahko vidi zgodovino dejanj</label>
               </div>
 
               <div class="chip-row">
                 <button type="submit" class="btn btn-primary" id="btn-submit">DODAJ UPORABNIKA</button>
-                <button type="button" class="btn btn-secondary" id="btn-cancel-edit" style="display:none;">PREKLIÄŚI UREJANJE</button>
+                <button type="button" class="btn btn-secondary" id="btn-cancel-edit" style="display:none;">PREKLIČI UREJANJE</button>
                 <button type="button" class="btn btn-secondary" id="btn-close-view" style="display:none;">ZAPRI POGLED</button>
               </div>
             </form>
@@ -101,7 +101,7 @@
 
           <!-- LIST -->
           <section class="card">
-            <div class="card-title">ObstojeÄŤi uporabniki</div>
+            <div class="card-title">Obstoječi uporabniki</div>
 
             <div class="table-wrapper">
               <table class="table">
@@ -125,10 +125,12 @@
       </div>
     </main>
 
-    <footer class="footer">© <span id="aktivno-leto"></span> Ribiška družina Mozirje | Enej Poličnik</footer>
+    <footer class="footer">©&nbsp;<span id="aktivno-leto"></span>&nbsp;Ribiška družina Mozirje | Enej Poličnik</footer>
 
     <script src="core.js" defer></script>
     <script src="uporabniki.js" defer></script>
   </body>
 </html>
+
+
 

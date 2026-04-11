@@ -1,4 +1,4 @@
-function handleKarteCuvajiPage() {
+﻿function handleKarteCuvajiPage() {
   // =========================
   // LocalStorage (po letih)
   // =========================

@@ -1,4 +1,4 @@
-function handleVpisClanaPage() {
+﻿function handleVpisClanaPage() {
   const form = document.getElementById("vpis-clana-form");
   if (!form) return;
 

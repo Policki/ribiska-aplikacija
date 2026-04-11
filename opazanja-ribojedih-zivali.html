@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>OpaĹľanja ribojedih ptic - RD Mozirje</title>
+    <title>Opažanja ribojedih ptic - RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
     <link
       rel="stylesheet"
@@ -19,7 +19,7 @@
             <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
           </div>
           <div class="header-right">
-            <div class="user-icon">đź‘¤</div>
+            <div class="user-icon">👤</div>
             <span id="header-username">UPORABNIK</span>
             <button id="btn-logout" class="btn-logout">ODJAVA</button>
           </div>
@@ -32,22 +32,22 @@
       <div class="main-inner full-width">
         <div class="page-stack">
           <section class="page-intro">
-            <h2>OpaĹľanje ribojedih ptic</h2>
-            <p>Obrazec je prilagojen telefonu. VpiĹˇite opaĹľanje, dodajte kraj, izberite lokacijo na zemljevidu in priloĹľite fotografije.</p>
+            <h2>Opažanje ribojedih ptic</h2>
+            <p>Obrazec je prilagojen telefonu. Vpišite opažanje, dodajte kraj, izberite lokacijo na zemljevidu in priložite fotografije.</p>
           </section>
 
           <section class="page-card card">
             <form id="animal-observation-form" class="application-grid">
-              <div class="full application-section-title">Novo opaĹľanje</div>
+              <div class="full application-section-title">Novo opažanje</div>
 
               <div class="form-group">
                 <label for="observation-first-name">Ime *</label>
-                <input id="observation-first-name" name="firstName" type="text" required autocomplete="given-name" placeholder="VpiĹˇite ime" />
+                <input id="observation-first-name" name="firstName" type="text" required autocomplete="given-name" placeholder="Vpišite ime" />
               </div>
 
               <div class="form-group">
                 <label for="observation-last-name">Priimek *</label>
-                <input id="observation-last-name" name="lastName" type="text" required autocomplete="family-name" placeholder="VpiĹˇite priimek" />
+                <input id="observation-last-name" name="lastName" type="text" required autocomplete="family-name" placeholder="Vpišite priimek" />
               </div>
 
               <div class="form-group">
@@ -56,29 +56,29 @@
               </div>
 
               <div class="form-group">
-                <label for="observation-date">Datum opaĹľanja *</label>
+                <label for="observation-date">Datum opažanja *</label>
                 <input id="observation-date" name="date" type="date" required />
               </div>
 
               <div class="form-group full">
-                <label for="observation-place">Kraj opaĹľanja *</label>
+                <label for="observation-place">Kraj opažanja *</label>
                 <input id="observation-place" name="place" type="text" required placeholder="Na primer revir Savinja - Mozirje" />
               </div>
 
               <div class="form-group full">
-                <label for="observation-description">Opis opaĹľanja *</label>
-                <textarea id="observation-description" name="description" rows="4" required placeholder="Na kratko opiĹˇite, kaj ste videli."></textarea>
+                <label for="observation-description">Opis opažanja *</label>
+                <textarea id="observation-description" name="description" rows="4" required placeholder="Na kratko opišite, kaj ste videli."></textarea>
               </div>
 
               <div class="form-group full">
-                <label>ToÄŤna lokacija opaĹľanja *</label>
+                <label>Točna lokacija opažanja *</label>
                 <div class="observation-map-tools">
-                  <input id="observation-map-search" type="search" placeholder="PoiĹˇÄŤite naslov, kraj ali revir" />
-                  <button type="button" id="btn-map-search" class="btn btn-secondary">PoiĹˇÄŤi na zemljevidu</button>
+                  <input id="observation-map-search" type="search" placeholder="Poiščite naslov, kraj ali revir" />
+                  <button type="button" id="btn-map-search" class="btn btn-secondary">Poišči na zemljevidu</button>
                   <button type="button" id="btn-map-geolocate" class="btn btn-secondary">Moja lokacija</button>
                 </div>
                 <div id="observation-map-status" class="small-hint">Lokacijo izberite s klikom na zemljevid ali z iskanjem.</div>
-                <div id="observation-map" class="observation-map" aria-label="Zemljevid za izbor lokacije opaĹľanja"></div>
+                <div id="observation-map" class="observation-map" aria-label="Zemljevid za izbor lokacije opažanja"></div>
                 <div class="observation-coordinates">
                   <label class="form-group">
                     <span>Latitude</span>
@@ -92,28 +92,28 @@
               </div>
 
               <div class="form-group full">
-                <label for="observation-images">Slike opaĹľanja *</label>
+                <label for="observation-images">Slike opažanja *</label>
                 <input id="observation-images" name="images" type="file" accept="image/*" multiple required />
-                <div class="small-hint">Na telefonu lahko dodate veÄŤ slik. Sistem jih pred shranjevanjem samodejno pomanjĹˇa.</div>
+                <div class="small-hint">Na telefonu lahko dodate več slik. Sistem jih pred shranjevanjem samodejno pomanjša.</div>
               </div>
 
               <div id="observation-submit-status" class="full small-hint" aria-live="polite"></div>
 
               <div class="full page-actions">
-                <button type="submit" class="btn btn-primary" id="btn-save-observation">Shrani opaĹľanje</button>
+                <button type="submit" class="btn btn-primary" id="btn-save-observation">Shrani opažanje</button>
               </div>
             </form>
 
             <div id="observation-thank-you" class="application-success" hidden>
-              <strong>Hvala za oddano opaĹľanje.</strong>
-              <span>Podatki so bili uspeĹˇno shranjeni in jih bo pregledal administrator RD Mozirje.</span>
+              <strong>Hvala za oddano opažanje.</strong>
+              <span>Podatki so bili uspešno shranjeni in jih bo pregledal administrator RD Mozirje.</span>
             </div>
           </section>
 
           <section id="animal-observations-admin-panel" class="page-card" hidden>
             <div class="page-flex center">
               <div>
-                <h3 style="margin:0;">Shranjena opaĹľanja</h3>
+                <h3 style="margin:0;">Shranjena opažanja</h3>
                 <p class="small-hint" style="margin:6px 0 0;">Ta pregled je viden samo administratorju.</p>
               </div>
             </div>
@@ -124,7 +124,7 @@
       </div>
     </main>
 
-    <footer class="footer">© <span id="aktivno-leto"></span> Ribiška družina Mozirje | Enej Poličnik</footer>
+    <footer class="footer">©&nbsp;<span id="aktivno-leto"></span>&nbsp;Ribiška družina Mozirje | Enej Poličnik</footer>
 
     <script
       src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -134,4 +134,6 @@
     <script src="opazanja-ribojedih-zivali.js" defer></script>
   </body>
 </html>
+
+
 

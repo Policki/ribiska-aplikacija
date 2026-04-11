@@ -1,4 +1,4 @@
-/* posta.js
+﻿/* posta.js
    Avto izpolnjevanje: POŠTA <-> KRAJ (obe smeri)
    - Podpira, da v RAW_MAP prilepiš:
      A) posta -> kraj   (npr. { "3330": "Mozirje" })

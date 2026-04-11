@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () => {
   ensureDemoData();
   const user = requireAuth({ pageModuleKey: "opazanja-zivali" });
   if (!user) return;
