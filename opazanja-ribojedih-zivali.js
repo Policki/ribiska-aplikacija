@@ -12,26 +12,71 @@ function todayISO() {
   return new Date().toISOString().slice(0, 10);
 }
 
-function canPrintObservations(user) {
-  return !!(user?.permissions?.canManageUsers || user?.permissions?.canSeeHistory || user?.username === "admin");
+function getOptionalCurrentUser() {
+  try {
+    return getCurrentUser();
+  } catch {
+    return null;
+  }
 }
 
-function readFilesAsDataUrls(files) {
-  return Promise.all(
-    Array.from(files || []).map(
-      (file) =>
-        new Promise((resolve, reject) => {
-          if (!file?.type?.startsWith("image/")) {
-            reject(new Error("Dovoljene so samo slike."));
-            return;
-          }
-          const reader = new FileReader();
-          reader.onload = () => resolve(String(reader.result || ""));
-          reader.onerror = () => reject(new Error("Napaka pri branju slike."));
-          reader.readAsDataURL(file);
-        })
-    )
-  );
+function isObservationAdmin(user) {
+  return !!(user?.permissions?.canManageUsers || user?.username === "admin");
+}
+
+function setObservationStatus(message) {
+  const status = document.getElementById("observation-submit-status");
+  if (status) status.textContent = message || "";
+}
+
+function compressImageFile(file, options = {}) {
+  const maxSize = options.maxSize || 1400;
+  const quality = options.quality || 0.72;
+
+  return new Promise((resolve, reject) => {
+    if (!file?.type?.startsWith("image/")) {
+      reject(new Error("Dovoljene so samo slike."));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Napaka pri branju slike."));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("Slike ni bilo mogoče pripraviti za shranjevanje."));
+      img.onload = () => {
+        const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+        const width = Math.max(1, Math.round(img.width * scale));
+        const height = Math.max(1, Math.round(img.height * scale));
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d", { alpha: false });
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.src = String(reader.result || "");
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function readFilesAsCompressedDataUrls(files) {
+  const selected = Array.from(files || []);
+  if (!selected.length) return [];
+
+  const images = [];
+  for (let i = 0; i < selected.length; i += 1) {
+    setObservationStatus(`Pripravljam sliko ${i + 1}/${selected.length} ...`);
+    images.push(await compressImageFile(selected[i]));
+  }
+  setObservationStatus("");
+  return images;
 }
 
 function formatCoordinate(value) {
@@ -58,7 +103,16 @@ async function searchGeocode(query) {
 
 function renderObservationList(user) {
   const host = document.getElementById("animal-observations-list");
-  if (!host) return;
+  const panel = document.getElementById("animal-observations-admin-panel");
+  if (!host || !panel) return;
+
+  const canView = isObservationAdmin(user);
+  panel.hidden = !canView;
+  host.hidden = !canView;
+  if (!canView) {
+    host.innerHTML = "";
+    return;
+  }
 
   const observations = getAnimalObservations().sort(
     (a, b) => String(b.createdAt || "").localeCompare(String(a.createdAt || ""))
@@ -99,7 +153,7 @@ function renderObservationList(user) {
         </div>
         <div class="member-mobile-card__row">
           <span>Dodano</span>
-          <strong>${escapeHtml(observation.createdBy || "-")}</strong>
+          <strong>${escapeHtml(observation.createdBy || "Javni vnos")}</strong>
         </div>
       </div>
       <div class="observation-gallery">
@@ -108,7 +162,7 @@ function renderObservationList(user) {
           .join("")}
       </div>
       <div class="member-mobile-card__actions">
-        ${canPrintObservations(user) ? '<button type="button" class="btn btn-secondary btn-print-observation">Pripravi za tisk</button>' : ""}
+        <button type="button" class="btn btn-secondary btn-print-observation">Pripravi za tisk</button>
       </div>
     `;
 
@@ -122,12 +176,17 @@ function renderObservationList(user) {
 
 document.addEventListener("DOMContentLoaded", () => {
   ensureDemoData();
-  const user = requireAuth({ pageModuleKey: "opazanja-zivali" });
-  if (!user) return;
+  const user = getOptionalCurrentUser();
+  const header = document.getElementById("observation-admin-header");
 
-  initHeader(user);
-  renderAppNav(user, "opazanja-zivali");
-  startReminderWatcher();
+  if (user) {
+    initHeader(user);
+    renderAppNav(user, "opazanja-zivali");
+    startReminderWatcher();
+  } else if (header) {
+    header.hidden = true;
+    document.body.classList.add("public-observation-page");
+  }
 
   const yearEl = document.getElementById("aktivno-leto");
   if (yearEl && typeof AktivnoLeto === "function") {
@@ -147,6 +206,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const mapStatus = document.getElementById("observation-map-status");
   const latitudeField = document.getElementById("observation-latitude");
   const longitudeField = document.getElementById("observation-longitude");
+  const btnSave = document.getElementById("btn-save-observation");
+  const thankYou = document.getElementById("observation-thank-you");
 
   if (dateField && !dateField.value) {
     dateField.value = todayISO();
@@ -179,31 +240,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function applyLocation(lat, lng, shouldFillPlace = false) {
     updateCoordinates(lat, lng);
-    if (marker) {
-      marker.setLatLng([lat, lng]);
-    }
-    if (map) {
-      map.setView([lat, lng], Math.max(map.getZoom(), 15));
-    }
+    if (marker) marker.setLatLng([lat, lng]);
+    if (map) map.setView([lat, lng], Math.max(map.getZoom(), 15));
 
     if (shouldFillPlace) {
       try {
         const reverse = await reverseGeocode(lat, lng);
         const label =
           reverse?.display_name ||
-          [
-            reverse?.address?.road,
-            reverse?.address?.village,
-            reverse?.address?.town,
-            reverse?.address?.city,
-          ]
+          [reverse?.address?.road, reverse?.address?.village, reverse?.address?.town, reverse?.address?.city]
             .filter(Boolean)
             .join(", ");
         if (label && placeField && !placeField.value.trim()) {
           placeField.value = toTitleCase(label);
         }
       } catch {
-        // Če reverse geocode ne uspe, koordinate vseeno ostanejo shranjene.
+        // Koordinate ostanejo shranjene tudi, če poimenovanja lokacije ni mogoče pridobiti.
       }
     }
 
@@ -214,9 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const defaultLat = 46.33944;
     const defaultLng = 14.96333;
 
-    map = window.L.map("observation-map", {
-      zoomControl: true,
-    }).setView([defaultLat, defaultLng], 13);
+    map = window.L.map("observation-map", { zoomControl: true }).setView([defaultLat, defaultLng], 13);
 
     window.L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
@@ -301,7 +351,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const images = await readFilesAsDataUrls(imageInput.files);
+      if (btnSave) btnSave.disabled = true;
+      setObservationStatus("Pripravljam opažanje za shranjevanje...");
+
+      const images = await readFilesAsCompressedDataUrls(imageInput.files);
       const observations = getAnimalObservations();
       const observation = {
         id: Date.now(),
@@ -315,12 +368,12 @@ document.addEventListener("DOMContentLoaded", () => {
         longitude: longitudeField.value,
         images,
         createdAt: new Date().toISOString(),
-        createdBy: user.username,
+        createdBy: user?.username || "Javni vnos",
       };
 
       observations.unshift(observation);
       saveAnimalObservations(observations);
-      addHistory("Opažanja živali", `Dodano opažanje: ${observation.title} (${observation.place}).`);
+      addHistory("Opažanja ribojedih ptic", `Dodano opažanje: ${observation.title} (${observation.place}).`);
 
       form.reset();
       if (dateField) dateField.value = todayISO();
@@ -331,11 +384,23 @@ document.addEventListener("DOMContentLoaded", () => {
         map.setView([defaultLat, defaultLng], 13);
         updateCoordinates(defaultLat, defaultLng);
       }
+
       setStatus("Lokacijo izberite s klikom na zemljevid, iskanjem ali z gumbom Moja lokacija.");
+      setObservationStatus("");
+      if (thankYou) {
+        thankYou.hidden = false;
+        thankYou.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
       renderObservationList(user);
-      alert("Opažanje je uspešno shranjeno.");
     } catch (error) {
-      alert(error?.message || "Pri shranjevanju opažanja je prišlo do napake.");
+      const quotaMessage =
+        error?.name === "QuotaExceededError"
+          ? "Shranjevanje ni uspelo, ker je prostor v brskalniku poln. Poskusite z manj slikami."
+          : null;
+      alert(quotaMessage || error?.message || "Pri shranjevanju opažanja je prišlo do napake.");
+    } finally {
+      if (btnSave) btnSave.disabled = false;
+      setObservationStatus("");
     }
   });
 

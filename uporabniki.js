@@ -77,7 +77,7 @@
     { key: "pripravniki-izpiti", label: "Pripravniki in izpiti" },
     { key: "clanske-izkaznice", label: "Naročilo izkaznic" },
     { key: "obvescanje", label: "Obveščanje" },
-    { key: "opazanja-zivali", label: "Opažanja živali" },
+    { key: "opazanja-zivali", label: "Opažanja ribojedih ptic" },
   ];
 
   // --- Build checkboxes

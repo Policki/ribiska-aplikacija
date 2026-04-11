@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Opažanja ribojedih živali - RD Mozirje</title>
+    <title>Opažanja ribojedih ptic - RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
     <link
       rel="stylesheet"
@@ -12,7 +12,7 @@
     />
   </head>
   <body class="page" data-page="opazanja-zivali">
-    <header class="header header--universal">
+    <header class="header header--universal" id="observation-admin-header">
       <div class="header-top">
         <div class="header-inner">
           <div class="logo-block">
@@ -32,8 +32,8 @@
       <div class="main-inner full-width">
         <div class="page-stack">
           <section class="page-intro">
-            <h2>Opažanja ribojedih živali</h2>
-            <p>Vnesite opažanje, dodajte opis, kraj in slike. Lokacijo lahko poiščete po naslovu ali jo izberete neposredno na zemljevidu.</p>
+            <h2>Opažanje ribojedih ptic</h2>
+            <p>Obrazec je prilagojen telefonu. Vpišite opažanje, dodajte kraj, izberite lokacijo na zemljevidu in priložite fotografije.</p>
           </section>
 
           <section class="page-card card">
@@ -42,12 +42,12 @@
 
               <div class="form-group">
                 <label for="observation-first-name">Ime *</label>
-                <input id="observation-first-name" name="firstName" type="text" required placeholder="Vpišite ime" />
+                <input id="observation-first-name" name="firstName" type="text" required autocomplete="given-name" placeholder="Vpišite ime" />
               </div>
 
               <div class="form-group">
                 <label for="observation-last-name">Priimek *</label>
-                <input id="observation-last-name" name="lastName" type="text" required placeholder="Vpišite priimek" />
+                <input id="observation-last-name" name="lastName" type="text" required autocomplete="family-name" placeholder="Vpišite priimek" />
               </div>
 
               <div class="form-group">
@@ -94,25 +94,32 @@
               <div class="form-group full">
                 <label for="observation-images">Slike opažanja *</label>
                 <input id="observation-images" name="images" type="file" accept="image/*" multiple required />
-                <div class="small-hint">Dodate lahko več slik hkrati.</div>
+                <div class="small-hint">Na telefonu lahko dodate več slik. Sistem jih pred shranjevanjem samodejno pomanjša.</div>
               </div>
+
+              <div id="observation-submit-status" class="full small-hint" aria-live="polite"></div>
 
               <div class="full page-actions">
-                <button type="submit" class="btn btn-primary">Shrani opažanje</button>
+                <button type="submit" class="btn btn-primary" id="btn-save-observation">Shrani opažanje</button>
               </div>
             </form>
+
+            <div id="observation-thank-you" class="application-success" hidden>
+              <strong>Hvala za oddano opažanje.</strong>
+              <span>Podatki so bili uspešno shranjeni in jih bo pregledal administrator RD Mozirje.</span>
+            </div>
           </section>
 
-          <section class="page-card">
+          <section id="animal-observations-admin-panel" class="page-card" hidden>
             <div class="page-flex center">
               <div>
                 <h3 style="margin:0;">Shranjena opažanja</h3>
-                <p class="small-hint" style="margin:6px 0 0;">Pregled vseh vnosov in priprava za tisk.</p>
+                <p class="small-hint" style="margin:6px 0 0;">Ta pregled je viden samo administratorju.</p>
               </div>
             </div>
           </section>
 
-          <section id="animal-observations-list" class="page-table-wrap member-mobile-list" style="display:grid;"></section>
+          <section id="animal-observations-list" class="page-table-wrap member-mobile-list" style="display:grid;" hidden></section>
         </div>
       </div>
     </main>

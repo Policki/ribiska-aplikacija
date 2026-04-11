@@ -1,4 +1,4 @@
-// =======================
+﻿// =======================
 // core.js – SKUPNE FUNKCIJE
 // =======================
 
@@ -599,9 +599,9 @@ function renderAppNav(user, activeKey) {
     { key: "clanarina", label: "ČLANARINA", href: "clanarina.html" },
     { key: "karte-cuvaji", label: "LETNE KARTE IN ČUVAJI", href: "karte-čuvaji.html" },
     { key: "pripravniki-izpiti", label: "PRIPRAVNIKI IN IZPITI", href: "pripravniki-izpiti.html" },
-    { key: "clanske-izkaznice", label: "CLANSKE IZKAZNICE", href: "narocilo-izkaznic.html" },
-    { key: "obvescanje", label: "OBVESCANJE", href: "obvescanje.html" },
-    { key: "opazanja-zivali", label: "OPAZANJA ZIVALI", href: "opazanja-ribojedih-zivali.html" },
+    { key: "clanske-izkaznice", label: "ČLANSKE IZKAZNICE", href: "narocilo-izkaznic.html" },
+    { key: "obvescanje", label: "OBVEŠČANJE", href: "obvescanje.html" },
+    { key: "opazanja-zivali", label: "OPAŽANJA RIBOJEDIH PTIC", href: "opazanja-ribojedih-zivali.html" },
   ];
 
   nav.innerHTML = `<div class="header-nav-inner"></div>`;

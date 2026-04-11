@@ -1305,6 +1305,44 @@ body {
   color: rgba(19, 50, 50, 0.62);
 }
 
+.application-success {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(47, 122, 62, 0.24);
+  background:
+    radial-gradient(circle at top left, rgba(89, 170, 106, 0.20), transparent 32%),
+    linear-gradient(180deg, rgba(244, 252, 246, 0.98), rgba(232, 247, 236, 0.98));
+  color: #17451f;
+  box-shadow: 0 14px 32px rgba(47, 122, 62, 0.12);
+}
+
+.application-success strong,
+.application-success span {
+  display: block;
+}
+
+.application-success strong {
+  font-size: 18px;
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+
+.public-observation-page .main {
+  padding-top: 10px;
+}
+
+.public-observation-page .main-inner {
+  max-width: 940px;
+}
+
+.public-observation-page .page-intro {
+  background:
+    radial-gradient(circle at top left, rgba(11, 75, 75, 0.28), transparent 34%),
+    radial-gradient(circle at top right, rgba(246, 218, 139, 0.32), transparent 32%),
+    linear-gradient(180deg, rgba(250, 253, 251, 0.98), rgba(232, 244, 238, 0.98));
+}
+
 .animal-print {
   width: min(980px, 100%);
   margin: 24px auto;
@@ -1870,6 +1908,32 @@ body[data-page="pristopna-izjava"] .page-intro p {
   .observation-map-tools,
   .observation-coordinates {
     grid-template-columns: 1fr;
+  }
+
+  body[data-page="opazanja-zivali"] .main-inner {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  body[data-page="opazanja-zivali"] .page-stack {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  body[data-page="opazanja-zivali"] .page-intro,
+  body[data-page="opazanja-zivali"] .page-card {
+    margin-left: 6px;
+    margin-right: 6px;
+  }
+
+  body[data-page="opazanja-zivali"] .observation-map {
+    min-height: 320px;
+    border-radius: 18px;
+  }
+
+  body[data-page="opazanja-zivali"] .observation-map-tools .btn {
+    width: 100%;
+    min-height: 50px;
   }
 
   .animal-print {

@@ -3,6 +3,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const user = requireAuth({ pageModuleKey: "opazanja-zivali" });
   if (!user) return;
 
+  const canPrint = !!(user?.permissions?.canManageUsers || user?.username === "admin");
+  if (!canPrint) {
+    alert("Nimate dovoljenja za tisk opažanj.");
+    window.location.href = "dashboard.html";
+    return;
+  }
+
   const params = new URLSearchParams(window.location.search);
   const id = Number(params.get("id"));
   const observation = getAnimalObservations().find((item) => item.id === id);
@@ -27,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   host.innerHTML = `
     <section class="animal-print">
       <header class="animal-print__header">
-        <h1>Zabeleženo opažanje</h1>
+        <h1>Zabeleženo opažanje ribojedih ptic</h1>
         <div class="animal-print__meta">
           <div><span>Ime in priimek</span><strong>${escapeHtml(`${observation.firstName || ""} ${observation.lastName || ""}`.trim() || "-")}</strong></div>
           <div><span>Kaj je na sliki</span><strong>${escapeHtml(observation.title || "-")}</strong></div>
