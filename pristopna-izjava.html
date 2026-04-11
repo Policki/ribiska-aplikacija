@@ -6,31 +6,32 @@
     <title>Pristopna izjava - RD Mozirje</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body class="page" data-page="pristopna-izjava">
+  <body class="page public-application-page" data-page="pristopna-izjava">
     <main class="main">
       <div class="main-inner full-width">
         <div class="page-stack">
-          <section class="page-intro">
-            <h2>Pristopna izjava za članstvo</h2>
+          <section class="page-intro public-application-hero">
+            <p class="dashboard-eyebrow">Ribiška družina Mozirje</p>
+            <h2>Pristopna izjava</h2>
             <p>
-              Obrazec je prilagojen predvsem za telefon. Vnesite svoje podatke,
-              dodajte fotografijo in se na koncu podpišite na zaslonu.
+              Obrazec izpolnite na telefonu ali računalniku. Na koncu dodate fotografijo in podpis,
+              vlogo pa nato pregleda ter potrdi administrator RD Mozirje.
             </p>
           </section>
 
-          <section class="card page-card application-card">
+          <section class="card page-card application-card public-application-card">
             <form id="application-form">
               <div class="application-grid">
-                <div class="full application-section-title">Osnovni podatki</div>
+                <div class="full application-section-title">1. Osebni podatki</div>
 
                 <div class="form-group">
                   <label for="priimek">Priimek *</label>
-                  <input id="priimek" name="priimek" type="text" required placeholder="Na primer Novak" />
+                  <input id="priimek" name="priimek" type="text" required autocomplete="family-name" placeholder="Novak" />
                 </div>
 
                 <div class="form-group">
                   <label for="ime">Ime *</label>
-                  <input id="ime" name="ime" type="text" required placeholder="Na primer Marko" />
+                  <input id="ime" name="ime" type="text" required autocomplete="given-name" placeholder="Marko" />
                 </div>
 
                 <div class="form-group">
@@ -52,11 +53,11 @@
                   <input id="krajRojstva" name="krajRojstva" type="text" required placeholder="Na primer Celje" />
                 </div>
 
-                <div class="full application-section-title">Naslov in kontakt</div>
+                <div class="full application-section-title">2. Naslov in kontakt</div>
 
                 <div class="form-group full">
                   <label for="naslov">Naslov bivališča *</label>
-                  <input id="naslov" name="naslov" type="text" required placeholder="Ulica in hišna številka" />
+                  <input id="naslov" name="naslov" type="text" required autocomplete="street-address" placeholder="Ulica in hišna številka" />
                 </div>
 
                 <div class="form-group">
@@ -71,15 +72,15 @@
 
                 <div class="form-group">
                   <label for="telefon">Številka osebnega telefona *</label>
-                  <input id="telefon" name="telefon" type="tel" required placeholder="041 123 456" />
+                  <input id="telefon" name="telefon" type="tel" required autocomplete="tel" placeholder="041 123 456" />
                 </div>
 
                 <div class="form-group">
                   <label for="email">E-pošta *</label>
-                  <input id="email" name="email" type="email" required placeholder="ime.priimek@email.si" />
+                  <input id="email" name="email" type="email" required autocomplete="email" placeholder="ime.priimek@email.si" />
                 </div>
 
-                <div class="full application-section-title">Članstvo in dokumenti</div>
+                <div class="full application-section-title">3. Članstvo in letna karta</div>
 
                 <div class="form-group">
                   <label for="datumVloge">Datum vpisa *</label>
@@ -98,10 +99,10 @@
                 <div class="form-group full">
                   <label for="fotografija">Fotografija *</label>
                   <input id="fotografija" name="fotografija" type="file" accept="image/*" required />
-                  <div class="small-hint">Dodajte jasno fotografijo za evidenco člana in pripravo dokumentacije.</div>
+                  <div class="small-hint">Dodajte jasno fotografijo obraza. Sistem jo pred shranjevanjem samodejno prilagodi.</div>
                 </div>
 
-                <div class="full application-section-title">Druga ribiška družina</div>
+                <div class="full application-section-title">4. Morebitno članstvo v drugi RD</div>
 
                 <div class="form-group full">
                   <label for="drugaRdStatus">Ali ste bili ali ste še član druge ribiške družine v Sloveniji? *</label>
@@ -113,7 +114,7 @@
                   </select>
                 </div>
 
-                <div id="druga-rd-fields" class="full application-grid" hidden>
+                <div id="druga-rd-fields" class="full application-grid application-nested-card" hidden>
                   <div class="form-group">
                     <label for="drugaRdOd">Član od</label>
                     <input id="drugaRdOd" name="drugaRdOd" type="date" />
@@ -135,7 +136,7 @@
                   </div>
                 </div>
 
-                <div class="full application-section-title">Ribiški izpit</div>
+                <div class="full application-section-title">5. Ribiški izpit</div>
 
                 <div class="form-group full">
                   <label for="ribiskiIzpitStatus">Ali ste že opravili ribiški izpit? *</label>
@@ -156,7 +157,7 @@
                   <textarea id="opombe" name="opombe" rows="4" placeholder="Če želite, lahko tukaj dopišete dodatne informacije."></textarea>
                 </div>
 
-                <div class="full application-section-title">Soglasje in podpis</div>
+                <div class="full application-section-title">6. Soglasje in podpis</div>
 
                 <div class="form-group full">
                   <label>Splošni pogoji včlanitve *</label>
@@ -168,9 +169,9 @@
                     namenov, ciljev in nalog delovanja. Seznanjen sem, da lahko kadarkoli odstopim od soglasja k
                     posredovanju svojih osebnih podatkov. Seznanjen sem s obvestilom posameznikom glede
                     obdelave po 13. členu splošne uredbe o varstvu podatkov (GDPR) glede obdelave osebnih
-                    podatkov ribičev – članov RD. Seznanjen sem, da sta tako Pravilnik RZS o varovanju osebnih
+                    podatkov ribičev - članov RD. Seznanjen sem, da sta tako Pravilnik RZS o varovanju osebnih
                     podatkov kot tudi celotna politika obdelave in varovanja osebnih podatkov na RZS dostopna
-                    na spletni strani RZS: http://ribiska-zveza.si/dejavnosti/pravno-podrocje/varovanje-osebnihpodatkov-na-rzs ,
+                    na spletni strani RZS: http://ribiska-zveza.si/dejavnosti/pravno-podrocje/varovanje-osebnihpodatkov-na-rzs,
                     kjer se lahko seznanim tudi z vsemi pravicami in postopki za njihovo uveljavitev.
                     Zavedam se, da predstavlja navajanje zavajajočih ali netočnih podatkov v vlogi disciplinsko kršitev.
                   </div>
@@ -184,8 +185,8 @@
                   <label>Podpis vlagatelja *</label>
                   <button type="button" id="btn-open-signature" class="signature-trigger">
                     <span class="signature-trigger__eyebrow">Digitalni podpis</span>
-                    <span class="signature-trigger__title">Odpri podpisni zaslon</span>
-                    <span class="signature-trigger__hint">Odpre se celozaslonski vodoravni pogled za podpis.</span>
+                    <span class="signature-trigger__title">Podpiši pristopno izjavo</span>
+                    <span class="signature-trigger__hint">Na telefonu se odpre celozaslonski vodoravni podpisni pogled.</span>
                   </button>
                   <div id="signature-preview-wrap" class="signature-preview-wrap" hidden>
                     <img id="signature-preview" class="signature-preview" alt="Predogled podpisa vlagatelja" />
@@ -196,13 +197,13 @@
                   </div>
                 </div>
 
-                <div id="parent-consent-block" class="form-group full" hidden>
+                <div id="parent-consent-block" class="form-group full application-nested-card" hidden>
                   <label for="parentFullName">Mladoletna oseba: ime in priimek starša / skrbnika *</label>
                   <input id="parentFullName" name="parentFullName" type="text" placeholder="Ime in priimek starša ali skrbnika" />
                   <label style="margin-top: 12px;">Podpis starša / skrbnika *</label>
                   <button type="button" id="btn-open-parent-signature" class="signature-trigger">
                     <span class="signature-trigger__eyebrow">Podpis starša / skrbnika</span>
-                    <span class="signature-trigger__title">Odpri podpisni zaslon</span>
+                    <span class="signature-trigger__title">Podpiši soglasje</span>
                     <span class="signature-trigger__hint">Podpis se odpre v celozaslonskem vodoravnem pogledu.</span>
                   </button>
                   <div id="parent-signature-preview-wrap" class="signature-preview-wrap" hidden>
@@ -215,10 +216,17 @@
                 </div>
               </div>
 
-              <div class="page-actions" style="margin-top: 18px;">
-                <button type="submit" class="btn btn-primary">Oddaj pristopno izjavo</button>
+              <div id="application-submit-status" class="small-hint" aria-live="polite" style="margin-top: 14px;"></div>
+
+              <div class="page-actions public-application-actions">
+                <button type="submit" class="btn btn-primary" id="btn-submit-application">Oddaj pristopno izjavo</button>
               </div>
             </form>
+
+            <div id="application-success" class="application-success" hidden>
+              <strong>Pristopna izjava je bila oddana.</strong>
+              <span>Hvala. Vašo vlogo bo pregledal administrator RD Mozirje.</span>
+            </div>
           </section>
         </div>
       </div>

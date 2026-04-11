@@ -1,4 +1,4 @@
-function matchesApplicationSearch(application, query) {
+﻿function matchesApplicationSearch(application, query) {
   if (!query) return true;
   const haystack = [
     application.priimek,
@@ -75,18 +75,92 @@ function readAdminMemberData(application, card) {
     clanska: String(card.querySelector(".application-admin-clanska")?.value || "").trim(),
     datumVpisa: card.querySelector(".application-admin-datum-vpisa")?.value || application.datumVloge || todayISO(),
     potrebujeIzkaznico: !!card.querySelector(".application-admin-izkaznica")?.checked,
+    paymentMethod: card.querySelector(".application-admin-payment")?.value || "",
+    workHoursSettled: !!card.querySelector(".application-admin-workhours")?.checked,
   };
 }
 
 function validateAdminMemberData(data, members, linkedMemberId) {
   if (!data.status) return "Izberite status člana.";
-  if (!/^\d{6,7}$/.test(data.clanska)) return "Članska številka mora vsebovati 6-7 številk.";
-  const duplicate = (members || []).some(
-    (member) => member.id !== linkedMemberId && String(member.clanska || "").trim() === data.clanska
-  );
-  if (duplicate) return "Ta članska številka že obstaja.";
+  if (data.clanska && !/^\d{6,7}$/.test(data.clanska)) return "Članska številka mora vsebovati 6-7 številk.";
+  if (data.clanska) {
+    const duplicate = (members || []).some(
+      (member) => member.id !== linkedMemberId && String(member.clanska || "").trim() === data.clanska
+    );
+    if (duplicate) return "Ta članska številka že obstaja.";
+  }
   if (!data.datumVpisa) return "Datum vpisa je obvezen.";
+  if (!data.paymentMethod) return "Izberite način plačila članarine.";
   return null;
+}
+
+const APPLICATION_FEE_SNAPSHOT_KEY = "rd_fee_snapshot_v1";
+const APPLICATION_FEE_STATUS_KEY = "rd_fee_status_v1";
+
+function getJSONLocal(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw);
+  } catch {
+    return fallback;
+  }
+}
+
+function setJSONLocal(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function feeStateForPayment(paymentMethod, member) {
+  if (member?.status === "ZAČ") return "AUTO";
+  if (paymentMethod === "trr") return "PAID_TRR";
+  if (paymentMethod === "gotovina") return "PAID_CASH";
+  return "UNPAID";
+}
+
+function syncMemberFeeFromApplication(member, adminData) {
+  const year = currentYear();
+  const snapshots = getJSONLocal(APPLICATION_FEE_SNAPSHOT_KEY, {});
+  const statuses = getJSONLocal(APPLICATION_FEE_STATUS_KEY, {});
+
+  if (!snapshots[year]?.memberIds?.length) {
+    snapshots[year] = {
+      createdAt: new Date().toISOString(),
+      memberIds: getMembers()
+        .filter((item) => !item.arhiviran)
+        .map((item) => item.id),
+    };
+  }
+  if (!snapshots[year].memberIds.includes(member.id)) {
+    snapshots[year].memberIds.push(member.id);
+  }
+
+  statuses[year] = statuses[year] || {};
+  statuses[year][member.id] = {
+    state: feeStateForPayment(adminData.paymentMethod, member),
+    updatedAt: new Date().toISOString(),
+    source: "pristopna-izjava",
+  };
+
+  setJSONLocal(APPLICATION_FEE_SNAPSHOT_KEY, snapshots);
+  setJSONLocal(APPLICATION_FEE_STATUS_KEY, statuses);
+}
+
+function syncMemberWorkHoursFromApplication(member, adminData) {
+  const year = currentYear();
+  const hours = getWorkHoursYear(year);
+  if (adminData.workHoursSettled) {
+    hours[member.id] = Math.max(Number(hours[member.id] || 0), 10);
+  } else if (hours[member.id] == null) {
+    hours[member.id] = 0;
+  }
+  setWorkHoursYear(year, hours);
+}
+
+function paymentLabel(paymentMethod) {
+  if (paymentMethod === "trr") return "TRR";
+  if (paymentMethod === "gotovina") return "gotovina";
+  return "-";
 }
 
 function maybeRestoreArchivedApplicationMember(application, memberDraft) {
@@ -162,7 +236,7 @@ function upsertMemberFromApplication(application, adminData) {
   };
 
   if (existingIndex === -1) {
-    const validationError = validateAdminMemberData(adminData, members, null);
+    const validationError = validateAdminMemberData(adminData, members.filter((member) => !member.arhiviran), null);
     if (validationError) {
       alert(validationError);
       return null;
@@ -193,7 +267,7 @@ function renderApplicationCard(application, user, render) {
     ? members.find((member) => member.id === normalizedApplication.memberId)
     : null;
   const defaultStatus = linkedMember?.status || normalizedApplication.suggestedStatus || "";
-  const defaultClanska = linkedMember?.clanska || suggestUniqueClanska(members);
+  const defaultClanska = linkedMember?.clanska || normalizedApplication.clanska || "";
   const defaultDatumVpisa = linkedMember?.datumVpisa || normalizedApplication.datumVpisa || normalizedApplication.datumVloge || todayISO();
   const defaultIzkaznica =
     typeof linkedMember?.potrebujeIzkaznico === "boolean"
@@ -230,8 +304,8 @@ function renderApplicationCard(application, user, render) {
         </select>
       </label>
       <label class="application-admin-field">
-        <span>Članska številka</span>
-        <input type="text" class="application-admin-clanska" inputmode="numeric" maxlength="7" value="${escapeHtml(defaultClanska)}" />
+        <span>Članska številka (neobvezno)</span>
+        <input type="text" class="application-admin-clanska" inputmode="numeric" maxlength="7" value="${escapeHtml(defaultClanska)}" placeholder="Lahko ostane prazno" />
       </label>
       <label class="application-admin-field">
         <span>Datum vpisa</span>
@@ -240,6 +314,18 @@ function renderApplicationCard(application, user, render) {
       <label class="application-admin-field application-admin-field--toggle">
         <span>Naročilo izkaznice</span>
         <input type="checkbox" class="application-admin-izkaznica" ${defaultIzkaznica ? "checked" : ""} />
+      </label>
+      <label class="application-admin-field">
+        <span>Način plačila članarine</span>
+        <select class="application-admin-payment" required>
+          <option value="">Izberi plačilo...</option>
+          <option value="trr" ${normalizedApplication.paymentMethod === "trr" ? "selected" : ""}>Plačal TRR</option>
+          <option value="gotovina" ${normalizedApplication.paymentMethod === "gotovina" ? "selected" : ""}>Plačal gotovina</option>
+        </select>
+      </label>
+      <label class="application-admin-field application-admin-field--toggle">
+        <span>Delovne ure poravnane</span>
+        <input type="checkbox" class="application-admin-workhours" ${normalizedApplication.workHoursSettled ? "checked" : ""} />
       </label>
     </div>
     <div class="member-mobile-card__actions">
@@ -261,6 +347,9 @@ function renderApplicationCard(application, user, render) {
     const member = upsertMemberFromApplication(normalizedApplication, adminData);
     if (!member) return;
 
+    syncMemberFeeFromApplication(member, adminData);
+    syncMemberWorkHoursFromApplication(member, adminData);
+
     const applicationsAll = getMembershipApplications();
     const idx = applicationsAll.findIndex((item) => item.id === normalizedApplication.id);
     if (idx === -1) return;
@@ -272,12 +361,14 @@ function renderApplicationCard(application, user, render) {
       memberId: member.id,
       suggestedStatus: adminData.status,
       datumVpisa: adminData.datumVpisa,
+      paymentMethod: adminData.paymentMethod,
+      workHoursSettled: adminData.workHoursSettled,
     };
 
     saveMembershipApplications(applicationsAll);
     addHistory(
       "Pristopna izjava",
-      `Admin ${user.username} je shranil pristopno izjavo za ${member.ime} ${member.priimek} v seznam članov (št. ${member.clanska}).`
+      `Admin ${user.username} je shranil pristopno izjavo za ${member.ime} ${member.priimek} v seznam članov (${member.clanska ? `št. ${member.clanska}` : "brez članske številke"}). Plačilo: ${paymentLabel(adminData.paymentMethod)}. Delovne ure: ${adminData.workHoursSettled ? "poravnane (10 ur)" : "0 ur"}.`
     );
     render();
   });

@@ -1,4 +1,4 @@
-function initSignaturePad(canvas) {
+﻿function initSignaturePad(canvas) {
   const ctx = canvas.getContext("2d");
   let drawing = false;
   let hasStroke = false;
@@ -119,6 +119,44 @@ function readImageAsDataUrl(file) {
   });
 }
 
+function compressApplicationPhoto(file, options = {}) {
+  const maxSize = options.maxSize || 900;
+  const quality = options.quality || 0.78;
+
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      resolve("");
+      return;
+    }
+    if (!file.type?.startsWith("image/")) {
+      reject(new Error("Dodana datoteka ni slika."));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Napaka pri branju fotografije."));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => reject(new Error("Fotografije ni bilo mogoče pripraviti."));
+      img.onload = () => {
+        const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+        const width = Math.max(1, Math.round(img.width * scale));
+        const height = Math.max(1, Math.round(img.height * scale));
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d", { alpha: false });
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.src = String(reader.result || "");
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 function toTitleCase(value) {
   return String(value || "")
     .trim()
@@ -183,6 +221,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const datumRibiskegaIzpita = document.getElementById("datumRibiskegaIzpita");
   const ribiskiIzpitDatumWrap = document.getElementById("ribiski-izpit-datum-wrap");
   const fotografija = document.getElementById("fotografija");
+  const submitStatus = document.getElementById("application-submit-status");
+  const submitButton = document.getElementById("btn-submit-application");
+  const successBox = document.getElementById("application-success");
 
   const overlay = document.getElementById("signature-overlay");
   const overlayTitle = document.getElementById("signature-overlay-title");
@@ -370,7 +411,17 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const photoData = await readImageAsDataUrl(fotografija.files[0]);
+    let photoData = "";
+    try {
+      if (submitButton) submitButton.disabled = true;
+      if (submitStatus) submitStatus.textContent = "Pripravljam fotografijo in shranjujem pristopno izjavo...";
+      photoData = await compressApplicationPhoto(fotografija.files[0]);
+    } catch (error) {
+      alert(error?.message || "Fotografije ni bilo mogoče shraniti.");
+      if (submitButton) submitButton.disabled = false;
+      if (submitStatus) submitStatus.textContent = "";
+      return;
+    }
 
     const applications = getMembershipApplications();
     const payload = {
@@ -406,8 +457,19 @@ document.addEventListener("DOMContentLoaded", () => {
       adminConfirmedBy: "",
     };
 
-    applications.unshift(payload);
-    saveMembershipApplications(applications);
+    try {
+      applications.unshift(payload);
+      saveMembershipApplications(applications);
+    } catch (error) {
+      const quotaMessage =
+        error?.name === "QuotaExceededError"
+          ? "Shranjevanje ni uspelo, ker je prostor v brskalniku poln. Poskusite z manjšo fotografijo."
+          : null;
+      alert(quotaMessage || "Pri shranjevanju pristopne izjave je prišlo do napake.");
+      if (submitButton) submitButton.disabled = false;
+      if (submitStatus) submitStatus.textContent = "";
+      return;
+    }
 
     form.reset();
     applicantSignatureData = "";
@@ -418,6 +480,13 @@ document.addEventListener("DOMContentLoaded", () => {
     syncMinorState();
     syncDrugaRdState();
     syncRibiskiIzpitState();
-    alert("Pristopna izjava je bila uspešno oddana.");
+    if (submitStatus) submitStatus.textContent = "";
+    if (submitButton) submitButton.disabled = false;
+    if (successBox) {
+      successBox.hidden = false;
+      successBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      alert("Pristopna izjava je bila uspešno oddana.");
+    }
   });
 });

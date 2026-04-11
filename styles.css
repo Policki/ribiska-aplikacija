@@ -1544,6 +1544,44 @@ body[data-page="pristopna-izjava"] .page-intro {
   margin-right: auto;
 }
 
+.public-application-page .main {
+  padding-top: 10px;
+}
+
+.public-application-page .main-inner {
+  max-width: 980px;
+}
+
+.public-application-hero {
+  background:
+    radial-gradient(circle at top left, rgba(11, 75, 75, 0.30), transparent 34%),
+    radial-gradient(circle at bottom right, rgba(246, 218, 139, 0.30), transparent 34%),
+    linear-gradient(180deg, rgba(250, 253, 251, 0.98), rgba(232, 244, 238, 0.98));
+}
+
+.public-application-card {
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.application-nested-card {
+  padding: 14px;
+  border-radius: 22px;
+  border: 1px solid rgba(0, 75, 75, 0.12);
+  background: rgba(240, 248, 245, 0.70);
+}
+
+.public-application-actions {
+  margin-top: 18px;
+  position: sticky;
+  bottom: 10px;
+  z-index: 3;
+  padding: 10px;
+  border-radius: 20px;
+  background: rgba(244, 250, 247, 0.92);
+  backdrop-filter: blur(10px);
+}
+
 body[data-page="pristopna-izjava"] .page-intro p {
   font-size: 15px;
 }
