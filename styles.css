@@ -1753,6 +1753,280 @@ body {
   color: #133232;
 }
 
+.communication-shell {
+  display: grid;
+  gap: 18px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top left, rgba(246, 218, 139, 0.18), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(241, 248, 245, 0.98));
+}
+
+.communication-topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(11, 75, 75, 0.10), rgba(246, 218, 139, 0.18));
+  border: 1px solid rgba(0, 75, 75, 0.10);
+}
+
+.communication-channel-switch {
+  display: inline-flex;
+  padding: 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(0, 75, 75, 0.12);
+}
+
+.communication-channel-switch button {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(19, 50, 50, 0.72);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.communication-channel-switch button.active {
+  color: #ffffff;
+  background: linear-gradient(135deg, #0b4b4b, #006d6d);
+  box-shadow: 0 10px 20px rgba(0, 55, 55, 0.14);
+}
+
+.communication-provider-note {
+  display: grid;
+  gap: 3px;
+  text-align: right;
+  color: rgba(19, 50, 50, 0.72);
+}
+
+.communication-provider-note strong {
+  color: #133232;
+}
+
+.communication-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.86fr) minmax(0, 1.34fr);
+  gap: 18px;
+}
+
+.communication-panel {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+
+.communication-section {
+  padding: 18px;
+  border-radius: 24px;
+  border: 1px solid rgba(0, 75, 75, 0.12);
+  background: rgba(255, 255, 255, 0.90);
+  box-shadow: 0 12px 28px rgba(0, 55, 55, 0.06);
+}
+
+.communication-section h3 {
+  margin: 0 0 12px;
+  color: #133232;
+}
+
+.communication-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.communication-quick-card {
+  display: grid;
+  gap: 5px;
+  min-height: 76px;
+  padding: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(0, 75, 75, 0.12);
+  background: linear-gradient(180deg, #ffffff, #eef7f3);
+  color: #133232;
+  text-align: left;
+  cursor: pointer;
+}
+
+.communication-quick-card:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.communication-quick-card span {
+  font-size: 12px;
+  color: rgba(19, 50, 50, 0.62);
+}
+
+.communication-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.communication-filter-grid .form-group:first-child {
+  grid-column: 1 / -1;
+}
+
+.communication-checks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.communication-checks label {
+  padding: 11px 12px;
+  border-radius: 16px;
+  background: rgba(239, 247, 244, 0.84);
+  color: rgba(19, 50, 50, 0.78);
+  font-weight: 700;
+}
+
+.communication-group-tools {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.communication-groups-list {
+  display: grid;
+  gap: 8px;
+}
+
+.communication-group-chip {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(239, 247, 244, 0.86);
+  color: rgba(19, 50, 50, 0.76);
+}
+
+.communication-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.communication-stats article {
+  display: grid;
+  gap: 6px;
+  min-height: 108px;
+  padding: 16px;
+  border-radius: 22px;
+  color: #f7fffb;
+  background:
+    radial-gradient(circle at top right, rgba(246, 218, 139, 0.28), transparent 42%),
+    linear-gradient(145deg, #0b4b4b, #006d6d);
+}
+
+.communication-stats span {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  opacity: 0.82;
+}
+
+.communication-stats strong {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.communication-stats small {
+  opacity: 0.82;
+}
+
+.communication-recipient-list {
+  display: grid;
+  gap: 8px;
+  max-height: 460px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.communication-recipient {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) minmax(130px, auto);
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(0, 75, 75, 0.10);
+  background: rgba(255, 255, 255, 0.94);
+}
+
+.communication-recipient span {
+  display: grid;
+  gap: 3px;
+}
+
+.communication-recipient small,
+.communication-recipient em {
+  color: rgba(19, 50, 50, 0.62);
+  font-style: normal;
+}
+
+.communication-recipient.is-missing-contact {
+  opacity: 0.62;
+  background: rgba(192, 57, 43, 0.06);
+}
+
+.communication-message-form {
+  gap: 12px;
+}
+
+.communication-template-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.communication-preview {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(239, 247, 244, 0.96), rgba(255, 255, 255, 0.96));
+  border: 1px solid rgba(0, 75, 75, 0.10);
+  white-space: pre-wrap;
+}
+
+.communication-log {
+  display: grid;
+  gap: 9px;
+}
+
+.communication-log-item {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(239, 247, 244, 0.86);
+  color: rgba(19, 50, 50, 0.72);
+}
+
+.communication-log-item strong {
+  color: #133232;
+}
+
+.form-warning {
+  padding: 13px 15px;
+  border-radius: 18px;
+  color: #7a3b00;
+  background: rgba(246, 218, 139, 0.34);
+  border: 1px solid rgba(122, 59, 0, 0.14);
+  font-weight: 800;
+}
+
 @media (max-width: 980px) {
   .recap-fish-grid,
   .recap-stat-grid {
@@ -1761,6 +2035,14 @@ body {
 
   .recap-chart-grid {
     grid-template-columns: 1fr;
+  }
+
+  .communication-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .communication-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -1832,6 +2114,37 @@ body {
   .public-recap-page .public-application-actions .btn {
     width: 100%;
     min-height: 54px;
+  }
+
+  .communication-topbar,
+  .communication-provider-note {
+    align-items: stretch;
+    text-align: left;
+  }
+
+  .communication-topbar {
+    display: grid;
+  }
+
+  .communication-channel-switch,
+  .communication-channel-switch button {
+    width: 100%;
+  }
+
+  .communication-filter-grid,
+  .communication-checks,
+  .communication-quick-grid,
+  .communication-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .communication-group-tools,
+  .communication-recipient {
+    grid-template-columns: 1fr;
+  }
+
+  .communication-recipient-list {
+    max-height: 520px;
   }
 }
 
