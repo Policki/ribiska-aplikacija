@@ -91,6 +91,18 @@
                 <label><input id="canSeeHistory" type="checkbox" /> Lahko vidi zgodovino dejanj</label>
               </div>
 
+              <div class="section-title">Pravice za obveščanje</div>
+              <div class="check-grid">
+                <label><input id="canSendEmail" type="checkbox" /> Lahko pripravlja e-pošto</label>
+                <label><input id="canSendSms" type="checkbox" /> Lahko pripravlja SMS sporočila</label>
+                <label><input id="canMessageAllStatuses" type="checkbox" /> Lahko obvešča vse statuse</label>
+                <label><input id="canUseSensitiveMessageFilters" type="checkbox" /> Lahko uporablja občutljive filtre</label>
+              </div>
+              <div class="small-hint">
+                Če uporabnik nima pravice za vse statuse, lahko v modulu obveščanja izbira samo člane iz statusov, ki so mu vidni.
+                Občutljivi filtri vključujejo neplačnike, manjkajočo rekapitulacijo in člane brez izpita.
+              </div>
+
               <div class="chip-row">
                 <button type="submit" class="btn btn-primary" id="btn-submit">DODAJ UPORABNIKA</button>
                 <button type="button" class="btn btn-secondary" id="btn-cancel-edit" style="display:none;">PREKLIČI UREJANJE</button>

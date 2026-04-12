@@ -18,6 +18,9 @@ const STORAGE_KEYS = {
   REMINDERS: "rd_reminders",
   MEMBERSHIP_APPLICATIONS: "rd_membership_applications",
   ANIMAL_OBSERVATIONS: "rd_animal_observations",
+  YEARLY_RECAPS: "rd_yearly_recaps",
+  COMMUNICATION_GROUPS: "rd_communication_groups",
+  COMMUNICATION_LOG: "rd_communication_log",
 };
 
 // Demo “seed” verzija: ko spremeniš string, se demo podatki ponovno prepišejo
@@ -166,6 +169,14 @@ function saveAnimalObservations(observations) {
   setJSON(STORAGE_KEYS.ANIMAL_OBSERVATIONS, observations);
 }
 
+function getYearlyRecaps() {
+  return getJSON(STORAGE_KEYS.YEARLY_RECAPS, []);
+}
+
+function saveYearlyRecaps(recaps) {
+  setJSON(STORAGE_KEYS.YEARLY_RECAPS, recaps);
+}
+
 // ---------- EVENTS ----------
 
 function getEvents() {
@@ -224,6 +235,10 @@ function ensureDemoData() {
           canArchiveMembers: true,
           canManageUsers: true,
           canSeeHistory: true,
+          canSendEmail: true,
+          canSendSms: true,
+          canMessageAllStatuses: true,
+          canUseSensitiveMessageFilters: true,
         },
         visibleStatuses: ["*"],
       },
@@ -249,6 +264,9 @@ function ensureDemoData() {
   if (!getJSON(STORAGE_KEYS.REMINDERS, null)) setJSON(STORAGE_KEYS.REMINDERS, []);
   if (!getJSON(STORAGE_KEYS.MEMBERSHIP_APPLICATIONS, null)) setJSON(STORAGE_KEYS.MEMBERSHIP_APPLICATIONS, []);
   if (!getJSON(STORAGE_KEYS.ANIMAL_OBSERVATIONS, null)) setJSON(STORAGE_KEYS.ANIMAL_OBSERVATIONS, []);
+  if (!getJSON(STORAGE_KEYS.YEARLY_RECAPS, null)) setJSON(STORAGE_KEYS.YEARLY_RECAPS, []);
+  if (!getJSON(STORAGE_KEYS.COMMUNICATION_GROUPS, null)) setJSON(STORAGE_KEYS.COMMUNICATION_GROUPS, []);
+  if (!getJSON(STORAGE_KEYS.COMMUNICATION_LOG, null)) setJSON(STORAGE_KEYS.COMMUNICATION_LOG, []);
 }
 
 // ---------- AUTH / PERMISSIONS ----------
@@ -565,6 +583,7 @@ function enhancePageIntroWithModuleIcon(moduleKey) {
     "clanske-izkaznice": "slike/0b5f0853-e858-4728-840c-3bbaa60c328b-removebg-preview.png",
     obvescanje: "slike/images-removebg-preview.png",
     "opazanja-zivali": "slike/ribojede.png",
+    "letna-rekapitulacija": "slike/HLKhT-removebg-preview.png",
   };
 
   const iconSrc = moduleIcons[moduleKey];
@@ -608,6 +627,7 @@ function renderAppNav(user, activeKey) {
     { key: "clanske-izkaznice", label: "ČLANSKE IZKAZNICE", href: "narocilo-izkaznic.html" },
     { key: "obvescanje", label: "OBVEŠČANJE", href: "obvescanje.html" },
     { key: "opazanja-zivali", label: "OPAŽANJA RIBOJEDIH PTIC", href: "opazanja-ribojedih-zivali.html" },
+    { key: "letna-rekapitulacija", label: "LETNA REKAPITULACIJA", href: "letna-rekapitulacija.html" },
   ];
 
   nav.innerHTML = `<div class="header-nav-inner"></div>`;

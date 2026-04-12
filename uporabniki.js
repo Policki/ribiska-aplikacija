@@ -46,6 +46,10 @@
   const canArchiveMembers = document.getElementById("canArchiveMembers");
   const canManageUsers = document.getElementById("canManageUsers");
   const canSeeHistory = document.getElementById("canSeeHistory");
+  const canSendEmail = document.getElementById("canSendEmail");
+  const canSendSms = document.getElementById("canSendSms");
+  const canMessageAllStatuses = document.getElementById("canMessageAllStatuses");
+  const canUseSensitiveMessageFilters = document.getElementById("canUseSensitiveMessageFilters");
   let isViewMode = false;
 
   // --- Config (same keys as in app)
@@ -78,6 +82,7 @@
     { key: "clanske-izkaznice", label: "Naročilo izkaznic" },
     { key: "obvescanje", label: "Obveščanje" },
     { key: "opazanja-zivali", label: "Opažanja ribojedih ptic" },
+    { key: "letna-rekapitulacija", label: "Letna rekapitulacija" },
   ];
 
   // --- Build checkboxes
@@ -194,6 +199,10 @@
     canArchiveMembers.checked = !!user.permissions?.canArchiveMembers;
     canManageUsers.checked = !!user.permissions?.canManageUsers;
     canSeeHistory.checked = !!user.permissions?.canSeeHistory;
+    canSendEmail.checked = !!user.permissions?.canSendEmail;
+    canSendSms.checked = !!user.permissions?.canSendSms;
+    canMessageAllStatuses.checked = !!user.permissions?.canMessageAllStatuses;
+    canUseSensitiveMessageFilters.checked = !!user.permissions?.canUseSensitiveMessageFilters;
   }
 
   function fillFormForView(user) {
@@ -232,6 +241,8 @@
         perms.canArchiveMembers ? `<span class="badge ok">Arhiv</span>` : `<span class="badge neutral">Brez arhiva</span>`,
         perms.canSeeHistory ? `<span class="badge ok">Zgodovina</span>` : `<span class="badge neutral">Brez zgodovine</span>`,
         perms.canManageUsers ? `<span class="badge warn">Uporabniki</span>` : `<span class="badge neutral">Brez uporabnikov</span>`,
+        perms.canSendEmail ? `<span class="badge ok">E-pošta</span>` : `<span class="badge neutral">Brez e-pošte</span>`,
+        perms.canSendSms ? `<span class="badge ok">SMS</span>` : `<span class="badge neutral">Brez SMS</span>`,
       ].join(" ");
 
       const tr = document.createElement("tr");
@@ -290,6 +301,8 @@
         perms.canArchiveMembers ? `<span class="badge ok">Arhiv</span>` : `<span class="badge neutral">Brez arhiva</span>`,
         perms.canSeeHistory ? `<span class="badge ok">Zgodovina</span>` : `<span class="badge neutral">Brez zgodovine</span>`,
         perms.canManageUsers ? `<span class="badge warn">Uporabniki</span>` : `<span class="badge neutral">Brez uporabnikov</span>`,
+        perms.canSendEmail ? `<span class="badge ok">E-pošta</span>` : `<span class="badge neutral">Brez e-pošte</span>`,
+        perms.canSendSms ? `<span class="badge ok">SMS</span>` : `<span class="badge neutral">Brez SMS</span>`,
       ].join(" ");
 
       const tr = document.createElement("tr");
@@ -365,6 +378,8 @@
                 perms.canArchiveMembers ? "Arhiv" : null,
                 perms.canSeeHistory ? "Zgodovina" : null,
                 perms.canManageUsers ? "Uporabniki" : null,
+                perms.canSendEmail ? "E-pošta" : null,
+                perms.canSendSms ? "SMS" : null,
               ].filter(Boolean).join(", ") || "Osnovne")}</strong>
             </div>
           </div>
@@ -461,6 +476,10 @@
       canArchiveMembers: canArchiveMembers.checked,
       canManageUsers: canManageUsers.checked,
       canSeeHistory: canSeeHistory.checked,
+      canSendEmail: canSendEmail.checked,
+      canSendSms: canSendSms.checked,
+      canMessageAllStatuses: canMessageAllStatuses.checked,
+      canUseSensitiveMessageFilters: canUseSensitiveMessageFilters.checked,
     };
 
     const users = getUsers();

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="sl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Letna rekapitulacija - RD Mozirje</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="page public-recap-page" data-page="letna-rekapitulacija">
+    <header class="header header--universal" id="recap-admin-header" hidden>
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+          </div>
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
+        </div>
+      </div>
+      <nav id="app-nav" class="header-nav"></nav>
+    </header>
+
+    <main class="main">
+      <div class="main-inner full-width">
+        <div class="page-stack">
+          <section class="page-intro recap-hero">
+            <h2>Letna rekapitulacija</h2>
+            <p>
+              Vnesite letni uplen rib in ribolovne dneve. Obrazec je narejen predvsem za telefon,
+              zato ga lahko izpolnite hitro tudi ob vodi ali doma.
+            </p>
+          </section>
+
+          <section id="recap-admin-panel" class="page-card recap-admin-panel" hidden>
+            <div class="page-flex center">
+              <div>
+                <h3 style="margin: 0;">Admin pregled rekapitulacij</h3>
+                <p class="small-hint" style="margin: 6px 0 0;">Grafični pregled, letna statistika in izvoz za Excel.</p>
+              </div>
+              <div class="page-actions">
+                <div class="recap-active-year-pill">
+                  Aktivno leto oddaje: <strong id="recap-active-year-label">2026</strong>
+                </div>
+                <button type="button" class="btn btn-secondary" id="btn-close-recap-year">Zaključi leto</button>
+                <label class="form-group recap-year-filter">
+                  <span>Leto prikaza</span>
+                  <select id="recap-admin-year"></select>
+                </label>
+                <button type="button" class="btn btn-secondary" id="btn-export-recaps">Izvoz v Excel</button>
+              </div>
+            </div>
+
+            <div id="recap-admin-stats" class="recap-stat-grid"></div>
+
+            <div class="recap-chart-grid">
+              <article class="recap-chart-card">
+                <h4>Uplen po vrstah</h4>
+                <div id="recap-fish-chart" class="recap-bars"></div>
+              </article>
+              <article class="recap-chart-card">
+                <h4>Ribolovni dnevi po revirjih</h4>
+                <div id="recap-days-chart" class="recap-bars"></div>
+              </article>
+              <article class="recap-chart-card">
+                <h4>Vrste dovolilnic</h4>
+                <div id="recap-permit-chart" class="recap-donut-wrap"></div>
+              </article>
+            </div>
+
+            <article class="recap-chart-card recap-compare-card">
+              <div class="recap-compare-head">
+                <div>
+                  <h4>Primerjava z letom prej</h4>
+                  <p id="recap-compare-note" class="small-hint"></p>
+                </div>
+              </div>
+              <div id="recap-year-compare" class="recap-compare-grid"></div>
+            </article>
+
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Leto</th>
+                    <th>Dovolilnica</th>
+                    <th>Tip</th>
+                    <th>Uplen</th>
+                    <th>Ribolovni dnevi</th>
+                    <th>Oddano</th>
+                  </tr>
+                </thead>
+                <tbody id="recap-admin-table"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="page-card recap-form-card">
+            <form id="yearly-recap-form" class="recap-form">
+              <div class="recap-section">
+                <h3>Osnovni podatki</h3>
+                <p>Najprej vpišite podatke o dovolilnici in letu, za katero oddajate rekapitulacijo.</p>
+              </div>
+
+              <div class="recap-grid">
+                <div class="form-group">
+                  <label for="recap-year">Aktivno leto oddaje</label>
+                  <input id="recap-year" name="year" type="number" min="2000" max="2100" readonly required />
+                  <div class="small-hint">Leta ni mogoče spreminjati ročno. Novo leto odpre admin, ko zaključi trenutno.</div>
+                </div>
+
+                <div class="form-group">
+                  <label for="recap-permit-number">Številka ribolovne dovolilnice *</label>
+                  <input id="recap-permit-number" name="permitNumber" type="text" required inputmode="numeric" placeholder="Na primer 124" />
+                </div>
+              </div>
+
+              <fieldset class="recap-choice">
+                <legend>Vrsta dovolilnice *</legend>
+                <label><input type="radio" name="permitType" value="clanska" required /> Članska dovolilnica</label>
+                <label><input type="radio" name="permitType" value="mladinska" required /> Mladinska dovolilnica</label>
+              </fieldset>
+
+              <div class="recap-section">
+                <h3>Letni uplen rib</h3>
+                <p>Vse ribe vnesite v komadih, zelenko pa v kilogramih.</p>
+              </div>
+
+              <div class="recap-fish-grid">
+                <label class="recap-number-card">
+                  <span>Šarenka</span>
+                  <input name="sarenka" type="number" min="0" step="1" inputmode="numeric" value="0" />
+                  <small>kom</small>
+                </label>
+                <label class="recap-number-card">
+                  <span>Krap</span>
+                  <input name="krap" type="number" min="0" step="1" inputmode="numeric" value="0" />
+                  <small>kom</small>
+                </label>
+                <label class="recap-number-card">
+                  <span>Amur</span>
+                  <input name="amur" type="number" min="0" step="1" inputmode="numeric" value="0" />
+                  <small>kom</small>
+                </label>
+                <label class="recap-number-card">
+                  <span>Linj</span>
+                  <input name="linj" type="number" min="0" step="1" inputmode="numeric" value="0" />
+                  <small>kom</small>
+                </label>
+                <label class="recap-number-card">
+                  <span>Ploščič</span>
+                  <input name="ploscic" type="number" min="0" step="1" inputmode="numeric" value="0" />
+                  <small>kom</small>
+                </label>
+                <label class="recap-number-card">
+                  <span>Klen</span>
+                  <input name="klen" type="number" min="0" step="1" inputmode="numeric" value="0" />
+                  <small>kom</small>
+                </label>
+                <label class="recap-number-card recap-number-card--kg">
+                  <span>Zelenka</span>
+                  <input name="zelenkaKg" type="number" min="0" step="0.01" inputmode="decimal" value="0" />
+                  <small>kg</small>
+                </label>
+              </div>
+
+              <div class="recap-section">
+                <h3>Ribolovni dnevi</h3>
+                <p>Ribnik Gaj vodimo ločeno. Savinja in Dreta sta združena revirja, če se spomnite, pa spodaj razdelite dneve po rekah.</p>
+              </div>
+
+              <div class="recap-grid">
+                <div class="form-group">
+                  <label for="recap-gaj-days">Ribnik Gaj - število ribolovnih dni</label>
+                  <input id="recap-gaj-days" name="gajDays" type="number" min="0" step="1" inputmode="numeric" value="0" />
+                </div>
+                <div class="form-group">
+                  <label for="recap-sd-days">Savinja in Dreta - skupaj dni</label>
+                  <input id="recap-sd-days" name="savinjaDretaDays" type="number" min="0" step="1" inputmode="numeric" value="0" />
+                </div>
+              </div>
+
+              <fieldset class="recap-choice">
+                <legend>Se spomnite, v kateri reki ste lovili koliko dni?</legend>
+                <label><input type="radio" name="riverMemory" value="yes" /> Da, lahko razdelim po rekah</label>
+                <label><input type="radio" name="riverMemory" value="no" checked /> Ne, vem samo skupno za Savinjo in Dreto</label>
+              </fieldset>
+
+              <div id="river-split-fields" class="recap-grid" hidden>
+                <div class="form-group">
+                  <label for="recap-savinja-days">Savinja - število dni</label>
+                  <input id="recap-savinja-days" name="savinjaDays" type="number" min="0" step="1" inputmode="numeric" value="0" />
+                </div>
+                <div class="form-group">
+                  <label for="recap-dreta-days">Dreta - število dni</label>
+                  <input id="recap-dreta-days" name="dretaDays" type="number" min="0" step="1" inputmode="numeric" value="0" />
+                </div>
+              </div>
+
+              <div id="recap-submit-status" class="small-hint" aria-live="polite"></div>
+
+              <div class="public-application-actions">
+                <button type="submit" class="btn btn-primary" id="btn-submit-recap">Oddaj letno rekapitulacijo</button>
+              </div>
+            </form>
+
+            <div id="recap-thank-you" class="application-success" hidden>
+              <strong>Hvala za oddano letno rekapitulacijo.</strong>
+              <span>Podatki so bili uspešno shranjeni in bodo vključeni v letni pregled RD Mozirje.</span>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">©&nbsp;<span id="aktivno-leto"></span>&nbsp;Ribiška družina Mozirje | Enej Poličnik</footer>
+
+    <script src="core.js" defer></script>
+    <script src="letna-rekapitulacija.js" defer></script>
+  </body>
+</html>

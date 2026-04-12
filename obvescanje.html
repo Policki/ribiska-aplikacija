@@ -28,6 +28,176 @@
         <div class="page-stack">
           <section class="page-intro">
             <h2>Obveščanje</h2>
+            <p>Priprava prejemnikov, skupin in osnutkov za e-poštna ter SMS obvestila. Dejanski ponudniki se priklopijo naknadno.</p>
+          </section>
+
+          <section class="page-card communication-shell">
+            <div class="communication-topbar">
+              <div class="communication-channel-switch" role="tablist" aria-label="Kanal obveščanja">
+                <button type="button" class="active" data-channel="email">E-pošta</button>
+                <button type="button" data-channel="sms">SMS</button>
+              </div>
+              <div class="communication-provider-note">
+                <strong id="provider-title">SendGrid / Twilio</strong>
+                <span id="provider-subtitle">Pripravljeno za kasnejši priklop e-poštnega ponudnika.</span>
+              </div>
+            </div>
+
+            <div id="communication-permission-warning" class="form-warning" hidden></div>
+
+            <div class="communication-layout">
+              <aside class="communication-panel">
+                <div class="communication-section">
+                  <h3>Hitri izbor prejemnikov</h3>
+                  <div id="quick-filters" class="communication-quick-grid"></div>
+                </div>
+
+                <div class="communication-section">
+                  <h3>Podrobni filtri</h3>
+                  <div class="communication-filter-grid">
+                    <label class="form-group">
+                      <span>Iskanje člana</span>
+                      <input id="comm-search" type="search" placeholder="Ime, priimek, članska, e-pošta, telefon" />
+                    </label>
+
+                    <label class="form-group">
+                      <span>Status</span>
+                      <select id="comm-status" multiple size="6"></select>
+                    </label>
+
+                    <label class="form-group">
+                      <span>Tip letne karte</span>
+                      <select id="comm-card-type">
+                        <option value="all">Vsi tipi kart</option>
+                        <option value="navadna">Navadna karta</option>
+                        <option value="elrd">Elektronska karta eLRD</option>
+                      </select>
+                    </label>
+
+                    <label class="form-group">
+                      <span>Članarina</span>
+                      <select id="comm-fee-filter">
+                        <option value="all">Ne glede na plačilo</option>
+                        <option value="unpaid">Ni plačal članarine</option>
+                        <option value="paid">Ima označeno plačilo</option>
+                      </select>
+                    </label>
+
+                    <label class="form-group">
+                      <span>Letna rekapitulacija</span>
+                      <select id="comm-recap-filter">
+                        <option value="all">Ne glede na rekapitulacijo</option>
+                        <option value="missing-normal">Navadna karta, rekapitulacija manjka</option>
+                        <option value="submitted">Rekapitulacija je oddana</option>
+                      </select>
+                    </label>
+
+                    <label class="form-group">
+                      <span>Ribiški izpit</span>
+                      <select id="comm-exam-filter">
+                        <option value="all">Ne glede na izpit</option>
+                        <option value="missing">Brez ribiškega izpita</option>
+                        <option value="passed">Opravljen ribiški izpit</option>
+                      </select>
+                    </label>
+
+                    <label class="form-group">
+                      <span>Članstvo</span>
+                      <select id="comm-member-filter">
+                        <option value="active">Samo aktivni člani</option>
+                        <option value="new-current-year">Novi člani v aktivnem letu</option>
+                        <option value="new-365">Novi člani zadnjih 365 dni</option>
+                        <option value="archived">Samo arhivirani člani</option>
+                        <option value="all">Aktivni in arhivirani</option>
+                      </select>
+                    </label>
+
+                    <label class="form-group">
+                      <span>Kontakt</span>
+                      <select id="comm-contact-filter">
+                        <option value="valid">Samo z veljavnim kontaktom za kanal</option>
+                        <option value="missing">Samo brez kontakta za kanal</option>
+                        <option value="all">Vsi, tudi brez kontakta</option>
+                      </select>
+                    </label>
+                  </div>
+
+                  <div class="communication-checks">
+                    <label><input id="comm-only-pripravniki" type="checkbox" /> Samo pripravniki</label>
+                    <label><input id="comm-only-youth" type="checkbox" /> Samo mladinci</label>
+                    <label><input id="comm-only-normal-card" type="checkbox" /> Samo navadna karta</label>
+                    <label><input id="comm-only-elrd" type="checkbox" /> Samo eLRD</label>
+                  </div>
+                </div>
+
+                <div class="communication-section">
+                  <h3>Skupine</h3>
+                  <div class="communication-group-tools">
+                    <select id="comm-group-select">
+                      <option value="">Izberi shranjeno skupino</option>
+                    </select>
+                    <button type="button" class="btn btn-secondary" id="btn-apply-group">Uporabi skupino</button>
+                  </div>
+                  <div class="communication-group-tools">
+                    <input id="comm-group-name" type="text" placeholder="Ime nove skupine" />
+                    <button type="button" class="btn btn-primary" id="btn-save-group">Shrani trenutno skupino</button>
+                  </div>
+                  <div id="comm-groups-list" class="communication-groups-list"></div>
+                </div>
+              </aside>
+
+              <section class="communication-panel communication-compose">
+                <div class="communication-stats" id="comm-stats"></div>
+
+                <div class="communication-section">
+                  <div class="page-flex center">
+                    <div>
+                      <h3>Prejemniki</h3>
+                      <p class="small-hint">Pred pošiljanjem vedno preveri seznam. Člani brez ustreznega kontakta so označeni posebej.</p>
+                    </div>
+                    <div class="page-actions">
+                      <button type="button" class="btn btn-secondary" id="btn-select-all-recipients">Izberi vse</button>
+                      <button type="button" class="btn btn-secondary" id="btn-clear-recipients">Počisti izbor</button>
+                    </div>
+                  </div>
+                  <div id="comm-recipient-list" class="communication-recipient-list"></div>
+                </div>
+
+                <form id="comm-compose-form" class="communication-section communication-message-form">
+                  <h3>Osnutek sporočila</h3>
+                  <label class="form-group">
+                    <span>Zadeva / interni naslov</span>
+                    <input id="comm-subject" name="subject" type="text" placeholder="Na primer Opomnik za članarino" />
+                  </label>
+                  <label class="form-group">
+                    <span>Besedilo</span>
+                    <textarea id="comm-message" name="message" rows="7" placeholder="Pozdravljeni, ..."></textarea>
+                  </label>
+                  <div class="communication-template-row">
+                    <button type="button" class="chip-btn" data-template="fee">Predloga: članarina</button>
+                    <button type="button" class="chip-btn" data-template="recap">Predloga: rekapitulacija</button>
+                    <button type="button" class="chip-btn" data-template="event">Predloga: dogodek</button>
+                    <button type="button" class="chip-btn" data-template="exam">Predloga: izpit</button>
+                  </div>
+                  <div class="communication-preview">
+                    <strong>Predogled prvega izbranega prejemnika</strong>
+                    <div id="comm-preview-text"></div>
+                  </div>
+                  <div class="page-actions">
+                    <button type="button" class="btn btn-primary" id="btn-save-message-draft">Shrani osnutek v dnevnik</button>
+                    <button type="button" class="btn btn-secondary" id="btn-export-recipients">Izvozi prejemnike CSV</button>
+                  </div>
+                  <p class="small-hint">
+                    Pošiljanje še ni aktivno. Kasneje se tu priklopijo SendGrid/Twilio za e-pošto in SMS Chef za SMS.
+                  </p>
+                </form>
+
+                <div class="communication-section">
+                  <h3>Dnevnik pripravljenih obvestil</h3>
+                  <div id="comm-log" class="communication-log"></div>
+                </div>
+              </section>
+            </div>
           </section>
         </div>
       </div>
