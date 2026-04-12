@@ -31,6 +31,8 @@
   const ribiskiIzpitEl = document.getElementById("ribiskiIzpit");
   const datumIzpitaEl = document.getElementById("datumRibiskegaIzpita");
   const potrebujeIzkaznicoEl = document.getElementById("potrebujeIzkaznico");
+  const telefonVpisanEl = document.getElementById("telefonVpisan");
+  const izkaznicaUrejenaEl = document.getElementById("izkaznicaUrejena");
 
   let avatarDataUrl = null;
 
@@ -51,7 +53,7 @@
   form.kraj.value = member.kraj || "";
   form.telefon.value = member.telefon || "";
   form.email.value = member.email || "";
-  form.tipKarte.value = member.tipKarte || "";
+  form.tipKarte.value = normalizeTipKarteForForm(member.tipKarte || member.tipLetneKarte || member.letnaKarta || "");
   form.datumVpisa.value = member.datumVpisa || "";
   form.status.value = member.status || "";
   form.spc.value = member.spc || "";
@@ -71,6 +73,8 @@
   if (ribiskiIzpitEl) ribiskiIzpitEl.checked = member.ribiskiIzpit === true;
   if (datumIzpitaEl) datumIzpitaEl.value = member.datumRibiskegaIzpita || "";
   if (potrebujeIzkaznicoEl) potrebujeIzkaznicoEl.checked = member.potrebujeIzkaznico === true;
+  if (telefonVpisanEl) telefonVpisanEl.checked = member.telefonVpisan === true || !member.telefon;
+  if (izkaznicaUrejenaEl) izkaznicaUrejenaEl.checked = member.izkaznicaUrejena === true;
 
   // avatar
   avatarDataUrl = member.avatar || null;
@@ -82,6 +86,26 @@
       const end = form.priimek.selectionEnd;
       form.priimek.value = (form.priimek.value || "").toUpperCase();
       if (start !== null && end !== null) form.priimek.setSelectionRange(start, end);
+    });
+
+    form.ime?.addEventListener("blur", () => {
+      form.ime.value = toTitleCaseLocal(form.ime.value);
+    });
+
+    form.naslov?.addEventListener("blur", () => {
+      form.naslov.value = normalizeWhitespace(form.naslov.value);
+    });
+
+    form.kraj?.addEventListener("blur", () => {
+      form.kraj.value = toTitleCaseLocal(form.kraj.value);
+    });
+
+    form.email?.addEventListener("blur", () => {
+      form.email.value = String(form.email.value || "").trim().toLocaleLowerCase("sl-SI");
+    });
+
+    form.telefon?.addEventListener("blur", () => {
+      form.telefon.value = normalizePhoneLocal(form.telefon.value);
     });
   }
 
@@ -105,6 +129,14 @@
   }
   if (!isViewMode) ribiskiIzpitEl?.addEventListener("change", syncIzpitUI);
   syncIzpitUI();
+
+  function syncIzkaznicaUI() {
+    if (!potrebujeIzkaznicoEl || !izkaznicaUrejenaEl) return;
+    izkaznicaUrejenaEl.disabled = !potrebujeIzkaznicoEl.checked;
+    if (!potrebujeIzkaznicoEl.checked) izkaznicaUrejenaEl.checked = false;
+  }
+  if (!isViewMode) potrebujeIzkaznicoEl?.addEventListener("change", syncIzkaznicaUI);
+  syncIzkaznicaUI();
 
   // =========================
   // AVATAR HANDLERS
@@ -187,17 +219,19 @@
     e.preventDefault();
 
     const data = readMemberForm(form);
-    const normalizePhoneLocal = (raw) => {
-      let s = String(raw || "").replaceAll(" ", "").replaceAll("-", "");
-      if (s.startsWith("00386")) s = `+386${s.slice(5)}`;
-      if (s.startsWith("386") && !s.startsWith("+386")) s = `+386${s.slice(3)}`;
-      return s;
-    };
-
     // normalizacija pošte (če imaš normalizePosta globalno, jo uporabi; sicer fallback)
     const normalizePostaLocal = (raw) => String(raw || "").replace(/\D/g, "").slice(0, 4);
+    data.priimek = String(data.priimek || "").trim().toLocaleUpperCase("sl-SI");
+    data.ime = toTitleCaseLocal(data.ime);
+    data.naslov = normalizeWhitespace(data.naslov);
+    data.kraj = toTitleCaseLocal(data.kraj);
+    data.email = String(data.email || "").trim().toLocaleLowerCase("sl-SI");
     data.posta = normalizePostaLocal(data.posta);
     data.telefon = normalizePhoneLocal(data.telefon);
+    data.clanska = String(data.clanska || "").trim();
+    data.tipKarte = normalizeTipKarteForSave(data.tipKarte);
+    data.telefonVpisan = telefonVpisanEl ? !!telefonVpisanEl.checked : member.telefonVpisan === true;
+    data.izkaznicaUrejena = izkaznicaUrejenaEl ? !!izkaznicaUrejenaEl.checked : member.izkaznicaUrejena === true;
 
     if (!data.priimek || !data.ime) {
       alert("Priimek in ime sta obvezna.");
@@ -214,9 +248,27 @@
       return;
     }
 
+    if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      alert("E-mail ni v pravilni obliki.");
+      return;
+    }
+
+    if (data.clanska && !/^\d{6,7}$/.test(data.clanska)) {
+      alert("Članska številka mora vsebovati 6-7 številk ali pa naj ostane prazna.");
+      return;
+    }
+
     const list = getMembers();
     const idx = list.findIndex((m) => m.id === id);
     if (idx === -1) return;
+
+    if (data.clanska) {
+      const duplicate = list.some((m) => m.id !== id && String(m.clanska || "").trim() === data.clanska);
+      if (duplicate) {
+        alert("Ta članska številka je že uporabljena pri drugem članu.");
+        return;
+      }
+    }
 
     // ✅ če je nekdo NA NOVO označil "potrebuje izkaznico" -> naj gre v naročilo
     const prevNeeds = list[idx].potrebujeIzkaznico === true;
@@ -227,7 +279,6 @@
     list[idx] = {
       ...list[idx],
       ...data,
-      priimek: String(data.priimek || "").toUpperCase(),
       avatar: avatarDataUrl,
     };
 
@@ -238,13 +289,19 @@
 
     if (!nextPhone) {
       list[idx].telefonVpisan = true;
-    } else if (nextPhone !== prevPhone) {
+    } else if (nextPhone !== prevPhone && !telefonVpisanEl?.checked) {
       list[idx].telefonVpisan = false;
     }
+
+    if (telefonVpisanEl) list[idx].telefonVpisan = !!telefonVpisanEl.checked || !nextPhone;
 
     // če izpit ni označen, pobriši datum
     if (list[idx].ribiskiIzpit !== true) {
       list[idx].datumRibiskegaIzpita = "";
+    }
+
+    if (list[idx].potrebujeIzkaznico !== true) {
+      list[idx].izkaznicaUrejena = undefined;
     }
 
     saveMembers(list);
@@ -252,6 +309,38 @@
     alert("Podatki člana posodobljeni.");
     window.location.href = "seznam.html";
   });
+}
+
+function normalizeWhitespace(value) {
+  return String(value || "").trim().replace(/\s+/g, " ");
+}
+
+function toTitleCaseLocal(value) {
+  return normalizeWhitespace(value)
+    .toLocaleLowerCase("sl-SI")
+    .replace(/(^|[\s-])(\S)/g, (match, prefix, char) => `${prefix}${char.toLocaleUpperCase("sl-SI")}`);
+}
+
+function normalizePhoneLocal(raw) {
+  let s = String(raw || "").replaceAll(" ", "").replaceAll("-", "").trim();
+  if (s.startsWith("00386")) s = `+386${s.slice(5)}`;
+  if (s.startsWith("386") && !s.startsWith("+386")) s = `+386${s.slice(3)}`;
+  return s;
+}
+
+function normalizeTipKarteForForm(value) {
+  const raw = String(value || "").trim().toLocaleLowerCase("sl-SI");
+  if (!raw) return "";
+  if (raw === "letna" || raw === "navadna") return "navadna";
+  if (raw === "dnevna" || raw === "elrd" || raw.includes("elektronska")) return "eLRD";
+  return value;
+}
+
+function normalizeTipKarteForSave(value) {
+  const raw = String(value || "").trim().toLocaleLowerCase("sl-SI");
+  if (!raw) return "";
+  if (raw === "elrd" || raw.includes("elektronska")) return "eLRD";
+  return "navadna";
 }
 
 document.addEventListener("DOMContentLoaded", () => {

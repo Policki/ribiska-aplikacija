@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="sl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Čakajoči na prijavo v sistem – RD Mozirje</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body class="page" data-page="cakajoci-prijava">
+    <header class="header header--universal">
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+          </div>
+
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
+        </div>
+      </div>
+
+      <nav id="app-nav" class="header-nav"></nav>
+    </header>
+
+    <main class="main">
+      <div class="main-inner full-width">
+        <div class="page-stack">
+          <section class="page-intro system-queue-hero">
+            <div>
+              <span class="system-queue-kicker">čakalna vrsta</span>
+              <h2>Čakajoči na prijavo v sistem</h2>
+              <div class="small-hint">
+                Prikazani so novi aktivni člani s statusom AA, AM ali AP, ki še nimajo članske številke.
+                Ko številko vpišeš, se član samodejno umakne s tega seznama.
+              </div>
+            </div>
+            <div class="system-queue-badge">
+              <strong id="system-queue-count">0</strong>
+              <span>čaka</span>
+            </div>
+          </section>
+
+          <section class="card page-card system-queue-toolbar">
+            <div class="form-group">
+              <label for="system-queue-search">Hitro iskanje</label>
+              <input id="system-queue-search" type="search" placeholder="Išči po priimku, imenu, statusu ali telefonu" />
+            </div>
+            <a class="btn btn-secondary" href="seznam.html">Odpri seznam članov</a>
+          </section>
+
+          <section id="system-queue-table-wrap" class="page-table-wrap">
+            <div class="table-wrapper">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Priimek in ime</th>
+                    <th>Status</th>
+                    <th>Datum vpisa</th>
+                    <th>Telefon</th>
+                    <th>Članska številka</th>
+                    <th>Orodja</th>
+                  </tr>
+                </thead>
+                <tbody id="system-queue-body"></tbody>
+              </table>
+            </div>
+            <div id="system-queue-mobile" class="member-mobile-list"></div>
+          </section>
+
+          <section id="system-queue-empty" class="empty-state" hidden>
+            Trenutno ni članov, ki bi čakali na prijavo v sistem.
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">©&nbsp;<span id="aktivno-leto"></span>&nbsp;Ribiška družina Mozirje | Enej Poličnik</footer>
+
+    <script src="core.js" defer></script>
+    <script src="cakajoci-prijava.js" defer></script>
+  </body>
+</html>

@@ -6,7 +6,6 @@
   const avatarImg = document.getElementById("avatar-img");
   const avatarDrop = document.getElementById("avatar-drop");
   const btnAvatarRemove = document.getElementById("btn-avatar-remove");
-  const btnGenerateClanska = document.getElementById("btn-generate-clanska");
   const priimekEl = document.getElementById("priimek");
   const imeEl = document.getElementById("ime");
   const datumVpisaEl = document.getElementById("datumVpisa");
@@ -93,12 +92,6 @@
     window.bindPostaKrajAuto(postaEl, krajEl);
   }
 
-  btnGenerateClanska?.addEventListener("click", () => {
-    if (!clanskaEl) return;
-    clanskaEl.value = suggestUniqueClanska(getMembers());
-    clanskaEl.focus();
-  });
-
   function syncIzpitUI() {
     if (!ribiskiIzpitEl || !datumIzpitaEl) return;
     const enabled = ribiskiIzpitEl.checked;
@@ -137,9 +130,11 @@
       zapSt: newId,
       arhiviran: false,
       avatar: avatarDataUrl,
-      izkaznicaUrejena: data.potrebujeIzkaznico ? false : undefined,
+      izkaznicaUrejena: undefined,
+      potrebujeIzkaznico: false,
       telefonVpisan: data.telefon ? false : true,
       ...data,
+      potrebujeIzkaznico: false,
     };
 
     const restoreResult = maybeRestoreArchivedMember(data, member);
@@ -148,7 +143,10 @@
     members.push(member);
     saveMembers(members);
 
-    addHistory("Vpis člana", `Dodan član: ${member.ime} ${member.priimek} (št. ${member.clanska}).`);
+    addHistory(
+      "Vpis člana",
+      `Dodan član: ${member.ime} ${member.priimek} (${member.clanska ? `št. ${member.clanska}` : "brez članske številke"}).`
+    );
 
     alert("Član uspešno dodan.");
     window.location.href = "seznam.html";
@@ -183,17 +181,6 @@ function normalizePhone(raw) {
 
 function normalizePosta(raw) {
   return String(raw || "").replace(/\D/g, "").slice(0, 4);
-}
-
-function suggestUniqueClanska(members) {
-  const existing = new Set((members || []).map((m) => String(m.clanska || "").trim()));
-
-  for (let i = 0; i < 2000; i++) {
-    const candidate = String(100000 + Math.floor(Math.random() * 900000));
-    if (!existing.has(candidate)) return candidate;
-  }
-
-  return String(Date.now()).slice(-6);
 }
 
 function maybeRestoreArchivedMember(data, memberDraft) {
@@ -245,11 +232,11 @@ function validateMemberInput(data, members) {
   if (!data.spc) return "SPC (spol) je obvezen.";
 
   const cl = String(data.clanska || "");
-  if (!/^\d{6,7}$/.test(cl)) {
-    return "Članska številka mora vsebovati 6-7 številk.";
+  if (cl && !/^\d{6,7}$/.test(cl)) {
+    return "Članska številka mora vsebovati 6-7 številk ali pa naj ostane prazna.";
   }
 
-  const dup = (members || []).some((m) => String(m.clanska || "").trim() === cl);
+  const dup = cl && (members || []).some((m) => String(m.clanska || "").trim() === cl);
   if (dup) {
     return "Članska številka že obstaja. Uporabi predlog ali vnesi drugo.";
   }

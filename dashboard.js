@@ -1,5 +1,6 @@
 function handleDashboardPage(currentUser) {
   const cards = document.querySelectorAll(".dashboard-card");
+  const statCards = document.querySelectorAll("[data-dashboard-stat]");
 
   cards.forEach((card) => {
     const moduleKey = card.dataset.module;
@@ -12,6 +13,31 @@ function handleDashboardPage(currentUser) {
     card.classList.remove("is-hidden");
     card.removeAttribute("aria-hidden");
   });
+
+  statCards.forEach((card) => {
+    const statKey = card.dataset.dashboardStat;
+    if (statKey && !userCanSeeDashboardStat(currentUser, statKey)) {
+      card.classList.add("is-hidden");
+      card.setAttribute("aria-hidden", "true");
+      return;
+    }
+    card.classList.remove("is-hidden");
+    card.removeAttribute("aria-hidden");
+  });
+}
+
+function userCanSeeDashboardStat(user, statKey) {
+  if (!user || user.modules?.includes("*")) return true;
+  const permissions = user.permissions || {};
+  const permissionMap = {
+    activeMembers: "canSeeDashboardActiveMembers",
+    phoneQueue: "canSeeDashboardPhoneQueue",
+    cardQueue: "canSeeDashboardCardQueue",
+    membershipApplications: "canSeeDashboardApplications",
+  };
+  const permissionKey = permissionMap[statKey];
+  if (!permissionKey) return true;
+  return permissions[permissionKey] !== false;
 }
 
 function renderDashboardStats(currentUser) {
@@ -28,8 +54,11 @@ function renderDashboardStats(currentUser) {
   const cakajociTelefoni = visibleMembers.filter(
     (m) => !m.arhiviran && String(m.telefon || "").trim() && m.telefonVpisan !== true
   ).length;
-  const cakajoceIzkaznice = members.filter(
-    (m) => m.potrebujeIzkaznico === true && m.izkaznicaUrejena !== true
+  const cakajociNaPrijavo = visibleMembers.filter(
+    (m) =>
+      !m.arhiviran &&
+      ["AA", "AM", "AP"].includes(String(m.status || "").trim()) &&
+      !String(m.clanska || "").trim()
   ).length;
 
   const setText = (id, value) => {
@@ -40,7 +69,7 @@ function renderDashboardStats(currentUser) {
   setText("stat-aktivni", aktivni);
   setText("stat-telefoni", cakajociTelefoni);
   setText("stat-pristopne-vloge", pendingApplications);
-  setText("stat-izkaznice", cakajoceIzkaznice);
+  setText("stat-izkaznice", cakajociNaPrijavo);
 }
 
 document.addEventListener("DOMContentLoaded", () => {

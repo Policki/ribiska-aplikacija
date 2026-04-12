@@ -26,6 +26,12 @@
   const inpSearch = document.getElementById("fee-search");
   const btnClose = document.getElementById("btn-close-year");
   const statsEl = document.getElementById("fee-stats");
+  const statGrid = document.getElementById("fee-stat-grid");
+  const donut = document.getElementById("fee-donut");
+  const donutText = document.getElementById("fee-donut-text");
+  const chartMeta = document.getElementById("fee-chart-meta");
+  const paymentBars = document.getElementById("fee-payment-bars");
+  const moneyBars = document.getElementById("fee-money-bars");
   const aktivnoLetoEl = document.getElementById("aktivno-leto");
   if (aktivnoLetoEl) aktivnoLetoEl.textContent = AktivnoLeto();
 
@@ -114,7 +120,7 @@
     if (state === STATE.UNPAID) return "red";
     if (state === STATE.PAID_TRR) return "green";
     if (state === STATE.PAID_CASH) return "blue"; // CASH druga barva
-    if (state === STATE.AUTO) return "green";
+    if (state === STATE.AUTO) return "yellow";
     return "";
   }
 
@@ -122,7 +128,7 @@
     if (state === STATE.UNPAID) return "warn";
     if (state === STATE.PAID_TRR) return "ok";
     if (state === STATE.PAID_CASH) return "cash";
-    if (state === STATE.AUTO) return "ok";
+    if (state === STATE.AUTO) return "auto";
     return "neutral";
   }
 
@@ -191,6 +197,9 @@
   }
 
   function setStatus(year, memberId, state) {
+    const member = getMembers().find((m) => m.id === memberId);
+    if (member && isAutoRenewMember(member)) state = STATE.AUTO;
+
     const all = getJSONLocal(LS_FEE_STATUS, {});
     all[year] = all[year] || {};
     all[year][memberId] = { state, updatedAt: nowISO() };
@@ -220,6 +229,22 @@
     return all[year] || [];
   }
 
+  function normalizeAutoRenewStatuses(year, members, statusMap) {
+    let changed = false;
+    const all = getJSONLocal(LS_FEE_STATUS, {});
+    all[year] = all[year] || {};
+
+    members.forEach((member) => {
+      if (!isAutoRenewMember(member)) return;
+      if (statusMap[member.id]?.state === STATE.AUTO) return;
+      all[year][member.id] = { state: STATE.AUTO, updatedAt: nowISO() };
+      statusMap[member.id] = all[year][member.id];
+      changed = true;
+    });
+
+    if (changed) setJSONLocal(LS_FEE_STATUS, all);
+  }
+
   // =============================
   // Search helper
   // =============================
@@ -241,22 +266,99 @@
     let paidTRR = 0;
     let paidCASH = 0;
     let auto = 0;
+    let expected = 0;
+    let received = 0;
+    let openAmount = 0;
+    const membersAll = getMembers();
 
     ids.forEach((id) => {
-      const st = statusMap[id]?.state || STATE.UNPAID;
+      const member = membersAll.find((m) => m.id === id);
+      const st = member && isAutoRenewMember(member) ? STATE.AUTO : statusMap[id]?.state || STATE.UNPAID;
+      const amount = feeAmountForMember(member);
+      expected += amount;
       if (st === STATE.UNPAID) unpaid++;
       if (st === STATE.PAID_TRR) paidTRR++;
       if (st === STATE.PAID_CASH) paidCASH++;
       if (st === STATE.AUTO) auto++;
+      if (st === STATE.UNPAID) openAmount += amount;
+      else received += amount;
     });
 
     const paid = paidTRR + paidCASH + auto;
+    const percent = total ? Math.round((paid / total) * 100) : 100;
 
     if (statsEl) {
       statsEl.textContent =
         `Skupaj: ${total} | Aktivni za leto: ${paid} (TRR ${paidTRR}, CASH ${paidCASH}, AUTO ${auto}) | Neplačali: ${unpaid}` +
         (isYearClosed(year) ? " | LETO ZAKLJUČENO" : "");
     }
+
+    if (donut && donutText) {
+      donut.style.background = `conic-gradient(#2ecc71 ${percent}%, #e9eef0 0)`;
+      donutText.textContent = `${percent}%`;
+    }
+
+    if (chartMeta) {
+      chartMeta.textContent = `${paid}/${total} plačanih oziroma aktivnih za leto ${year}`;
+    }
+
+    if (statGrid) {
+      statGrid.innerHTML = [
+        feeStatCard("Vseh v letu", total, isYearClosed(year) ? "leto je zaključeno" : "aktivna evidenca"),
+        feeStatCard("Plačani", paid, `${percent}% pokritost`),
+        feeStatCard("Neplačani", unpaid, `${formatEUR(openAmount)} odprto`),
+        feeStatCard("TRR", paidTRR, "plačano na račun"),
+        feeStatCard("Gotovina", paidCASH, "plačano CASH"),
+        feeStatCard("AUTO", auto, "ZAČ brez plačila"),
+        feeStatCard("Pričakovano", formatEUR(expected), "skupna odmera"),
+        feeStatCard("Prejeto", formatEUR(received), `${formatEUR(openAmount)} še odprto`),
+      ].join("");
+    }
+
+    renderFeeBars(paymentBars, [
+      ["TRR", paidTRR, total],
+      ["Gotovina", paidCASH, total],
+      ["AUTO", auto, total],
+      ["Neplačani", unpaid, total],
+    ]);
+
+    renderFeeBars(moneyBars, [
+      ["Prejeto", received, Math.max(1, expected), formatEUR(received)],
+      ["Odprto", openAmount, Math.max(1, expected), formatEUR(openAmount)],
+      ["Pričakovano", expected, Math.max(1, expected), formatEUR(expected)],
+    ]);
+  }
+
+  function feeStatCard(label, value, hint) {
+    return `
+      <article class="fee-stat-card">
+        <span>${escapeHtml(label)}</span>
+        <strong>${escapeHtml(value)}</strong>
+        <small>${escapeHtml(hint)}</small>
+      </article>
+    `;
+  }
+
+  function renderFeeBars(host, rows) {
+    if (!host) return;
+    host.innerHTML = rows
+      .map(([label, value, max, display]) => {
+        const pct = max ? Math.round((Number(value || 0) / Number(max || 1)) * 100) : 0;
+        return `
+          <div class="fee-bar-row">
+            <div class="fee-bar-label">
+              <span>${escapeHtml(label)}</span>
+              <strong>${escapeHtml(display || value)}</strong>
+            </div>
+            <div class="fee-bar-track"><i style="width:${Math.max(2, Math.min(100, pct))}%"></i></div>
+          </div>
+        `;
+      })
+      .join("");
+  }
+
+  function formatEUR(value) {
+    return `${Number(value || 0).toLocaleString("sl-SI", { maximumFractionDigits: 0 })} €`;
   }
 
   // =============================
@@ -276,6 +378,8 @@
       .map((id) => membersAll.find((m) => m.id === id))
       .filter(Boolean);
 
+    normalizeAutoRenewStatuses(year, membersSnap, statusMap);
+
     const members = membersSnap
       .filter(matchesSearch)
       .sort((a, b) => {
@@ -291,7 +395,7 @@
 
     members.forEach((m) => {
       const amount = feeAmountForMember(m);
-      const st = statusMap[m.id]?.state || (isAutoRenewMember(m) ? STATE.AUTO : STATE.UNPAID);
+      const st = isAutoRenewMember(m) ? STATE.AUTO : statusMap[m.id]?.state || STATE.UNPAID;
       const color = stateColorClass(st);
 
       const tr = document.createElement("tr");

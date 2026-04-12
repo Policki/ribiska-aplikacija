@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const RECAP_ACTIVE_YEAR_KEY = "rd_yearly_recap_active_year";
   const currentUser = getCurrentUser();
-  const isAdmin = !!currentUser?.permissions?.canManageUsers || currentUser?.username === "admin";
+  const isAdmin = !!currentUser && (currentUser.username === "admin" || currentUser.permissions?.canManageYearlyRecaps === true || currentUser.permissions?.canManageUsers === true);
   let activeYear = getRecapActiveYear();
 
   const form = document.getElementById("yearly-recap-form");

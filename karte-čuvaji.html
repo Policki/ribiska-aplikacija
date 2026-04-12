@@ -29,10 +29,19 @@
   <main class="main">
     <div class="main-inner full-width">
       <div class="page-stack">
-      <div class="page-intro">
-        <h2>Letne karte in čuvaji</h2>
-        <div class="small-hint">Uvoz, ročni vnos in arhiviranje evidenc letnih kart po posameznih sezonah.</div>
+      <div class="page-intro licenses-hero">
+        <div>
+          <span class="licenses-kicker">sezonske dovolilnice</span>
+          <h2>Letne karte in čuvaji</h2>
+          <div class="small-hint">Uvoz, ročni vnos in arhiviranje evidenc letnih kart po posameznih sezonah.</div>
+        </div>
+        <div class="licenses-hero-badge">
+          <strong>4</strong>
+          <span>vrste kart</span>
+        </div>
       </div>
+
+      <section id="lic-stat-grid" class="licenses-stat-grid"></section>
 
       <div class="card page-card">
         <div class="page-flex">
@@ -55,6 +64,17 @@
               <div class="form-group" style="grid-column:1/-1;">
                 <label for="lic-search">HITRO ISKANJE</label>
                 <input id="lic-search" type="text" placeholder="ime, priimek, številka…" />
+              </div>
+
+              <div class="form-group" style="grid-column:1/-1;">
+                <label for="lic-type-filter">FILTER VRSTE KARTE</label>
+                <select id="lic-type-filter">
+                  <option value="all">Vse vrste</option>
+                  <option value="clanska">Članske</option>
+                  <option value="mladinska">Mladinske</option>
+                  <option value="trening">Trening</option>
+                  <option value="castna">Častne</option>
+                </select>
               </div>
 
               <div class="form-group" style="grid-column:1/-1;">
@@ -100,6 +120,16 @@
             </div>
 
             <div class="form-group">
+              <label for="licenseType">VRSTA KARTE</label>
+              <select id="licenseType" name="licenseType">
+                <option value="clanska">Članska</option>
+                <option value="mladinska">Mladinska</option>
+                <option value="trening">Trening</option>
+                <option value="castna">Častna</option>
+              </select>
+            </div>
+
+            <div class="form-group">
               <label for="revir0">REVIR 0</label>
               <input id="revir0" name="revir0" type="text" placeholder="npr. Savinja in Dreta" />
             </div>
@@ -129,6 +159,7 @@
               <th>IME</th>
               <th>PRIIMEK</th>
               <th>ŠT. KARTE</th>
+              <th>VRSTA</th>
               <th>REVIR0</th>
               <th>REVIR1</th>
               <th>REVIR2</th>

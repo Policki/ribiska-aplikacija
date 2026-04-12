@@ -33,19 +33,29 @@
     <main class="main">
       <div class="main-inner full-width">
         <div class="page-stack">
-        <div class="page-intro">
-          <h2>Priznanja članov</h2>
-          <div class="small-hint">
-            Priznanja se hranijo kot zgodovina (več vnosov). Predlogi se ne izbrišejo,
-            dokler jih ne potrdiš.
+        <div class="page-intro awards-hero">
+          <div>
+            <span class="awards-kicker">evidenca priznanj</span>
+            <h2>Priznanja članov</h2>
+            <div class="small-hint">
+              Urejena zgodovina priznanj, samodejni predlogi in pregled naslednjih kandidatov za priznanja RD Mozirje.
+            </div>
           </div>
+          <div class="awards-hero-mark">★</div>
         </div>
 
-        <div class="card page-card">
-          <div class="card-title">Vnos priznanja</div>
+        <div class="awards-top-grid">
+        <div class="card page-card awards-entry-card">
+          <div class="awards-card-head">
+            <div>
+              <div class="card-title">Vnos priznanja</div>
+              <div class="small-hint">Ročno dodaj prejeto priznanje članu.</div>
+            </div>
+            <span class="awards-icon-pill">ročni vnos</span>
+          </div>
 
           <form id="award-form">
-            <div class="grid-2">
+            <div class="awards-form-grid">
               <div class="form-group">
                 <label for="award-member">ČLAN</label>
                 <select id="award-member" name="award-member"></select>
@@ -79,7 +89,7 @@
 
               <div class="form-group">
                 <label>&nbsp;</label>
-                <div class="chip-row">
+                <div class="chip-row awards-actions">
                   <button type="submit" class="btn btn-primary">DODAJ PRIZNANJE</button>
                   <button type="button" id="btn-award-reset" class="btn btn-secondary">
                     POČISTI
@@ -89,9 +99,10 @@
             </div>
           </form>
         </div>
+        </div>
 
-        <div class="card page-card">
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <div class="card page-card awards-panel awards-panel--gold">
+          <div class="awards-card-head">
             <div>
               <div class="card-title">Predlogi priznanj (do Red I)</div>
               <div class="small-hint">
@@ -99,7 +110,7 @@
               </div>
             </div>
 
-            <div class="chip-row" style="margin-top:0;">
+            <div class="chip-row awards-actions">
               <button type="button" id="btn-generate" class="chip-btn primary">
                 GENERIRAJ PREDLOGE
               </button>
@@ -109,7 +120,7 @@
             </div>
           </div>
 
-          <div class="table-wrapper">
+          <div class="table-wrapper awards-table-wrap">
             <table class="table">
               <thead>
                 <tr>
@@ -128,8 +139,8 @@
           </div>
         </div>
 
-        <div class="card page-card">
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <div class="card page-card awards-panel awards-panel--plaque">
+          <div class="awards-card-head">
             <div>
               <div class="card-title">Predlogi plaket (ločeno)</div>
               <div class="small-hint">
@@ -137,7 +148,7 @@
               </div>
             </div>
 
-            <div class="chip-row" style="margin-top:0;">
+            <div class="chip-row awards-actions">
               <button type="button" id="btn-generate-plaques" class="chip-btn primary">
                 GENERIRAJ PLAKETE
               </button>
@@ -147,7 +158,7 @@
             </div>
           </div>
 
-          <div class="table-wrapper">
+          <div class="table-wrapper awards-table-wrap">
             <table class="table">
               <thead>
                 <tr>
@@ -166,8 +177,8 @@
           </div>
         </div>
 
-        <div class="card page-card">
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+        <div class="card page-card awards-panel">
+          <div class="awards-card-head">
             <div>
               <div class="card-title">Pregled priznanj članov</div>
               <div class="small-hint">
@@ -175,13 +186,13 @@
               </div>
             </div>
 
-            <label style="display:flex; align-items:center; gap:8px; font-weight:800;">
+            <label class="awards-toggle">
               <input type="checkbox" id="toggle-archived" />
               Prikaži tudi arhivirane
             </label>
           </div>
 
-          <div class="table-wrapper">
+          <div class="table-wrapper awards-table-wrap">
             <table class="table">
               <thead>
                 <tr>

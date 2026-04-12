@@ -261,25 +261,39 @@
                 </div>
                 <div class="divider" style="grid-column: 1 / -1;"></div>
 
-<div class="form-group" style="grid-column: 1 / -1;">
-  <label style="display:flex; gap:10px; align-items:center;">
-    <input id="ribiskiIzpit" name="ribiskiIzpit" type="checkbox" />
-    Opravljen ribiški izpit
-  </label>
-</div>
+                <section class="edit-admin-panel">
+                  <div>
+                    <div class="card-title">Administrativne oznake</div>
+                    <div class="small-hint">Hitre oznake za izpit, telefon in člansko izkaznico.</div>
+                  </div>
 
-<div class="form-group">
-  <label for="datumRibiskegaIzpita">Datum ribiškega izpita</label>
-  <input id="datumRibiskegaIzpita" name="datumRibiskegaIzpita" type="date" />
-</div>
+                  <label class="compact-check">
+                    <input id="ribiskiIzpit" name="ribiskiIzpit" type="checkbox" />
+                    <span>Opravljen ribiški izpit</span>
+                  </label>
 
-<div class="form-group">
-  <label style="display:flex; gap:10px; align-items:center;">
-    <input id="potrebujeIzkaznico" name="potrebujeIzkaznico" type="checkbox" />
-    Potrebuje člansko izkaznico
-  </label>
-  <div class="small-hint">Če označiš, bo član v “Naročilo izkaznic”, dokler ni urejeno.</div>
-</div>
+                  <div class="form-group">
+                    <label for="datumRibiskegaIzpita">Datum ribiškega izpita</label>
+                    <input id="datumRibiskegaIzpita" name="datumRibiskegaIzpita" type="date" />
+                  </div>
+
+                  <label class="compact-check">
+                    <input id="telefonVpisan" name="telefonVpisan" type="checkbox" />
+                    <span>Telefonska številka je vpisana v telefon</span>
+                  </label>
+
+                  <label class="compact-check">
+                    <input id="potrebujeIzkaznico" name="potrebujeIzkaznico" type="checkbox" />
+                    <span>Potrebuje člansko izkaznico</span>
+                  </label>
+
+                  <label class="compact-check">
+                    <input id="izkaznicaUrejena" name="izkaznicaUrejena" type="checkbox" />
+                    <span>Članska izkaznica je urejena</span>
+                  </label>
+
+                  <div class="small-hint">Če označiš “Potrebuje člansko izkaznico”, se član pojavi v modulu naročila izkaznic, dokler ni označeno, da je urejeno.</div>
+                </section>
 
                 <div class="actions-row">
                   <a id="btn-back-link" href="seznam.html" class="btn btn-secondary">NAZAJ</a>

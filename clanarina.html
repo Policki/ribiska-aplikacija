@@ -29,16 +29,57 @@
   <main class="main">
     <div class="main-inner full-width">
       <div class="page-stack">
-      <div class="page-intro">
-        <h2>Članarina</h2>
-        <div class="small-hint">Pregled plačil po članih, zaključevanje leta in vračanje plačnikov iz arhiva.</div>
+      <div class="page-intro fee-hero">
+        <div>
+          <span class="fee-kicker">finančna evidenca</span>
+          <h2>Članarina</h2>
+          <div class="small-hint">Pregled plačil po članih, zaključevanje leta in vračanje plačnikov iz arhiva.</div>
+        </div>
+        <div class="fee-hero-badge">
+          <strong>€</strong>
+          <span>članarina</span>
+        </div>
       </div>
 
-      <div class="card page-card">
+      <section class="fee-dashboard">
+        <div id="fee-stat-grid" class="fee-stat-grid"></div>
+
+        <div class="fee-chart-grid">
+          <article class="fee-chart-card fee-chart-card--donut">
+            <div>
+              <div class="card-title">Pokritost plačil</div>
+              <div id="fee-chart-meta" class="small-hint">—</div>
+            </div>
+            <div id="fee-donut" class="fee-donut"><span id="fee-donut-text">0%</span></div>
+          </article>
+
+          <article class="fee-chart-card">
+            <div class="fee-chart-head">
+              <div>
+                <div class="card-title">Način plačila</div>
+                <div class="small-hint">TRR, gotovina in samodejna članarina.</div>
+              </div>
+            </div>
+            <div id="fee-payment-bars" class="fee-bars"></div>
+          </article>
+
+          <article class="fee-chart-card">
+            <div class="fee-chart-head">
+              <div>
+                <div class="card-title">Zneski</div>
+                <div class="small-hint">Pričakovano, prejeto in odprto za izbrano leto.</div>
+              </div>
+            </div>
+            <div id="fee-money-bars" class="fee-bars"></div>
+          </article>
+        </div>
+      </section>
+
+      <div class="card page-card fee-tools-card">
         <div class="page-flex">
           <div>
             <div class="card-title">Navodila</div>
-            <div style="font-size:14px; max-width:720px;">
+            <div class="small-hint" style="max-width:720px;">
               Klikni status → izberi:
               <b style="color:#c0392b;">NEPLAČAL</b>,
               <b style="color:#2ecc71;">PLAČAL (TRR)</b>,
@@ -48,7 +89,7 @@
             </div>
           </div>
 
-          <div style="min-width:320px;">
+          <div class="fee-tools">
             <div class="card-title">Orodja</div>
             <div class="grid-2">
               <div class="form-group">
@@ -68,7 +109,7 @@
               </div>
             </div>
 
-            <div id="fee-stats" class="small-hint"></div>
+            <div id="fee-stats" class="small-hint fee-inline-stats"></div>
           </div>
         </div>
       </div>

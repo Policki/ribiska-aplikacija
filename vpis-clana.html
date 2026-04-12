@@ -182,7 +182,7 @@
 
     <main class="main">
       <div class="main-inner full-width">
-        <div class="page-title">
+        <div class="page-title vpis-hero">
           <div>
             <h2>Vpis novega člana</h2>
             <div class="page-subtitle">
@@ -195,11 +195,11 @@
           </div>
         </div>
 
-        <form id="vpis-clana-form" autocomplete="on">
+        <form id="vpis-clana-form" class="vpis-member-form" autocomplete="on">
           <div class="vpis-layout">
             <!-- LEVO: AVATAR + HITRE AKCIJE -->
-            <section class="card">
-              <div class="card-title"></div>
+            <section class="card vpis-avatar-card">
+              <div class="card-title">Fotografija člana</div>
 
               <div class="avatar-wrap">
                 <div class="avatar-preview">
@@ -228,7 +228,7 @@
             </section>
 
             <!-- DESNO: PODATKI -->
-            <section class="card">
+            <section class="card vpis-data-card">
               <div class="card-title">Podatki člana</div>
 
               <div class="form-grid">
@@ -318,16 +318,14 @@
 
                 <div class="form-group" style="grid-column: 1 / -1;">
                   <label for="clanska">Članska številka</label>
-                  <div style="display:flex; gap:10px; align-items:center;">
-                    <input id="clanska" name="clanska" type="text" required placeholder="npr. 123456" />
-                    <button id="btn-generate-clanska" type="button" class="btn btn-secondary" style="white-space:nowrap;">Predlagaj</button>
-                  </div>
+                  <input id="clanska" name="clanska" type="text" placeholder="Lahko ostane prazno do prijave v sistem" />
+                  <div class="help">Če številka še ni znana, član ostane v čakalni vrsti za prijavo v sistem.</div>
                 </div>
               </div>
               <div class="divider" style="grid-column: 1 / -1;"></div>
 
-              <div class="form-group" style="grid-column: 1 / -1;">
-  <label style="display:flex; gap:10px; align-items:center;">
+              <div class="form-group vpis-checkbox-field" style="grid-column: 1 / -1;">
+  <label>
     <input id="ribiskiIzpit" name="ribiskiIzpit" type="checkbox" />
     Opravljen ribiški izpit
   </label>
@@ -337,14 +335,6 @@
 <div class="form-group">
   <label for="datumRibiskegaIzpita">Datum ribiškega izpita</label>
   <input id="datumRibiskegaIzpita" name="datumRibiskegaIzpita" type="date" />
-</div>
-
-<div class="form-group">
-  <label style="display:flex; gap:10px; align-items:center;">
-    <input id="potrebujeIzkaznico" name="potrebujeIzkaznico" type="checkbox" />
-    Potrebuje člansko izkaznico
-  </label>
-  <div class="help">Če označiš, se član pojavi na strani “Naročilo izkaznic”.</div>
 </div>
 
               <div class="inline-actions">

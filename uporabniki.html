@@ -75,6 +75,9 @@
               </div>
 
               <div class="section-title">Moduli, ki jih uporabnik vidi</div>
+              <div class="small-hint">
+                Izbrani moduli določajo navigacijo in kartice na dashboardu. Če modul ni označen, ga uporabnik ne vidi na dashboardu.
+              </div>
               <div class="check-grid" id="module-checks"></div>
 
               <div class="chip-row">
@@ -91,6 +94,10 @@
                 <label><input id="canSeeHistory" type="checkbox" /> Lahko vidi zgodovino dejanj</label>
               </div>
 
+              <div class="section-title">Dashboard statistike</div>
+              <div class="small-hint">Določi, katere zgornje statistične kartice se uporabniku prikažejo na dashboardu.</div>
+              <div class="check-grid" id="dashboard-stat-checks"></div>
+
               <div class="section-title">Pravice za obveščanje</div>
               <div class="check-grid">
                 <label><input id="canSendEmail" type="checkbox" /> Lahko pripravlja e-pošto</label>
@@ -101,6 +108,18 @@
               <div class="small-hint">
                 Če uporabnik nima pravice za vse statuse, lahko v modulu obveščanja izbira samo člane iz statusov, ki so mu vidni.
                 Občutljivi filtri vključujejo neplačnike, manjkajočo rekapitulacijo in člane brez izpita.
+              </div>
+
+              <div class="section-title">Podrobne pravice po modulih</div>
+              <div class="small-hint">
+                Te pravice so pripravljene za natančno omejevanje posameznih akcij. Obstoječe ključne pravice že vplivajo na urejanje, arhiv, zgodovino in obveščanje.
+              </div>
+              <div class="check-grid permissions-grid" id="advanced-permission-checks"></div>
+
+              <div class="chip-row">
+                <button type="button" class="chip-btn primary" id="permissions-all">Vse pravice</button>
+                <button type="button" class="chip-btn" id="permissions-basic">Osnovni pregled</button>
+                <button type="button" class="chip-btn" id="permissions-none">Brez dodatnih pravic</button>
               </div>
 
               <div class="chip-row">

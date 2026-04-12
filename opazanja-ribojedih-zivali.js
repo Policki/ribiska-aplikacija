@@ -21,7 +21,7 @@ function getOptionalCurrentUser() {
 }
 
 function isObservationAdmin(user) {
-  return !!(user?.permissions?.canManageUsers || user?.username === "admin");
+  return !!(user?.username === "admin" || user?.permissions?.canViewObservationAdmin || user?.permissions?.canManageUsers);
 }
 
 function setObservationStatus(message) {

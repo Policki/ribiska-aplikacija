@@ -91,10 +91,18 @@ function initMembersUI() {
   }
 
   const btnXlsx = document.getElementById("btn-export-xlsx");
-  if (btnXlsx) btnXlsx.addEventListener("click", () => exportMembersXLSX());
+  const currentUser = getCurrentUser();
+  const canExport = currentUser?.permissions?.canExportMembers !== false;
+  if (btnXlsx) {
+    btnXlsx.hidden = !canExport;
+    btnXlsx.addEventListener("click", () => exportMembersXLSX());
+  }
 
   const btnCsv = document.getElementById("btn-export-csv");
-  if (btnCsv) btnCsv.addEventListener("click", () => exportMembersCSV());
+  if (btnCsv) {
+    btnCsv.hidden = !canExport;
+    btnCsv.addEventListener("click", () => exportMembersCSV());
+  }
 
   // 2) prva risba
   renderEverything(state);
@@ -124,11 +132,40 @@ function renderEverything(state) {
 }
 
 function getFilteredSortedMembers(members, state) {
-  return applyFilters(members, state).sort((a, b) => {
-    const ap = (a.priimek || "").localeCompare((b.priimek || ""), "sl", { sensitivity: "base" });
-    if (ap !== 0) return ap;
-    return (a.ime || "").localeCompare((b.ime || ""), "sl", { sensitivity: "base" });
-  });
+  return applyFilters(members, state).sort(compareMembersBySurname);
+}
+
+function compareMembersBySurname(a, b) {
+  const priimek = String(a.priimek || "").localeCompare(String(b.priimek || ""), "sl", { sensitivity: "base" });
+  if (priimek !== 0) return priimek;
+  const ime = String(a.ime || "").localeCompare(String(b.ime || ""), "sl", { sensitivity: "base" });
+  if (ime !== 0) return ime;
+  return Number(a.id || 0) - Number(b.id || 0);
+}
+
+function formatDisplayText(value, mode = "plain") {
+  const text = String(value || "").trim();
+  if (!text) return "-";
+  if (mode === "name" || mode === "place") {
+    return text
+      .toLocaleLowerCase("sl-SI")
+      .replace(/(^|[\s-])(\S)/g, (match, prefix, char) => `${prefix}${char.toLocaleUpperCase("sl-SI")}`);
+  }
+  return text;
+}
+
+function renderDisplayCell(value, mode = "plain") {
+  return escapeHtml(formatDisplayText(value, mode));
+}
+
+function renderEmailCell(email) {
+  const value = String(email || "").trim();
+  if (!value) return "-";
+  return `<a href="mailto:${escapeHtml(value)}">${escapeHtml(value.toLocaleLowerCase("sl-SI"))}</a>`;
+}
+
+function renderToolButton(kind, label, title) {
+  return `<button type="button" class="member-tool-btn member-tool-btn--${kind}" title="${escapeHtml(title)}">${escapeHtml(label)}</button>`;
 }
 
 function renderResponsiveMembers(members, state) {
@@ -149,7 +186,7 @@ function renderResponsiveMembers(members, state) {
     card.innerHTML = `
       <div class="member-mobile-card__head">
         <div>
-          <div class="member-mobile-card__name">${escapeHtml(String(m.priimek || "").trim())} ${escapeHtml(String(m.ime || "").trim())}</div>
+          <div class="member-mobile-card__name">${renderDisplayCell(m.priimek, "name")} ${renderDisplayCell(m.ime, "name")}</div>
           <div class="member-mobile-card__meta">
             <span class="badge neutral">${escapeHtml(m.status || "Brez statusa")}</span>
             <span class="badge neutral">${escapeHtml(m.clanska || "Brez članske")}</span>
@@ -160,15 +197,15 @@ function renderResponsiveMembers(members, state) {
       <div class="member-mobile-card__body">
         <div class="member-mobile-card__row">
           <span>Telefon</span>
-          <strong>${escapeHtml(m.telefon || "-")}</strong>
+          <strong>${renderDisplayCell(m.telefon)}</strong>
         </div>
         <div class="member-mobile-card__row">
           <span>E-mail</span>
-          <strong>${m.email ? `<a href="mailto:${escapeHtml(m.email)}">${escapeHtml(m.email)}</a>` : "-"}</strong>
+          <strong>${renderEmailCell(m.email)}</strong>
         </div>
         <div class="member-mobile-card__row">
           <span>Naslov</span>
-          <strong>${escapeHtml([m.naslov, m.posta, m.kraj].filter(Boolean).join(", ") || "-")}</strong>
+          <strong>${escapeHtml([formatDisplayText(m.naslov), formatDisplayText(m.posta), formatDisplayText(m.kraj, "place")].filter((x) => x !== "-").join(", ") || "-")}</strong>
         </div>
         <div class="member-mobile-card__row">
           <span>Spol / karta</span>
@@ -367,27 +404,23 @@ function renderTableWithState(members, state) {
   const summaryEl = document.getElementById("members-summary");
   if (!tbody) return;
 
-  const filtered = applyFilters(members, state).sort((a, b) => {
-    const ap = (a.priimek || "").localeCompare((b.priimek || ""), "sl", { sensitivity: "base" });
-    if (ap !== 0) return ap;
-    return (a.ime || "").localeCompare((b.ime || ""), "sl", { sensitivity: "base" });
-  });
+  const filtered = getFilteredSortedMembers(members, state);
 
   tbody.innerHTML = "";
   filtered.forEach((m, index) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td class="col-zapst" data-col="zapst">${renderZapstCell(m, index, state)}</td>
-      <td data-col="status">${m.status || ""}</td>
-      <td data-col="spc">${m.spc || ""}</td>
-      <td data-col="clanska">${m.clanska || ""}</td>
-      <td data-col="priimek">${m.priimek || ""}</td>
-      <td data-col="ime">${m.ime || ""}</td>
-      <td data-col="naslov">${m.naslov || ""}</td>
-      <td data-col="posta">${m.posta || ""}</td>
-      <td data-col="kraj">${m.kraj || ""}</td>
-      <td data-col="email">${m.email ? `<a href="mailto:${m.email}">${m.email}</a>` : ""}</td>
-      <td data-col="telefon">${m.telefon || ""}</td>
+      <td data-col="status">${renderDisplayCell(m.status)}</td>
+      <td data-col="spc">${renderDisplayCell(m.spc)}</td>
+      <td data-col="clanska">${renderDisplayCell(m.clanska)}</td>
+      <td data-col="priimek">${renderDisplayCell(m.priimek, "name")}</td>
+      <td data-col="ime">${renderDisplayCell(m.ime, "name")}</td>
+      <td data-col="naslov">${renderDisplayCell(m.naslov)}</td>
+      <td data-col="posta">${renderDisplayCell(m.posta)}</td>
+      <td data-col="kraj">${renderDisplayCell(m.kraj, "place")}</td>
+      <td data-col="email">${renderEmailCell(m.email)}</td>
+      <td data-col="telefon">${renderDisplayCell(m.telefon)}</td>
       <td class="table-actions" data-col="tools">
         <span class="action-icon edit" title="Uredi">✎</span>
         <span class="action-icon delete" title="Arhiviraj">🗑</span>
@@ -427,43 +460,39 @@ function renderTableWithStateReadOnlyTools(members, state) {
   const canArchiveMembers = !!currentUser?.permissions?.canArchiveMembers;
   if (!tbody) return;
 
-  const filtered = applyFilters(members, state).sort((a, b) => {
-    const ap = (a.priimek || "").localeCompare((b.priimek || ""), "sl", { sensitivity: "base" });
-    if (ap !== 0) return ap;
-    return (a.ime || "").localeCompare((b.ime || ""), "sl", { sensitivity: "base" });
-  });
+  const filtered = getFilteredSortedMembers(members, state);
 
   tbody.innerHTML = "";
   filtered.forEach((m, index) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td class="col-zapst" data-col="zapst">${renderZapstCell(m, index, state)}</td>
-      <td data-col="status">${m.status || ""}</td>
-      <td data-col="spc">${m.spc || ""}</td>
-      <td data-col="clanska">${m.clanska || ""}</td>
-      <td data-col="priimek">${m.priimek || ""}</td>
-      <td data-col="ime">${m.ime || ""}</td>
-      <td data-col="naslov">${m.naslov || ""}</td>
-      <td data-col="posta">${m.posta || ""}</td>
-      <td data-col="kraj">${m.kraj || ""}</td>
-      <td data-col="email">${m.email ? `<a href="mailto:${m.email}">${m.email}</a>` : ""}</td>
-      <td data-col="telefon">${m.telefon || ""}</td>
-      <td class="table-actions" data-col="tools">
-        <span class="action-icon view" title="Podroben pogled">👁</span>
-        ${canEditMembers ? `<span class="action-icon edit" title="Uredi">✎</span>` : ""}
-        ${canArchiveMembers ? `<span class="action-icon delete" title="Arhiviraj">🗑</span>` : ""}
+      <td data-col="status"><span class="member-status-pill">${renderDisplayCell(m.status)}</span></td>
+      <td data-col="spc">${renderDisplayCell(m.spc)}</td>
+      <td data-col="clanska">${renderDisplayCell(m.clanska)}</td>
+      <td data-col="priimek" class="member-name-cell">${renderDisplayCell(m.priimek, "name")}</td>
+      <td data-col="ime" class="member-name-cell">${renderDisplayCell(m.ime, "name")}</td>
+      <td data-col="naslov">${renderDisplayCell(m.naslov)}</td>
+      <td data-col="posta">${renderDisplayCell(m.posta)}</td>
+      <td data-col="kraj">${renderDisplayCell(m.kraj, "place")}</td>
+      <td data-col="email">${renderEmailCell(m.email)}</td>
+      <td data-col="telefon">${renderDisplayCell(m.telefon)}</td>
+      <td class="table-actions member-tools" data-col="tools">
+        ${renderToolButton("view", "Pogled", "Podroben pogled")}
+        ${canEditMembers ? renderToolButton("edit", "Uredi", "Uredi člana") : ""}
+        ${canArchiveMembers ? renderToolButton("delete", "Arhiv", "Premakni člana v arhiv") : ""}
       </td>
     `;
 
-    tr.querySelector(".view").addEventListener("click", () => {
+    tr.querySelector(".member-tool-btn--view").addEventListener("click", () => {
       window.location.href = `urejanje-clana.html?id=${m.id}&mode=view`;
     });
 
-    tr.querySelector(".edit")?.addEventListener("click", () => {
+    tr.querySelector(".member-tool-btn--edit")?.addEventListener("click", () => {
       window.location.href = `urejanje-clana.html?id=${m.id}`;
     });
 
-    tr.querySelector(".delete")?.addEventListener("click", () => {
+    tr.querySelector(".member-tool-btn--delete")?.addEventListener("click", () => {
       if (confirm("Ali res želiš premakniti člana v arhiv?")) {
         const list = getMembers();
         const idx = list.findIndex((x) => x.id === m.id);
@@ -556,7 +585,7 @@ function applyColumnVisibility(state) {
 ========================= */
 
 function buildExportRows(allMembers) {
-  const members = allMembers.filter(m => !m.arhiviran);
+  const members = allMembers.filter(m => !m.arhiviran).sort(compareMembersBySurname);
 
   const header = [
     "STAT",

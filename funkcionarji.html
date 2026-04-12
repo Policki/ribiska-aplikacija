@@ -37,44 +37,88 @@
           <div class="small-hint">Dodeljevanje funkcij članom in pregled njihovih kontaktnih podatkov na enem mestu.</div>
         </div>
 
-        <form id="official-form" class="card page-card">
-          <div class="form-group">
-            <label for="official-member">ČLAN</label>
-            <select id="official-member" name="official-member"></select>
-          </div>
+        <section class="officials-shell">
+          <form id="mandate-form" class="card page-card">
+            <div class="card-title">Mandatno obdobje</div>
+            <div class="small-hint">Najprej ustvari ali izberi mandat, nato vanj dodaj funkcionarje.</div>
 
-          <div class="form-group">
-            <label for="official-role">FUNKCIJA</label>
-            <select id="official-role" name="official-role">
-              <option value="Predsednik">Predsednik</option>
-              <option value="Gospodar">Gospodar</option>
-              <option value="Tajnik">Tajnik</option>
-              <option value="Član UO">Član UO</option>
-              <option value="Tožilec">Tožilec</option>
-              <option value="Član disciplinske razsodišča">Član disciplinske razsodišča</option>
-              <option value="Drugo">Drugo</option>
-            </select>
-          </div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="mandate-start">Začetno leto</label>
+                <input id="mandate-start" name="mandate-start" type="number" min="1900" max="2200" required />
+              </div>
 
-          <div class="form-actions">
-            <button type="submit" class="btn btn-primary">
-              DODAJ FUNKCIONARJA
-            </button>
-          </div>
-        </form>
+              <div class="form-group">
+                <label for="mandate-end">Končno leto</label>
+                <input id="mandate-end" name="mandate-end" type="number" min="1900" max="2200" required />
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">DODAJ MANDAT</button>
+            </div>
+          </form>
+
+          <form id="official-form" class="card page-card">
+            <div class="card-title">Dodaj funkcionarja v mandat</div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="official-mandate">MANDAT</label>
+                <select id="official-mandate" name="official-mandate"></select>
+              </div>
+
+              <div class="form-group">
+                <label for="official-body">ORGAN</label>
+                <select id="official-body" name="official-body">
+                  <option value="upravni-odbor">Upravni odbor</option>
+                  <option value="disciplinski-tozilec">Disciplinski tožilec</option>
+                  <option value="disciplinsko-sodisce">Disciplinsko sodišče</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="official-role">FUNKCIJA</label>
+                <select id="official-role" name="official-role"></select>
+              </div>
+
+              <div class="form-group">
+                <label for="official-member">ČLAN</label>
+                <select id="official-member" name="official-member"></select>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">
+                DODAJ FUNKCIONARJA
+              </button>
+            </div>
+          </form>
+        </section>
 
         <h3>Seznam funkcionarjev</h3>
         <p class="small-hint">
-          Prikazani so funkcionarji z njihovimi kontaktnimi podatki iz seznama članov.
+          Prikazani so funkcionarji po mandatnih obdobjih in organih, skupaj s kontaktnimi podatki iz seznama članov.
         </p>
+
+        <section class="card officials-toolbar">
+          <div class="form-group">
+            <label for="official-filter-mandate">Prikaži mandat</label>
+            <select id="official-filter-mandate"></select>
+          </div>
+          <button id="btn-print-officials" type="button" class="btn btn-secondary">Natisni mandat</button>
+        </section>
 
         <div class="table-wrapper page-table-wrap">
           <table class="table">
             <thead>
               <tr>
                 <th class="col-zapst">#</th>
-                <th>IME IN PRIIMEK</th>
+                <th>ORGAN</th>
                 <th>FUNKCIJA</th>
+                <th>IME IN PRIIMEK</th>
                 <th>TELEFON</th>
                 <th>EMAIL</th>
                 <th>NASLOV</th>

@@ -19,7 +19,7 @@ function handleKoledarPage(user) {
 
   if (!gridEl || !titleEl) return;
 
-  const canEditCalendar = !!user;
+  const canEditCalendar = !!user && (user.username === "admin" || user.permissions?.canManageCalendar !== false);
   if (adminSide) adminSide.hidden = !canEditCalendar;
 
   const state = {

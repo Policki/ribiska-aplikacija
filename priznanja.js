@@ -132,6 +132,29 @@
     return AWARDS[key]?.label || key || "-";
   }
 
+  function awardBadge(key) {
+    const kind = AWARDS[key]?.kind || "neutral";
+    return `<span class="award-badge award-badge--${kind}">${awardLabel(key)}</span>`;
+  }
+
+  function memberLabel(member) {
+    if (!member) return "(član ne obstaja)";
+    return `${safe(member.priimek)} ${safe(member.ime)}`.trim();
+  }
+
+  function emptyRow(colspan, title, hint) {
+    return `
+      <tr>
+        <td colspan="${colspan}" class="awards-empty-cell">
+          <div class="awards-empty">
+            <strong>${title}</strong>
+            <span>${hint}</span>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
   function historyForMember(memberId) {
     const all = getAwardsHistory().filter((a) => a.memberId === memberId);
     all.sort((x, y) => (x.date || "").localeCompare(y.date || "")); // naraščajoče
@@ -519,15 +542,13 @@
     tbodyProposals.innerHTML = "";
 
     if (!proposals.length) {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td colspan="8" style="padding:14px; text-align:center; opacity:.75;">Ni predlogov. Klikni “GENERIRAJ PREDLOGE”.</td>`;
-      tbodyProposals.appendChild(tr);
+      tbodyProposals.innerHTML = emptyRow(8, "Ni predlogov priznanj", "Klikni “Generiraj predloge”, ko želiš osvežiti seznam kandidatov.");
       return;
     }
 
     proposals.forEach((p, idx) => {
       const m = members.find((x) => x.id === p.memberId);
-      const name = m ? `${m.priimek} ${m.ime}` : "(član ne obstaja)";
+      const name = memberLabel(m);
 
       const lastLabel = p.lastAwardKey ? awardLabel(p.lastAwardKey) : "-";
       const lastDate = p.lastAwardDate ? fmtDateSI(p.lastAwardDate) : "-";
@@ -535,16 +556,16 @@
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td style="text-align:center;">
-          <input type="checkbox" data-proposal-check="1" data-id="${p.id}">
+          <input class="awards-row-check" type="checkbox" data-proposal-check="1" data-id="${p.id}">
         </td>
         <td>${idx + 1}</td>
-        <td>${name}</td>
-        <td><b>${awardLabel(p.proposedAwardKey)}</b></td>
+        <td><strong>${name}</strong></td>
+        <td>${awardBadge(p.proposedAwardKey)}</td>
         <td>${lastLabel}</td>
         <td>${lastDate}</td>
-        <td>${safe(p.note)}</td>
+        <td><span class="award-note">${safe(p.note)}</span></td>
         <td class="table-actions">
-          <span class="action-icon delete" title="Odstrani predlog (bo spet predlagan ob naslednjem generiranju)">🗑</span>
+          <button type="button" class="member-tool-btn member-tool-btn--delete delete" title="Odstrani predlog">Odstrani</button>
         </td>
       `;
 
@@ -570,32 +591,29 @@
     tbodyPlaques.innerHTML = "";
 
     if (!proposals.length) {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `<td colspan="8" style="padding:14px; text-align:center; opacity:.75;">Ni predlogov plaket. Klikni “GENERIRAJ PLAKETE”.</td>`;
-      tbodyPlaques.appendChild(tr);
+      tbodyPlaques.innerHTML = emptyRow(8, "Ni predlogov plaket", "Klikni “Generiraj plakete”, ko želiš preveriti pogoje za plakete.");
       return;
     }
 
     proposals.forEach((p, idx) => {
       const m = members.find((x) => x.id === p.memberId);
-      const name = m ? `${m.priimek} ${m.ime}` : "(član ne obstaja)";
+      const name = memberLabel(m);
 
-      const condLabel = awardLabel(p.condKey);
       const condDate = p.condDate ? fmtDateSI(p.condDate) : "-";
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td style="text-align:center;">
-          <input type="checkbox" data-plaque-check="1" data-id="${p.id}">
+          <input class="awards-row-check" type="checkbox" data-plaque-check="1" data-id="${p.id}">
         </td>
         <td>${idx + 1}</td>
-        <td>${name}</td>
-        <td><b>${awardLabel(p.proposedAwardKey)}</b></td>
-        <td>${condLabel}</td>
+        <td><strong>${name}</strong></td>
+        <td>${awardBadge(p.proposedAwardKey)}</td>
+        <td>${awardBadge(p.condKey)}</td>
         <td>${condDate}</td>
-        <td>${safe(p.note)}</td>
+        <td><span class="award-note">${safe(p.note)}</span></td>
         <td class="table-actions">
-          <span class="action-icon delete" title="Odstrani predlog (bo spet predlagan ob naslednjem generiranju)">🗑</span>
+          <button type="button" class="member-tool-btn member-tool-btn--delete delete" title="Odstrani predlog">Odstrani</button>
         </td>
       `;
 
@@ -637,15 +655,15 @@
         ? hist
             .slice()
             .reverse()
-            .map((h) => `<span class="badge neutral" title="${h.date}">${awardLabel(h.awardKey)}</span>`)
+            .map((h) => `<span class="award-badge award-badge--compact award-badge--${AWARDS[h.awardKey]?.kind || "neutral"}" title="${h.date}">${awardLabel(h.awardKey)}</span>`)
             .join(" ")
-        : `<span class="small-hint">—</span>`;
+        : `<span class="award-note">Brez priznanj</span>`;
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td>${safe(m.priimek)}</td>
+        <td><strong>${safe(m.priimek)}</strong></td>
         <td>${safe(m.ime)}</td>
-        <td>${lastLabel}</td>
+        <td>${last ? awardBadge(last.awardKey) : `<span class="award-note">${lastLabel}</span>`}</td>
         <td>${lastDate}</td>
         <td>${allBadges}</td>
       `;

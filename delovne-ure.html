@@ -29,28 +29,67 @@
   <main class="main">
     <div class="main-inner full-width">
       <div class="page-stack">
-      <div class="page-intro">
-        <h2>Delovne ure</h2>
-        <div class="small-hint">Letni pregled opravljenih ur, izvoz in hitro urejanje evidenc članov.</div>
+      <div class="page-intro workhours-hero">
+        <div>
+          <span class="workhours-kicker">letna evidenca</span>
+          <h2>Delovne ure</h2>
+          <div class="small-hint">Pregled opravljenih ur, manjkajočih obveznosti in hitrega urejanja evidenc članov.</div>
+        </div>
+        <div class="workhours-hero-badge">
+          <strong>10</strong>
+          <span>ur na člana</span>
+        </div>
       </div>
 
-      <div class="card page-card">
-        <div class="page-flex">
-          <div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap;">
-            <div>
-              <div id="workhours-donut" class="donut">
-                <span id="workhours-donut-text">0%</span>
-              </div>
-              <div id="workhours-stats" style="font-size:14px;"></div>
-            </div>
+      <section class="workhours-dashboard">
+        <div id="workhours-stat-grid" class="workhours-stat-grid"></div>
 
-            <div style="font-size:14px; max-width:520px;">
-              Vsak član mlajši od 70 let mora opraviti <b>10 ur</b>.
-              Člani starejši od 70 let se ne štejejo v statistiko.
+        <div class="workhours-chart-grid">
+          <article class="workhours-chart-card workhours-chart-card--total">
+            <div>
+              <div class="card-title">Skupna realizacija</div>
+              <div id="workhours-stats" class="small-hint"></div>
+            </div>
+            <div id="workhours-donut" class="donut workhours-donut">
+              <span id="workhours-donut-text">0%</span>
+            </div>
+            <p>V statistiko štejejo člani, ki morajo opraviti delovne ure. Člani nad 70 let so vodeni ločeno.</p>
+          </article>
+
+          <article class="workhours-chart-card">
+            <div class="workhours-chart-head">
+              <div>
+                <div class="card-title">Mladinci</div>
+                <div id="workhours-youth-meta" class="small-hint">—</div>
+              </div>
+              <strong id="workhours-youth-percent">0%</strong>
+            </div>
+            <div id="workhours-youth-bars" class="workhours-bars"></div>
+          </article>
+
+          <article class="workhours-chart-card">
+            <div class="workhours-chart-head">
+              <div>
+                <div class="card-title">Ostali člani</div>
+                <div id="workhours-adult-meta" class="small-hint">—</div>
+              </div>
+              <strong id="workhours-adult-percent">0%</strong>
+            </div>
+            <div id="workhours-adult-bars" class="workhours-bars"></div>
+          </article>
+        </div>
+      </section>
+
+      <div class="card page-card workhours-tools-card">
+        <div class="page-flex">
+          <div>
+            <div class="card-title">Pravila in opombe</div>
+            <div class="small-hint" style="max-width:620px;">
+              Vsak član mlajši od 70 let mora opraviti <b>10 ur</b>. Mladinci so prikazani ločeno, da je pregled nad njihovim delom jasnejši.
             </div>
           </div>
 
-          <div style="min-width:300px;">
+          <div class="workhours-tools">
             <div class="card-title" style="margin-bottom:8px;">Orodja</div>
 
             <div class="grid-2">

@@ -14,9 +14,11 @@
   const form = document.getElementById("license-form");
   const selYear = document.getElementById("lic-year");
   const inpSearch = document.getElementById("lic-search");
+  const typeFilter = document.getElementById("lic-type-filter");
   const btnClose = document.getElementById("btn-lic-close-year");
   const btnExport = document.getElementById("btn-lic-export");
   const statsEl = document.getElementById("lic-stats");
+  const statGrid = document.getElementById("lic-stat-grid");
   const archiveHost = document.getElementById("licenses-archive-host");
 
   const aktivnoLetoEl = document.getElementById("aktivno-leto");
@@ -27,6 +29,14 @@
   const ui = {
     year: currentYear(),
     search: "",
+    type: "all",
+  };
+
+  const LICENSE_TYPES = {
+    clanska: { label: "Članska", className: "member" },
+    mladinska: { label: "Mladinska", className: "youth" },
+    trening: { label: "Trening", className: "training" },
+    castna: { label: "Častna", className: "honorary" },
   };
 
   // =========================
@@ -111,6 +121,41 @@
     return safe(s).trim();
   }
 
+  function normalizeLicenseType(value) {
+    const raw = safe(value)
+      .trim()
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+    if (raw.includes("mlad")) return "mladinska";
+    if (raw.includes("tren")) return "trening";
+    if (raw.includes("cast") || raw.includes("čast")) return "castna";
+    return "clanska";
+  }
+
+  function licenseTypeLabel(value) {
+    return LICENSE_TYPES[normalizeLicenseType(value)]?.label || "Članska";
+  }
+
+  function licenseTypeBadge(value) {
+    const key = normalizeLicenseType(value);
+    const meta = LICENSE_TYPES[key] || LICENSE_TYPES.clanska;
+    return `<span class="license-type-badge license-type-badge--${meta.className}">${meta.label}</span>`;
+  }
+
+  function inferLicenseTypeFromMember(ime, priimek) {
+    const targetIme = normalizeIdentityText(ime);
+    const targetPriimek = normalizeIdentityText(priimek);
+    const member = getMembers().find((m) => {
+      return normalizeIdentityText(m.ime) === targetIme && normalizeIdentityText(m.priimek) === targetPriimek;
+    });
+
+    if (!member) return "clanska";
+    if (member.status === "AM" || member.status === "DAM") return "mladinska";
+    if (member.status === "AČ" || member.status === "ZAČ") return "castna";
+    return "clanska";
+  }
+
   function matchesSearch(x) {
     if (!ui.search) return true;
     const q = ui.search.toLowerCase();
@@ -119,12 +164,52 @@
     return a.includes(q) || b.includes(q);
   }
 
+  function matchesType(x) {
+    if (ui.type === "all") return true;
+    return normalizeLicenseType(x.vrstaKarte) === ui.type;
+  }
+
   // =========================
   // Render
   // =========================
   function renderStats(year, list) {
-    if (!statsEl) return;
-    statsEl.textContent = `Zapisov: ${list.length}` + (isYearClosed(year) ? " | LETO ZAKLJUČENO" : "");
+    const counts = calculateTypeCounts(list);
+    if (statsEl) {
+      statsEl.textContent =
+        `Zapisov: ${list.length} | Članske: ${counts.clanska} | Mladinske: ${counts.mladinska} | Trening: ${counts.trening} | Častne: ${counts.castna}` +
+        (isYearClosed(year) ? " | LETO ZAKLJUČENO" : "");
+    }
+
+    if (statGrid) {
+      statGrid.innerHTML = [
+        licenseStatCard("Skupaj", list.length, isYearClosed(year) ? "leto zaključeno" : `aktivno leto ${year}`),
+        licenseStatCard("Članske", counts.clanska, "redne članske karte"),
+        licenseStatCard("Mladinske", counts.mladinska, "mladinske dovolilnice"),
+        licenseStatCard("Trening", counts.trening, "trening karte"),
+        licenseStatCard("Častne", counts.castna, "častne karte"),
+      ].join("");
+    }
+  }
+
+  function calculateTypeCounts(list) {
+    return list.reduce(
+      (acc, item) => {
+        const key = normalizeLicenseType(item.vrstaKarte);
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      },
+      { clanska: 0, mladinska: 0, trening: 0, castna: 0 }
+    );
+  }
+
+  function licenseStatCard(label, value, hint) {
+    return `
+      <article class="licenses-stat-card">
+        <span>${safe(label)}</span>
+        <strong>${safe(value)}</strong>
+        <small>${safe(hint)}</small>
+      </article>
+    `;
   }
 
   function renderTable() {
@@ -134,7 +219,7 @@
     let list = getActiveList(year).slice();
 
     // filter + sort
-    list = list.filter(matchesSearch).sort((a, b) => {
+    list = list.filter(matchesSearch).filter(matchesType).sort((a, b) => {
       const pa = (a.priimek || "").localeCompare(b.priimek || "", "sl");
       if (pa !== 0) return pa;
       const ia = (a.ime || "").localeCompare(b.ime || "", "sl");
@@ -146,7 +231,7 @@
 
     if (!list.length) {
       const tr = document.createElement("tr");
-      tr.innerHTML = `<td colspan="8" style="padding:14px; text-align:center; opacity:.75;">Seznam je prazen. Dodaj ročno ali uvozi Excel.</td>`;
+      tr.innerHTML = `<td colspan="9" style="padding:14px; text-align:center; opacity:.75;">Seznam je prazen. Dodaj ročno ali uvozi Excel.</td>`;
       tbody.appendChild(tr);
       renderStats(year, getActiveList(year));
       return;
@@ -159,6 +244,7 @@
         <td>${safe(x.ime)}</td>
         <td>${safe(x.priimek)}</td>
         <td><b>${safe(x.stKarte)}</b></td>
+        <td>${licenseTypeBadge(x.vrstaKarte)}</td>
         <td>${safe(x.revir0)}</td>
         <td>${safe(x.revir1)}</td>
         <td>${safe(x.revir2)}</td>
@@ -219,6 +305,7 @@
                 <th>IME</th>
                 <th>PRIIMEK</th>
                 <th>ŠT. KARTE</th>
+                <th>VRSTA</th>
                 <th>REVIR0</th>
                 <th>REVIR1</th>
                 <th>REVIR2</th>
@@ -235,6 +322,7 @@
                     <td>${safe(x.ime)}</td>
                     <td>${safe(x.priimek)}</td>
                     <td><b>${safe(x.stKarte)}</b></td>
+                    <td>${licenseTypeBadge(x.vrstaKarte)}</td>
                     <td>${safe(x.revir0)}</td>
                     <td>${safe(x.revir1)}</td>
                     <td>${safe(x.revir2)}</td>
@@ -273,6 +361,7 @@
     const ime = normalizeName(form.licenseFirst.value);
     const priimek = normalizeName(form.licenseLast.value);
     const stKarte = normalizeNumber(form.licenseNumber.value);
+    const vrstaKarte = normalizeLicenseType(form.licenseType?.value || "clanska");
 
     const revir0 = normalizeName(form.revir0.value);
     const revir1 = normalizeName(form.revir1.value);
@@ -286,8 +375,8 @@
     const list = getActiveList(year);
 
     // prepreči podvojitev iste številke (lahko odstraniš, če ne želiš)
-    if (list.some((x) => String(x.stKarte) === String(stKarte))) {
-      if (!confirm("Ta številka karte že obstaja v seznamu. Vseeno dodam?")) return;
+    if (list.some((x) => String(x.stKarte) === String(stKarte) && normalizeLicenseType(x.vrstaKarte) === vrstaKarte)) {
+      if (!confirm("Ta številka karte že obstaja za isto vrsto karte. Vseeno dodam?")) return;
     }
 
     list.push({
@@ -295,6 +384,7 @@
       ime,
       priimek,
       stKarte,
+      vrstaKarte,
       revir0,
       revir1,
       revir2,
@@ -357,6 +447,7 @@
     const idxRevir0 = colIndex(["revir0", "revir 0"]);
     const idxRevir1 = colIndex(["revir1", "revir 1"]);
     const idxRevir2 = colIndex(["revir2", "revir 2"]);
+    const idxType = colIndex(["vrsta", "vrsta karte", "tip", "tip karte", "dovolilnica", "vrsta dovolilnice"]);
 
     // Če ni headerja (npr. samo 2 stolpca), fallback:
     const hasImePriimek = idxIme !== -1 && idxPriimek !== -1;
@@ -370,6 +461,7 @@
       let ime = "";
       let priimek = "";
       let stKarte = "";
+      let vrstaKarte = "clanska";
 
       if (hasImePriimek) {
         ime = normalizeName(row[idxIme]);
@@ -402,6 +494,12 @@
         stKarte = normalizeNumber(row[1]);
       }
 
+      if (idxType !== -1) {
+        vrstaKarte = normalizeLicenseType(row[idxType]);
+      } else {
+        vrstaKarte = inferLicenseTypeFromMember(ime, priimek);
+      }
+
       if (!ime || !priimek || !stKarte) {
         // preskoči prazne vrstice
         continue;
@@ -416,6 +514,7 @@
         ime,
         priimek,
         stKarte,
+        vrstaKarte,
         revir0,
         revir1,
         revir2,
@@ -434,8 +533,8 @@
 
     let added = 0;
     imported.forEach((rec) => {
-      // soft dedupe po številki karte
-      if (merged.some((x) => String(x.stKarte) === String(rec.stKarte))) return;
+      // soft dedupe po številki in vrsti karte
+      if (merged.some((x) => String(x.stKarte) === String(rec.stKarte) && normalizeLicenseType(x.vrstaKarte) === normalizeLicenseType(rec.vrstaKarte))) return;
       merged.push(rec);
       added++;
     });
@@ -510,7 +609,7 @@
     const list = getActiveList(year);
 
     const rows = [];
-    rows.push(["Zap.St.", "ime", "priimek", "revir0", "revir1", "revir2", "print"]);
+    rows.push(["Zap.St.", "ime", "priimek", "vrstaKarte", "revir0", "revir1", "revir2", "print"]);
 
     list
       .slice()
@@ -520,6 +619,7 @@
           safe(x.stKarte) || String(i + 1),
           safe(x.ime),
           safe(x.priimek),
+          licenseTypeLabel(x.vrstaKarte),
           safe(x.revir0),
           safe(x.revir1),
           safe(x.revir2),
@@ -566,6 +666,11 @@
 
   inpSearch?.addEventListener("input", () => {
     ui.search = (inpSearch.value || "").trim();
+    renderTable();
+  });
+
+  typeFilter?.addEventListener("change", () => {
+    ui.type = typeFilter.value || "all";
     renderTable();
   });
 

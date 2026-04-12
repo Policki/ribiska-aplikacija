@@ -25,6 +25,8 @@
 
   const statusHost = document.getElementById("status-checks");
   const moduleHost = document.getElementById("module-checks");
+  const dashboardStatHost = document.getElementById("dashboard-stat-checks");
+  const advancedPermissionHost = document.getElementById("advanced-permission-checks");
 
   // password tools
   const btnGenPass = document.getElementById("btn-gen-pass");
@@ -40,6 +42,9 @@
   const btnModulesAll = document.getElementById("modules-all");
   const btnModulesReadonly = document.getElementById("modules-readonly");
   const btnModulesNone = document.getElementById("modules-none");
+  const btnPermissionsAll = document.getElementById("permissions-all");
+  const btnPermissionsBasic = document.getElementById("permissions-basic");
+  const btnPermissionsNone = document.getElementById("permissions-none");
 
   // permissions
   const canEditMembers = document.getElementById("canEditMembers");
@@ -68,10 +73,12 @@
     { key: "dashboard", label: "Dashboard" },
     { key: "seznam", label: "Seznam članov" },
     { key: "vpis", label: "Vpis člana" },
+    { key: "pristopna-izjava", label: "Pristopna izjava" },
     { key: "arhiv", label: "Arhiv članstva" },
     { key: "koledar", label: "Koledar" },
     { key: "uporabniki", label: "Uporabniki" },
     { key: "tiskanje", label: "Tiskanje" },
+    { key: "statistika", label: "Statistika" },
     { key: "zgodovina", label: "Zgodovina dejanj" },
     { key: "funkcionarji", label: "Funkcionarji" },
     { key: "priznanja", label: "Priznanja" },
@@ -83,6 +90,24 @@
     { key: "obvescanje", label: "Obveščanje" },
     { key: "opazanja-zivali", label: "Opažanja ribojedih ptic" },
     { key: "letna-rekapitulacija", label: "Letna rekapitulacija" },
+  ];
+
+  const DASHBOARD_STAT_OPTIONS = [
+    { key: "canSeeDashboardActiveMembers", label: "Aktivni člani" },
+    { key: "canSeeDashboardPhoneQueue", label: "Telefoni za vnos" },
+    { key: "canSeeDashboardCardQueue", label: "Čakajoči na prijavo v sistem" },
+    { key: "canSeeDashboardApplications", label: "Pristopne izjave" },
+  ];
+
+  const ADVANCED_PERMISSION_OPTIONS = [
+    { key: "canExportMembers", label: "Seznam: izvoz članov" },
+    { key: "canPrintDocuments", label: "Tiskanje: priprava dokumentov" },
+    { key: "canManageCalendar", label: "Koledar: dodajanje in brisanje dogodkov" },
+    { key: "canManageFees", label: "Članarina: označevanje plačil" },
+    { key: "canManageWorkHours", label: "Delovne ure: urejanje ur" },
+    { key: "canConfirmApplications", label: "Pristopne vloge: potrjevanje kandidatov" },
+    { key: "canManageYearlyRecaps", label: "Letna rekapitulacija: admin pregled in zaključek leta" },
+    { key: "canViewObservationAdmin", label: "Opažanja živali: admin pregled in tisk" },
   ];
 
   // --- Build checkboxes
@@ -106,8 +131,21 @@
     });
   }
 
+  function buildPermissionChecks(host, options) {
+    if (!host) return;
+    host.innerHTML = "";
+    options.forEach((permission) => {
+      const id = `perm_${permission.key}`;
+      const label = document.createElement("label");
+      label.innerHTML = `<input type="checkbox" data-permission="${permission.key}" id="${id}"> ${permission.label}`;
+      host.appendChild(label);
+    });
+  }
+
   buildStatusChecks();
   buildModuleChecks();
+  buildPermissionChecks(dashboardStatHost, DASHBOARD_STAT_OPTIONS);
+  buildPermissionChecks(advancedPermissionHost, ADVANCED_PERMISSION_OPTIONS);
 
   // --- Helpers
   function checkedStatuses() {
@@ -140,6 +178,33 @@
     });
   }
 
+  function setPermissionChecks(host, permissions, options, defaultValue = false) {
+    if (!host) return;
+    options.forEach((option) => {
+      const input = host.querySelector(`[data-permission="${option.key}"]`);
+      if (input) input.checked = permissions?.[option.key] ?? defaultValue;
+    });
+  }
+
+  function readPermissionChecks(host) {
+    if (!host) return {};
+    return Array.from(host.querySelectorAll("[data-permission]")).reduce((acc, input) => {
+      acc[input.dataset.permission] = input.checked;
+      return acc;
+    }, {});
+  }
+
+  function setAllPermissionChecks(host, value) {
+    if (!host) return;
+    host.querySelectorAll("[data-permission]").forEach((input) => {
+      input.checked = value;
+    });
+  }
+
+  function countExtraPermissions(permissions = {}) {
+    return ADVANCED_PERMISSION_OPTIONS.filter((option) => permissions[option.key]).length;
+  }
+
   function resetFormToAdd() {
     isViewMode = false;
     editUsernameEl.value = "";
@@ -163,6 +228,8 @@
     setCheckedModules(["dashboard"]);
     // statuses: empty means all -> we leave all unchecked
     setCheckedStatuses([]);
+    setAllPermissionChecks(dashboardStatHost, true);
+    setAllPermissionChecks(advancedPermissionHost, false);
   }
 
   function fillFormForEdit(user) {
@@ -203,6 +270,8 @@
     canSendSms.checked = !!user.permissions?.canSendSms;
     canMessageAllStatuses.checked = !!user.permissions?.canMessageAllStatuses;
     canUseSensitiveMessageFilters.checked = !!user.permissions?.canUseSensitiveMessageFilters;
+    setPermissionChecks(dashboardStatHost, user.permissions || {}, DASHBOARD_STAT_OPTIONS, true);
+    setPermissionChecks(advancedPermissionHost, user.permissions || {}, ADVANCED_PERMISSION_OPTIONS, false);
   }
 
   function fillFormForView(user) {
@@ -243,6 +312,7 @@
         perms.canManageUsers ? `<span class="badge warn">Uporabniki</span>` : `<span class="badge neutral">Brez uporabnikov</span>`,
         perms.canSendEmail ? `<span class="badge ok">E-pošta</span>` : `<span class="badge neutral">Brez e-pošte</span>`,
         perms.canSendSms ? `<span class="badge ok">SMS</span>` : `<span class="badge neutral">Brez SMS</span>`,
+        countExtraPermissions(perms) ? `<span class="badge ok">${countExtraPermissions(perms)} dodatnih</span>` : `<span class="badge neutral">Brez dodatnih</span>`,
       ].join(" ");
 
       const tr = document.createElement("tr");
@@ -303,6 +373,7 @@
         perms.canManageUsers ? `<span class="badge warn">Uporabniki</span>` : `<span class="badge neutral">Brez uporabnikov</span>`,
         perms.canSendEmail ? `<span class="badge ok">E-pošta</span>` : `<span class="badge neutral">Brez e-pošte</span>`,
         perms.canSendSms ? `<span class="badge ok">SMS</span>` : `<span class="badge neutral">Brez SMS</span>`,
+        countExtraPermissions(perms) ? `<span class="badge ok">${countExtraPermissions(perms)} dodatnih</span>` : `<span class="badge neutral">Brez dodatnih</span>`,
       ].join(" ");
 
       const tr = document.createElement("tr");
@@ -380,6 +451,7 @@
                 perms.canManageUsers ? "Uporabniki" : null,
                 perms.canSendEmail ? "E-pošta" : null,
                 perms.canSendSms ? "SMS" : null,
+                countExtraPermissions(perms) ? `${countExtraPermissions(perms)} dodatnih pravic` : null,
               ].filter(Boolean).join(", ") || "Osnovne")}</strong>
             </div>
           </div>
@@ -428,6 +500,30 @@
   btnModulesAll.addEventListener("click", () => setCheckedModules(MODULE_OPTIONS.map((m) => m.key)));
   btnModulesNone.addEventListener("click", () => setCheckedModules([]));
   btnModulesReadonly.addEventListener("click", () => setCheckedModules(["dashboard", "seznam", "koledar"]));
+
+  btnPermissionsAll.addEventListener("click", () => {
+    [canEditMembers, canArchiveMembers, canManageUsers, canSeeHistory, canSendEmail, canSendSms, canMessageAllStatuses, canUseSensitiveMessageFilters].forEach((input) => {
+      input.checked = true;
+    });
+    setAllPermissionChecks(dashboardStatHost, true);
+    setAllPermissionChecks(advancedPermissionHost, true);
+  });
+
+  btnPermissionsBasic.addEventListener("click", () => {
+    [canEditMembers, canArchiveMembers, canManageUsers, canSeeHistory, canSendEmail, canSendSms, canMessageAllStatuses, canUseSensitiveMessageFilters].forEach((input) => {
+      input.checked = false;
+    });
+    setAllPermissionChecks(dashboardStatHost, true);
+    setAllPermissionChecks(advancedPermissionHost, false);
+  });
+
+  btnPermissionsNone.addEventListener("click", () => {
+    [canEditMembers, canArchiveMembers, canManageUsers, canSeeHistory, canSendEmail, canSendSms, canMessageAllStatuses, canUseSensitiveMessageFilters].forEach((input) => {
+      input.checked = false;
+    });
+    setAllPermissionChecks(dashboardStatHost, false);
+    setAllPermissionChecks(advancedPermissionHost, false);
+  });
 
   // --- Cancel edit
   btnCancelEdit.addEventListener("click", () => {
@@ -480,6 +576,8 @@
       canSendSms: canSendSms.checked,
       canMessageAllStatuses: canMessageAllStatuses.checked,
       canUseSensitiveMessageFilters: canUseSensitiveMessageFilters.checked,
+      ...readPermissionChecks(dashboardStatHost),
+      ...readPermissionChecks(advancedPermissionHost),
     };
 
     const users = getUsers();

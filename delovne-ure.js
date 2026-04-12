@@ -3,6 +3,13 @@
   const donut = document.getElementById("workhours-donut");
   const donutText = document.getElementById("workhours-donut-text");
   const stats = document.getElementById("workhours-stats");
+  const statGrid = document.getElementById("workhours-stat-grid");
+  const youthMeta = document.getElementById("workhours-youth-meta");
+  const adultMeta = document.getElementById("workhours-adult-meta");
+  const youthPercent = document.getElementById("workhours-youth-percent");
+  const adultPercent = document.getElementById("workhours-adult-percent");
+  const youthBars = document.getElementById("workhours-youth-bars");
+  const adultBars = document.getElementById("workhours-adult-bars");
 
   const selYear = document.getElementById("wh-year");
   const btnExport = document.getElementById("btn-export-csv");
@@ -56,6 +63,13 @@
   function getAgeSafe(member) {
     const age = getAge(member.datumRojstva);
     return age === null ? null : age;
+  }
+
+  function isYouthMember(member) {
+    const status = String(member.status || "").trim();
+    if (status === "AM" || status === "DAM") return true;
+    const age = getAge(member.datumRojstva);
+    return age !== null && age < 18;
   }
 
   function normalizeHoursMapForMembers(hoursMap, members) {
@@ -142,12 +156,8 @@
   }
 
   function updateDonut(members, hoursMap) {
-    const mustMembers = members.filter((m) => isMustDo(m));
-    const total = mustMembers.length;
-
-    const completed = mustMembers.filter((m) => Number(hoursMap[m.id] ?? 0) >= 10).length;
-
-    const pct = total === 0 ? 100 : Math.round((completed / total) * 100);
+    const summary = calculateSummary(members, hoursMap);
+    const pct = summary.total.must === 0 ? 100 : Math.round((summary.total.completed / summary.total.must) * 100);
 
     if (donut && donutText) {
       donut.style.background = `conic-gradient(#2ecc71 ${pct}%, #e0e0e0 0)`;
@@ -155,8 +165,118 @@
     }
 
     if (stats) {
-      stats.textContent = `Opravljeno: ${completed}/${total} (člani, ki morajo opraviti ure)`;
+      stats.textContent = `Opravljeno: ${summary.total.completed}/${summary.total.must} obveznikov | skupaj ${summary.total.hours} ur`;
     }
+
+    renderStats(summary);
+    renderGroupChart("youth", summary.youth);
+    renderGroupChart("adult", summary.adult);
+  }
+
+  function calculateSummary(members, hoursMap) {
+    const base = () => ({
+      members: 0,
+      must: 0,
+      completed: 0,
+      missingMembers: 0,
+      exempt: 0,
+      hours: 0,
+      requiredHours: 0,
+      missingHours: 0,
+      overHours: 0,
+    });
+
+    const summary = {
+      total: base(),
+      youth: base(),
+      adult: base(),
+    };
+
+    members.forEach((member) => {
+      const hours = Number(hoursMap[member.id] ?? 0);
+      const mustDo = isMustDo(member);
+      const bucket = isYouthMember(member) ? summary.youth : summary.adult;
+
+      [summary.total, bucket].forEach((target) => {
+        target.members += 1;
+        target.hours += hours;
+        if (!mustDo) {
+          target.exempt += 1;
+          return;
+        }
+        target.must += 1;
+        target.requiredHours += 10;
+        if (hours >= 10) target.completed += 1;
+        else target.missingMembers += 1;
+        target.missingHours += Math.max(0, 10 - hours);
+        target.overHours += Math.max(0, hours - 10);
+      });
+    });
+
+    return summary;
+  }
+
+  function completionPercent(group) {
+    if (!group.must) return 100;
+    return Math.round((group.completed / group.must) * 100);
+  }
+
+  function renderStats(summary) {
+    if (!statGrid) return;
+    statGrid.innerHTML = [
+      statCard("Obvezniki", summary.total.must, "člani, ki morajo opraviti ure"),
+      statCard("Opravljeno", `${summary.total.completed}/${summary.total.must}`, `${completionPercent(summary.total)}% realizacija`),
+      statCard("Manjkajo člani", summary.total.missingMembers, `${summary.total.missingHours} manjkajočih ur`),
+      statCard("Skupaj ur", summary.total.hours, `${summary.total.overHours} ur nad obveznostjo`),
+      statCard("Mladinci", `${summary.youth.completed}/${summary.youth.must}`, `${summary.youth.hours} opravljenih ur`),
+      statCard("Ostali člani", `${summary.adult.completed}/${summary.adult.must}`, `${summary.adult.hours} opravljenih ur`),
+      statCard("Oproščeni", summary.total.exempt, "70 let ali več"),
+      statCard("Potrebno skupaj", summary.total.requiredHours, "ur za 100% realizacijo"),
+    ].join("");
+  }
+
+  function statCard(label, value, hint) {
+    return `
+      <article class="workhours-stat-card">
+        <span>${escapeHtml(label)}</span>
+        <strong>${escapeHtml(value)}</strong>
+        <small>${escapeHtml(hint)}</small>
+      </article>
+    `;
+  }
+
+  function renderGroupChart(groupKey, group) {
+    const isYouth = groupKey === "youth";
+    const metaEl = isYouth ? youthMeta : adultMeta;
+    const percentEl = isYouth ? youthPercent : adultPercent;
+    const barsEl = isYouth ? youthBars : adultBars;
+    const pct = completionPercent(group);
+
+    if (metaEl) metaEl.textContent = `${group.members} članov | ${group.must} obveznikov | ${group.exempt} oproščenih`;
+    if (percentEl) percentEl.textContent = `${pct}%`;
+    if (!barsEl) return;
+
+    const completedPct = group.must ? Math.round((group.completed / group.must) * 100) : 100;
+    const missingPct = group.must ? Math.round((group.missingMembers / group.must) * 100) : 0;
+    const hoursPct = group.requiredHours ? Math.min(100, Math.round((group.hours / group.requiredHours) * 100)) : 100;
+
+    barsEl.innerHTML = [
+      barRow("Opravili obveznost", completedPct, `${group.completed}/${group.must}`),
+      barRow("Še manjka članov", missingPct, `${group.missingMembers}`),
+      barRow("Ure glede na cilj", hoursPct, `${group.hours}/${group.requiredHours}`),
+    ].join("");
+  }
+
+  function barRow(label, pct, value) {
+    return `
+      <div class="workhours-bar-row">
+        <div class="workhours-bar-label">
+          <span>${escapeHtml(label)}</span>
+          <strong>${escapeHtml(value)}</strong>
+        </div>
+        <div class="workhours-bar-track"><i style="width:${Math.max(2, pct)}%"></i></div>
+      </div>
+    `;
   }
 
   function render() {

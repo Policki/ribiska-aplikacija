@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="sl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Statistika – RD Mozirje</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body class="page" data-page="statistika">
+    <header class="header header--universal">
+      <div class="header-top">
+        <div class="header-inner">
+          <div class="logo-block">
+            <img src="slike/rd-mozirje-bel_small.png" alt="RD Mozirje" class="logo-img" />
+          </div>
+
+          <div class="header-right">
+            <div class="user-icon">👤</div>
+            <span id="header-username">UPORABNIK</span>
+            <button id="btn-logout" class="btn-logout">ODJAVA</button>
+          </div>
+        </div>
+      </div>
+
+      <nav id="app-nav" class="header-nav"></nav>
+    </header>
+
+    <main class="main">
+      <div class="main-inner full-width">
+        <div class="page-stack">
+          <section class="page-intro statistics-hero">
+            <div>
+              <span class="statistics-kicker">analitični pregled</span>
+              <h2>Statistika</h2>
+              <div class="small-hint">
+                Čim širši pregled članstva, plačil, delovnih ur, kart, rekapitulacij, priznanj, vlog, koledarja in opažanj.
+              </div>
+            </div>
+            <div class="statistics-hero-badge">
+              <strong id="statistics-year-label">—</strong>
+              <span>aktivno leto</span>
+            </div>
+          </section>
+
+          <section class="card page-card statistics-toolbar">
+            <div class="form-group">
+              <label for="statistics-year">Leto pregleda</label>
+              <select id="statistics-year"></select>
+            </div>
+            <button id="btn-statistics-refresh" type="button" class="btn btn-secondary">Osveži podatke</button>
+          </section>
+
+          <section id="statistics-kpi-grid" class="statistics-kpi-grid"></section>
+
+          <section class="statistics-grid">
+            <article class="card page-card statistics-panel">
+              <div class="statistics-panel-head">
+                <div>
+                  <div class="card-title">Članstvo po statusih</div>
+                  <div class="small-hint">Aktivni člani po statusih z upoštevanjem vidnih statusov uporabnika.</div>
+                </div>
+              </div>
+              <div id="statistics-status-bars" class="statistics-bars"></div>
+            </article>
+
+            <article class="card page-card statistics-panel">
+              <div class="statistics-panel-head">
+                <div>
+                  <div class="card-title">Starostne skupine</div>
+                  <div class="small-hint">Pregled aktivnih članov po starostnih razredih.</div>
+                </div>
+              </div>
+              <div id="statistics-age-bars" class="statistics-bars"></div>
+            </article>
+
+            <article class="card page-card statistics-panel">
+              <div class="statistics-panel-head">
+                <div>
+                  <div class="card-title">Članarina</div>
+                  <div class="small-hint">Plačila, odprti zneski in načini plačila za izbrano leto.</div>
+                </div>
+              </div>
+              <div id="statistics-fee-bars" class="statistics-bars"></div>
+            </article>
+
+            <article class="card page-card statistics-panel">
+              <div class="statistics-panel-head">
+                <div>
+                  <div class="card-title">Delovne ure</div>
+                  <div class="small-hint">Opravljene in manjkajoče ure, ločeno po mladincih in ostalih.</div>
+                </div>
+              </div>
+              <div id="statistics-work-bars" class="statistics-bars"></div>
+            </article>
+
+            <article class="card page-card statistics-panel">
+              <div class="statistics-panel-head">
+                <div>
+                  <div class="card-title">Letne karte</div>
+                  <div class="small-hint">Razdelitev letnih kart po vrstah.</div>
+                </div>
+              </div>
+              <div id="statistics-license-bars" class="statistics-bars"></div>
+            </article>
+
+            <article class="card page-card statistics-panel">
+              <div class="statistics-panel-head">
+                <div>
+                  <div class="card-title">Letna rekapitulacija</div>
+                  <div class="small-hint">Oddane rekapitulacije, uplen in ribolovni dnevi.</div>
+                </div>
+              </div>
+              <div id="statistics-recap-bars" class="statistics-bars"></div>
+            </article>
+          </section>
+
+          <section class="statistics-grid statistics-grid--wide">
+            <article class="card page-card statistics-panel">
+              <div class="statistics-panel-head">
+                <div>
+                  <div class="card-title">Primerjava z letom prej</div>
+                  <div class="small-hint">Hitri trendi za izbrano leto glede na prejšnje leto.</div>
+                </div>
+              </div>
+              <div id="statistics-year-compare" class="statistics-compare"></div>
+            </article>
+
+            <article class="card page-card statistics-panel">
+              <div class="statistics-panel-head">
+                <div>
+                  <div class="card-title">Operativni kazalniki</div>
+                  <div class="small-hint">Čakalne vrste, vloge, opazovanja, dogodki in priznanja.</div>
+                </div>
+              </div>
+              <div id="statistics-ops-grid" class="statistics-mini-grid"></div>
+            </article>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">©&nbsp;<span id="aktivno-leto"></span>&nbsp;Ribiška družina Mozirje | Enej Poličnik</footer>
+
+    <script src="core.js" defer></script>
+    <script src="statistika.js" defer></script>
+  </body>
+</html>

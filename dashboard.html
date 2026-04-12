@@ -35,19 +35,19 @@
           </div>
 
           <div class="dashboard-stats">
-            <article class="dashboard-stat-card">
+            <article class="dashboard-stat-card" data-dashboard-stat="activeMembers">
               <span class="dashboard-stat-label">Aktivni člani</span>
               <strong id="stat-aktivni">0</strong>
             </article>
-            <a class="dashboard-stat-card dashboard-stat-card--link" href="telefoni-clani.html">
+            <a class="dashboard-stat-card dashboard-stat-card--link" href="telefoni-clani.html" data-dashboard-stat="phoneQueue">
               <span class="dashboard-stat-label">Telefoni za vnos</span>
               <strong id="stat-telefoni">0</strong>
             </a>
-            <article class="dashboard-stat-card">
-              <span class="dashboard-stat-label">Izkaznice v čakanju</span>
+            <a class="dashboard-stat-card dashboard-stat-card--link" href="cakajoci-prijava.html" data-dashboard-stat="cardQueue">
+              <span class="dashboard-stat-label">Čakajoči na prijavo v sistem</span>
               <strong id="stat-izkaznice">0</strong>
-            </article>
-            <a class="dashboard-stat-card dashboard-stat-card--link" href="pristopne-vloge.html">
+            </a>
+            <a class="dashboard-stat-card dashboard-stat-card--link" href="pristopne-vloge.html" data-dashboard-stat="membershipApplications">
               <span class="dashboard-stat-label">Pristopne izjave</span>
               <strong id="stat-pristopne-vloge">0</strong>
             </a>
@@ -79,7 +79,7 @@
               <div class="dashboard-card-subtitle">Dodaj nove člane s samodejnim predizpolnjevanjem.</div>
             </a>
 
-            <a class="dashboard-card" href="pristopna-izjava.html">
+            <a class="dashboard-card" href="pristopna-izjava.html" data-module="pristopna-izjava">
               <div class="dashboard-icon">
                 <img src="slike/white-user-member-guest-icon-png-image-701751695037005zdurfaim0y-removebg-preview.png" alt="Pristopna izjava" />
               </div>
@@ -117,6 +117,14 @@
               </div>
               <div class="dashboard-card-title">Tiskanje</div>
               <div class="dashboard-card-subtitle">Priprava izpisov in administrativnih dokumentov.</div>
+            </a>
+
+            <a class="dashboard-card" href="statistika.html" data-module="statistika">
+              <div class="dashboard-icon">
+                <img src="slike/statistika.png" alt="Statistika" />
+              </div>
+              <div class="dashboard-card-title">Statistika</div>
+              <div class="dashboard-card-subtitle">Primerjave članstva, plačil, ur, kart in ostalih evidenc.</div>
             </a>
 
             <a class="dashboard-card" href="zgodovina-dejanj.html" data-module="zgodovina">

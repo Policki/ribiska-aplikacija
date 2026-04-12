@@ -30,13 +30,13 @@
       <div class="main-inner full-width">
         <div class="page-stack">
         <div class="page-intro">
-          <h2>Tiskanje</h2>
+          <h2>Tiskalni center</h2>
           <div class="small-hint">
-            Izberi, katere člane in katere stolpce želiš natisniti. Predogled se sproti posodablja.
+            Pripravi sezname, kontakte, članarine, delovne ure, rekapitulacije, vloge, opažanja in koledarske izpise. Predogled se sproti posodablja.
           </div>
         </div>
 
-        <div class="users-layout" style="grid-template-columns: 560px 1fr;">
+        <div class="print-center-layout">
           <!-- LEFT: OPTIONS -->
           <section class="card">
             <div class="card-title">Nastavitve tiska</div>
@@ -49,10 +49,19 @@
 
             <div class="grid-2">
               <div class="form-group">
-                <label for="print-type">Vrsta seznama</label>
-                <select id="print-type">
-                  <option value="active" selected>Aktivni člani</option>
-                  <option value="archived">Arhivirani člani</option>
+                <label for="print-report">Kaj želiš natisniti</label>
+                <select id="print-report">
+                  <option value="members" selected>Seznam članov</option>
+                  <option value="contacts">Kontaktni seznam</option>
+                  <option value="fees">Članarina</option>
+                  <option value="workhours">Delovne ure</option>
+                  <option value="recaps">Letna rekapitulacija</option>
+                  <option value="phoneQueue">Telefonske številke za vpis</option>
+                  <option value="cardQueue">Članske izkaznice</option>
+                  <option value="applications">Pristopne izjave</option>
+                  <option value="officials">Funkcionarji</option>
+                  <option value="calendar">Koledarski dogodki</option>
+                  <option value="observations">Opažanja ribojedih živali</option>
                 </select>
               </div>
 
@@ -61,6 +70,54 @@
                 <select id="print-orientation">
                   <option value="portrait">Pokončno</option>
                   <option value="landscape" selected>Ležeče</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid-3">
+              <div class="form-group">
+                <label for="print-member-scope">Člani</label>
+                <select id="print-member-scope">
+                  <option value="active" selected>Aktivni</option>
+                  <option value="archived">Arhivirani</option>
+                  <option value="all">Aktivni in arhiv</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="print-year">Leto</label>
+                <select id="print-year"></select>
+              </div>
+
+              <div class="form-group">
+                <label for="print-density">Gostota</label>
+                <select id="print-density">
+                  <option value="compact" selected>Čim več na stran</option>
+                  <option value="normal">Normalno</option>
+                  <option value="comfortable">Pregledno</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="section-title">Dodatni filter</div>
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="print-payment-filter">Članarina</label>
+                <select id="print-payment-filter">
+                  <option value="all" selected>Vsi</option>
+                  <option value="unpaid">Samo neplačani</option>
+                  <option value="paid">Samo plačani</option>
+                  <option value="cash">Plačano gotovina</option>
+                  <option value="trr">Plačano TRR</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="print-card-filter">Tip karte</label>
+                <select id="print-card-filter">
+                  <option value="all" selected>Vsi</option>
+                  <option value="normal">Navadna</option>
+                  <option value="elrd">eLRD</option>
                 </select>
               </div>
             </div>
@@ -96,6 +153,7 @@
           <section class="card">
             <div class="card-title">Predogled</div>
             <div class="small-hint" id="preview-meta">—</div>
+            <div class="print-summary-grid" id="print-summary"></div>
 
             <div class="table-wrapper" style="margin-top:10px; max-height:65vh;">
               <table class="table">
