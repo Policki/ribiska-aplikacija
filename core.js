@@ -40,6 +40,126 @@ function getJSON(key, fallback) {
 
 function setJSON(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
+  rdQueueServerStorageSync(key);
+}
+
+const RD_SERVER_STORAGE_EXCLUDED_KEYS = new Set([STORAGE_KEYS.CURRENT_USER, "rd_demo_version", "rd_membership_archive_demo_v1"]);
+let rdServerStorageLoaded = false;
+let rdServerStorageSyncTimer = null;
+const rdServerStorageDirtyKeys = new Set();
+
+function rdServerStorageAvailable() {
+  return window.location.protocol !== "file:";
+}
+
+function rdStorageApiUrl() {
+  return "api/storage.php";
+}
+
+function rdHydrateServerStorage() {
+  if (!rdServerStorageAvailable() || rdServerStorageLoaded) return;
+  rdServerStorageLoaded = true;
+
+  try {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", rdStorageApiUrl(), false);
+    xhr.setRequestHeader("Accept", "application/json");
+    xhr.send();
+
+    if (xhr.status !== 200) return;
+    const payload = JSON.parse(xhr.responseText || "{}");
+    if (!payload.ok || !payload.items) return;
+
+    Object.entries(payload.items).forEach(([key, value]) => {
+      if (!key.startsWith("rd_") || RD_SERVER_STORAGE_EXCLUDED_KEYS.has(key)) return;
+      localStorage.setItem(key, String(value ?? ""));
+    });
+  } catch {
+    // Če API še ni nameščen ali uporabnik ni prijavljen, aplikacija ostane v lokalnem načinu.
+  }
+}
+
+function rdQueueServerStorageSync(key) {
+  if (!rdServerStorageAvailable() || !key || RD_SERVER_STORAGE_EXCLUDED_KEYS.has(key)) return;
+  if (!String(key).startsWith("rd_")) return;
+  rdServerStorageDirtyKeys.add(key);
+  if (rdServerStorageSyncTimer) return;
+  rdServerStorageSyncTimer = window.setTimeout(() => rdFlushServerStorageSync(), 600);
+}
+
+function rdCollectServerStorage(keys = null) {
+  const items = {};
+  const wanted = keys ? new Set(keys) : null;
+
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key || !key.startsWith("rd_") || RD_SERVER_STORAGE_EXCLUDED_KEYS.has(key)) continue;
+    if (wanted && !wanted.has(key)) continue;
+    items[key] = localStorage.getItem(key) || "";
+  }
+
+  return items;
+}
+
+function rdFlushServerStorageSync() {
+  if (rdServerStorageSyncTimer) {
+    window.clearTimeout(rdServerStorageSyncTimer);
+    rdServerStorageSyncTimer = null;
+  }
+
+  if (!rdServerStorageAvailable() || !rdServerStorageDirtyKeys.size) return;
+  const keys = Array.from(rdServerStorageDirtyKeys);
+  rdServerStorageDirtyKeys.clear();
+  const items = rdCollectServerStorage(keys);
+  if (!Object.keys(items).length) return;
+
+  try {
+    fetch(rdStorageApiUrl(), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ items }),
+    }).catch(() => {});
+  } catch {
+    // Brez panike: ob naslednji spremembi se poskusi znova.
+  }
+}
+
+function rdFlushAllServerStorage() {
+  if (!rdServerStorageAvailable()) return;
+  const items = rdCollectServerStorage();
+  if (!Object.keys(items).length) return;
+
+  try {
+    const payload = JSON.stringify({ items });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon(rdStorageApiUrl(), new Blob([payload], { type: "application/json" }));
+      return;
+    }
+    fetch(rdStorageApiUrl(), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      credentials: "same-origin",
+      body: payload,
+      keepalive: true,
+    }).catch(() => {});
+  } catch {
+    // Sinhronizacija ni kritična za prikaz strani.
+  }
+}
+
+rdHydrateServerStorage();
+
+if (rdServerStorageAvailable()) {
+  window.addEventListener("beforeunload", rdFlushAllServerStorage);
+  window.setInterval(rdFlushAllServerStorage, 10000);
+}
+
+function rdPageUrl(href) {
+  const value = String(href || "");
+  if (!value.endsWith(".html")) return value;
+  const phpMode = window.location.pathname.endsWith(".php") || window.location.pathname.endsWith("/");
+  return phpMode ? value.replace(/\.html$/, ".php") : value;
 }
 
 // ---------- USERS ----------
@@ -333,8 +453,8 @@ function ensureDemoData() {
   if (!getJSON(STORAGE_KEYS.USERS, null)) {
     const demoUsers = [
       {
-        username: "admin",
-        password: "admin",
+        username: "epolicnik",
+        password: "admin123",
         mustChangePassword: false,
         modules: ["*"],
         permissions: {
@@ -472,13 +592,13 @@ function requireAuth(options = {}) {
   const { pageModuleKey } = options;
   const user = getCurrentUser();
   if (!user) {
-    window.location.href = "index.html";
+    window.location.href = rdPageUrl("index.html");
     return null;
   }
 
   if (pageModuleKey && !userHasModule(user, pageModuleKey)) {
     alert("Nimate dovoljenja za dostop do tega modula.");
-    window.location.href = "dashboard.html";
+    window.location.href = rdPageUrl("dashboard.html");
     return null;
   }
 
@@ -495,8 +615,14 @@ function initHeader(currentUser) {
   if (btnLogout) {
     btnLogout.addEventListener("click", () => {
       addHistory("Odjava", `Uporabnik ${currentUser.username} se je odjavil.`);
+      rdFlushAllServerStorage();
+      try {
+        navigator.sendBeacon?.("api/logout.php");
+      } catch {
+        // Odjava na strežniku se izvede najboljše možno; lokalna seja se vseeno pobriše.
+      }
       localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
-      window.location.href = "index.html";
+      window.location.href = rdPageUrl("index.html");
     });
   }
 }
@@ -814,7 +940,7 @@ function renderAppNav(user, activeKey) {
     if (!userHasModule(user, m.key)) return;
 
     const a = document.createElement("a");
-    a.href = m.href;
+    a.href = rdPageUrl(m.href);
     a.textContent = m.label;
     if (activeKey === m.key) a.classList.add("active");
     inner.appendChild(a);
