@@ -43,3 +43,26 @@ Podatke za povezavo z bazo spremeniš v:
 
 `php/config.php`
 
+
+## 6. Normalizirane SQL tabele
+
+Poleg prehodne tabele `rd_storage` se podatki zdaj sproti preslikavajo tudi v ločene SQL tabele:
+
+- `rd_members` za člane
+- `rd_member_fees` za članarino
+- `rd_work_hours` za delovne ure
+- `rd_licenses` za letne karte
+- `rd_awards` za priznanja
+- `rd_officials` za funkcionarje
+- `rd_events` za koledar
+- `rd_membership_applications` za pristopne izjave
+- `rd_animal_observations` za opažanja
+- `rd_yearly_recaps` za letno rekapitulacijo
+- `rd_reminders` za opomnike
+- `rd_communication_groups` in `rd_communication_log` za obveščanje
+
+Če želiš obstoječe podatke iz `rd_storage` kadarkoli ponovno preslikati v te tabele, se kot admin prijavi in odpri:
+
+`http://localhost/ribis/RDAplikacija/ribiska-aplikacija/api/migrate.php`
+
+Običajno tega ni treba ročno poganjati, ker `api/storage.php` sinhronizira spremembe sproti.

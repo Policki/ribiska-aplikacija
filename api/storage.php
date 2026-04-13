@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../php/auth.php';
+require_once __DIR__ . '/../php/sync.php';
 
 $user = rd_require_login();
 $pdo = rd_pdo();
@@ -45,7 +46,9 @@ foreach ($items as $key => $value) {
         continue;
     }
 
-    $stmt->execute([$key, (string) $value, $user['username']]);
+    $stringValue = (string) $value;
+    $stmt->execute([$key, $stringValue, $user['username']]);
+    rd_sync_storage_key($key, $stringValue);
     $saved++;
 }
 

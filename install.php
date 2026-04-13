@@ -17,7 +17,10 @@ if ($sql === false) {
 $pdo->exec($sql);
 
 require_once __DIR__ . '/php/auth.php';
+require_once __DIR__ . '/php/sync.php';
+
 rd_ensure_admin_user();
+$syncCount = rd_sync_all_storage();
 
 header('Content-Type: text/html; charset=utf-8');
 ?>
@@ -36,9 +39,9 @@ header('Content-Type: text/html; charset=utf-8');
         <p>Admin uporabnik: <strong><?= htmlspecialchars(RD_DEFAULT_ADMIN_USERNAME, ENT_QUOTES, 'UTF-8') ?></strong></p>
         <p>Začasno geslo: <strong><?= htmlspecialchars(RD_DEFAULT_ADMIN_PASSWORD, ENT_QUOTES, 'UTF-8') ?></strong></p>
         <p>Po prvi prijavi geslo zamenjaj.</p>
-        <a class="btn btn-primary" href="index.html">Na prijavo</a>
+        <p>Preslikanih storage ključev v SQL tabele: <strong><?= (int) $syncCount ?></strong></p>
+        <a class="btn btn-primary" href="index.php">Na prijavo</a>
       </div>
     </main>
   </body>
 </html>
-
