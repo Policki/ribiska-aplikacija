@@ -204,6 +204,10 @@
     all[year] = all[year] || {};
     all[year][memberId] = { state, updatedAt: nowISO() };
     setJSONLocal(LS_FEE_STATUS, all);
+
+    if (state !== STATE.UNPAID && typeof removeMembershipResignedMember === "function") {
+      removeMembershipResignedMember(year, memberId);
+    }
   }
 
   function isYearClosed(year) {
@@ -624,6 +628,9 @@
     const year = ui.year;
 
     ensureYearSnapshot(year);
+    if (typeof ensureMembershipYearSnapshot === "function") {
+      ensureMembershipYearSnapshot(year);
+    }
 
     if (isYearClosed(year)) {
       alert("To leto je že zaključeno.");
@@ -652,6 +659,14 @@
       members[idx].arhivLeto = Number(year);
 
       const amount = feeAmountForMember(members[idx]);
+
+      if (typeof upsertMembershipResignedMember === "function") {
+        upsertMembershipResignedMember(year, members[idx], {
+          amount,
+          reason: "Neporavnana članarina",
+          resignedAt: nowISO(),
+        });
+      }
 
       addNonpayLog(year, {
         memberId: id,

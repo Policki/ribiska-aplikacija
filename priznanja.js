@@ -19,10 +19,12 @@
   const toggleArchived = document.getElementById("toggle-archived");
 
   const btnGenerate = document.getElementById("btn-generate");
+  const btnClearPending = document.getElementById("btn-clear-pending");
   const btnApproveSelected = document.getElementById("btn-approve-selected");
   const tbodyProposals = document.getElementById("proposals-tbody");
 
   const btnGeneratePlaques = document.getElementById("btn-generate-plaques");
+  const btnClearPendingPlaques = document.getElementById("btn-clear-pending-plaques");
   const btnApproveSelectedPlaques = document.getElementById("btn-approve-selected-plaques");
   const tbodyPlaques = document.getElementById("plaques-tbody");
 
@@ -463,6 +465,23 @@
 
   btnApproveSelected?.addEventListener("click", approveSelectedProposals);
 
+  function clearPendingProposals() {
+    const proposals = getProposals();
+    const pendingCount = proposals.filter((p) => p.status !== "approved").length;
+    if (!pendingCount) {
+      alert("Ni nesprejetih predlogov za čiščenje.");
+      return;
+    }
+
+    if (!confirm(`Počistim ${pendingCount} nesprejetih predlogov priznanj? Potrjena priznanja ostanejo shranjena.`)) return;
+
+    saveProposals(proposals.filter((p) => p.status === "approved"));
+    addHistory("Priznanja", `Počiščeni nesprejeti predlogi priznanj (${pendingCount}).`);
+    renderProposals();
+  }
+
+  btnClearPending?.addEventListener("click", clearPendingProposals);
+
   // -----------------------------
   // Generiranje predlogov (plakete)
   // -----------------------------
@@ -531,12 +550,30 @@
 
   btnApproveSelectedPlaques?.addEventListener("click", approveSelectedPlaques);
 
+  function clearPendingPlaqueProposals() {
+    const proposals = getPlaqueProposals();
+    const pendingCount = proposals.filter((p) => p.status !== "approved").length;
+    if (!pendingCount) {
+      alert("Ni nesprejetih predlogov plaket za čiščenje.");
+      return;
+    }
+
+    if (!confirm(`Počistim ${pendingCount} nesprejetih predlogov plaket? Potrjene plakete ostanejo shranjene.`)) return;
+
+    savePlaqueProposals(proposals.filter((p) => p.status === "approved"));
+    addHistory("Priznanja", `Počiščeni nesprejeti predlogi plaket (${pendingCount}).`);
+    renderPlaques();
+  }
+
+  btnClearPendingPlaques?.addEventListener("click", clearPendingPlaqueProposals);
+
   // -----------------------------
   // Render: predlogi
   // -----------------------------
   function renderProposals() {
     if (!tbodyProposals) return;
     const proposals = getProposals().filter((p) => p.status === "pending");
+    if (btnClearPending) btnClearPending.hidden = proposals.length === 0;
 
     const members = getMembers(); // za ime
     tbodyProposals.innerHTML = "";
@@ -586,6 +623,7 @@
   function renderPlaques() {
     if (!tbodyPlaques) return;
     const proposals = getPlaqueProposals().filter((p) => p.status === "pending");
+    if (btnClearPendingPlaques) btnClearPendingPlaques.hidden = proposals.length === 0;
 
     const members = getMembers();
     tbodyPlaques.innerHTML = "";

@@ -18,7 +18,17 @@ function renderArchiveByYear() {
   const host = document.getElementById("archive-years");
   if (!host) return;
 
-  const members = getMembers().filter((m) => m.arhiviran);
+  if (typeof ensurePreviousMembershipYearSnapshot === "function") {
+    ensurePreviousMembershipYearSnapshot();
+  }
+
+  const yearArchives = typeof getMembershipYearArchives === "function" ? getMembershipYearArchives() : {};
+  const resignedArchives = typeof getMembershipResignedArchives === "function" ? getMembershipResignedArchives() : {};
+  const resignedIndex = new Set();
+  Object.entries(resignedArchives).forEach(([year, archive]) => {
+    (archive?.members || []).forEach((member) => resignedIndex.add(`${year}:${member.id}`));
+  });
+  const members = getMembers().filter((m) => m.arhiviran && !resignedIndex.has(`${getArchiveYear(m)}:${m.id}`));
 
   // group by year
   const groups = {};
@@ -37,54 +47,223 @@ function renderArchiveByYear() {
 
   host.innerHTML = "";
 
-  if (years.length === 0) {
+  const archivedYears = Object.keys(yearArchives)
+    .filter((year) => yearArchives[year]?.members?.length)
+    .sort((a, b) => Number(b) - Number(a));
+
+  const resignedYears = Object.keys(resignedArchives)
+    .filter((year) => resignedArchives[year]?.members?.length)
+    .sort((a, b) => Number(b) - Number(a));
+
+  if (archivedYears.length === 0 && resignedYears.length === 0 && years.length === 0) {
     host.innerHTML = `<div style="padding:14px; border:2px dashed rgba(0,0,0,.2); border-radius:14px; background:#fff;">
       V arhivu trenutno ni članov.
     </div>`;
     return;
   }
 
-  years.forEach((year) => {
-    const list = groups[year]
-      .slice()
-      .sort((a, b) => {
-        const ap = (a.priimek || "").localeCompare((b.priimek || ""), "sl", { sensitivity: "base" });
-        if (ap !== 0) return ap;
-        return (a.ime || "").localeCompare((b.ime || ""), "sl", { sensitivity: "base" });
-      });
-
-    const details = document.createElement("details");
-    details.style.background = "#fff";
-    details.style.borderRadius = "14px";
-    details.style.border = "2px solid rgba(11,75,75,.15)";
-    details.style.boxShadow = "0 10px 30px rgba(0,0,0,.08)";
-
-    const summary = document.createElement("summary");
-    summary.style.cursor = "pointer";
-    summary.style.padding = "12px 14px";
-    summary.style.fontWeight = "900";
-    summary.style.listStyle = "none";
-    summary.style.display = "flex";
-    summary.style.alignItems = "center";
-    summary.style.justifyContent = "space-between";
-
-    summary.innerHTML = `
-      <span>${year}</span>
-      <span style="font-weight:800; font-size:13px; opacity:.8;">${list.length} član(ov)</span>
-    `;
-
-    // odstrani privzeti marker
-    summary.addEventListener("click", () => {});
-    details.appendChild(summary);
-
-    const inner = document.createElement("div");
-    inner.style.padding = "0 12px 12px 12px";
-
-    inner.appendChild(buildYearTable(list));
-
-    details.appendChild(inner);
-    host.appendChild(details);
+  archivedYears.forEach((year) => {
+    const list = sortMembersByName(yearArchives[year].members || []);
+    host.appendChild(
+      buildArchiveDetails({
+        title: `Članstvo ${year}`,
+        countLabel: `${list.length} član(ov)`,
+        hint: "Letni posnetek celotnega članstva. Ta seznam ostane nespremenjen tudi, če se tekoči podatki članov kasneje uredijo.",
+        content: buildSnapshotTable(list),
+      })
+    );
   });
+
+  resignedYears.forEach((year) => {
+    const list = sortMembersByName(resignedArchives[year].members || []);
+    host.appendChild(
+      buildArchiveDetails({
+        title: `Odstopili ${year}`,
+        countLabel: `${list.length} član(ov)`,
+        hint: "Člani, ki ob zaključku članarine niso imeli poravnane članarine. Če jih kasneje označiš kot plačane, se s tega seznama odstranijo.",
+        content: buildResignedTable(year, list),
+      })
+    );
+  });
+
+  years.forEach((year) => {
+    const list = sortMembersByName(groups[year]);
+    host.appendChild(
+      buildArchiveDetails({
+        title: `Ročni arhiv ${year}`,
+        countLabel: `${list.length} član(ov)`,
+        hint: "Arhivirani člani iz obstoječe evidence.",
+        content: buildYearTable(list),
+      })
+    );
+  });
+}
+
+function sortMembersByName(list) {
+  return (list || []).slice().sort((a, b) => {
+    const ap = (a.priimek || "").localeCompare(b.priimek || "", "sl", { sensitivity: "base" });
+    if (ap !== 0) return ap;
+    return (a.ime || "").localeCompare(b.ime || "", "sl", { sensitivity: "base" });
+  });
+}
+
+function buildArchiveDetails({ title, countLabel, hint, content }) {
+  const details = document.createElement("details");
+  details.className = "archive-panel";
+
+  const summary = document.createElement("summary");
+  summary.className = "archive-panel__summary";
+  summary.innerHTML = `
+    <span>${escapeHtml(title)}</span>
+    <span>${escapeHtml(countLabel)}</span>
+  `;
+  details.appendChild(summary);
+
+  const inner = document.createElement("div");
+  inner.className = "archive-panel__body";
+  if (hint) {
+    const hintEl = document.createElement("div");
+    hintEl.className = "small-hint";
+    hintEl.style.marginBottom = "10px";
+    hintEl.textContent = hint;
+    inner.appendChild(hintEl);
+  }
+  inner.appendChild(content);
+  details.appendChild(inner);
+
+  return details;
+}
+
+function buildSnapshotTable(members) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "table-wrapper";
+
+  const table = document.createElement("table");
+  table.className = "table";
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th style="width:70px;">ZAP.ŠT</th>
+        <th>STAT</th>
+        <th>SPC</th>
+        <th>ČLANSK</th>
+        <th>PRIIMEK</th>
+        <th>IME</th>
+        <th>NASLOV</th>
+        <th>POŠTA</th>
+        <th>EMAIL</th>
+        <th>TELEFON</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  `;
+
+  const tbody = table.querySelector("tbody");
+  members.forEach((m, idx) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td style="text-align:center;">${idx + 1}</td>
+      <td>${escapeHtml(m.status || "")}</td>
+      <td>${escapeHtml(m.spc || "")}</td>
+      <td>${escapeHtml(m.clanska || "")}</td>
+      <td>${escapeHtml(m.priimek || "")}</td>
+      <td>${escapeHtml(m.ime || "")}</td>
+      <td>${escapeHtml(m.naslov || "")}</td>
+      <td>${escapeHtml([m.posta, m.kraj].filter(Boolean).join(" "))}</td>
+      <td>${m.email ? `<a href="mailto:${escapeHtml(m.email)}">${escapeHtml(m.email)}</a>` : ""}</td>
+      <td>${escapeHtml(m.telefon || "")}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  wrapper.appendChild(table);
+  return wrapper;
+}
+
+function buildResignedTable(year, members) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "table-wrapper";
+
+  const table = document.createElement("table");
+  table.className = "table";
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th style="width:70px;">ZAP.ŠT</th>
+        <th>STAT</th>
+        <th>ČLANSK</th>
+        <th>PRIIMEK</th>
+        <th>IME</th>
+        <th>ZNESEK</th>
+        <th>DATUM</th>
+        <th>RAZLOG</th>
+        <th>ORODJA</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  `;
+
+  const tbody = table.querySelector("tbody");
+  members.forEach((m, idx) => {
+    const canRestore = String(year) === currentYear();
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td style="text-align:center;">${idx + 1}</td>
+      <td>${escapeHtml(m.status || "")}</td>
+      <td>${escapeHtml(m.clanska || "")}</td>
+      <td>${escapeHtml(m.priimek || "")}</td>
+      <td>${escapeHtml(m.ime || "")}</td>
+      <td><b>${formatEUR(m.amount)}</b></td>
+      <td>${formatDateSI(m.resignedAt) || ""}</td>
+      <td>${escapeHtml(m.reason || "Neporavnana članarina")}</td>
+      <td class="table-actions">
+        ${
+          canRestore
+            ? `<button class="btn btn-primary" style="padding:6px 10px; border-radius:12px; font-size:12px;" data-action="paid-trr" data-id="${m.id}">Plačal TRR</button>
+               <button class="btn btn-secondary" style="padding:6px 10px; border-radius:12px; font-size:12px;" data-action="paid-cash" data-id="${m.id}">Plačal CASH</button>`
+            : `<span class="small-hint">Zaključeno leto</span>`
+        }
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll("button[data-action]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = Number(btn.dataset.id);
+      const state = btn.dataset.action === "paid-cash" ? "PAID_CASH" : "PAID_TRR";
+      markResignedMemberPaid(year, id, state);
+    });
+  });
+
+  wrapper.appendChild(table);
+  return wrapper;
+}
+
+function markResignedMemberPaid(year, memberId, state) {
+  const members = getMembers();
+  const idx = members.findIndex((member) => Number(member.id) === Number(memberId));
+
+  if (idx !== -1) {
+    members[idx].arhiviran = false;
+    members[idx].datumArhiva = null;
+    members[idx].arhivLeto = null;
+    members[idx].ponovniVpisOd = todayISO();
+    saveMembers(members);
+  }
+
+  const all = getJSON("rd_fee_status_v1", {});
+  all[year] = all[year] || {};
+  all[year][memberId] = { state, updatedAt: new Date().toISOString() };
+  setJSON("rd_fee_status_v1", all);
+
+  if (typeof removeMembershipResignedMember === "function") {
+    removeMembershipResignedMember(year, memberId);
+  }
+
+  const member = idx !== -1 ? members[idx] : { ime: "", priimek: "", clanska: "" };
+  addHistory("Arhiv članstva", `Član ${member.ime || ""} ${member.priimek || ""} je označen kot plačan in odstranjen iz seznama odstoplih ${year}.`);
+  renderArchiveByYear();
 }
 
 function buildYearTable(members) {

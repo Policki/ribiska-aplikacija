@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () => {
   ensureDemoData();
   const user = requireAuth({ pageModuleKey: "obvescanje" });
   if (!user) return;
@@ -201,10 +201,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (state.channel === "email") {
       els.providerTitle.textContent = "SendGrid / Twilio";
-      els.providerSubtitle.textContent = "Pripravljeno za kasnejši priklop e-poštnega ponudnika.";
+      els.providerSubtitle.textContent = "";
     } else {
       els.providerTitle.textContent = "SMS Chef";
-      els.providerSubtitle.textContent = "Pripravljeno za kasnejši priklop SMS pošiljanja.";
+      els.providerSubtitle.textContent = "";
     }
 
     const allowed = canUseChannel(state.channel);
@@ -465,17 +465,11 @@ document.addEventListener("DOMContentLoaded", () => {
       createdAt: new Date().toISOString(),
     });
     setJSON(LS_LOG, log);
-    addHistory("Obveščanje", `Pripravljen osnutek ${state.channel === "sms" ? "SMS" : "e-pošte"} za ${recipients.length} prejemnikov.`);
+    addHistory("Obveščanje", `Shranjen osnutek ${state.channel === "sms" ? "SMS" : "e-pošte"} za ${recipients.length} prejemnikov.`);
     renderLog();
-    alert("Osnutek je shranjen v dnevnik. Pošiljanje bo dodano ob priklopu ponudnika.");
+    alert("Osnutek je shranjen v dnevnik.");
   }
 
-  /*
-   * PRIKLOP PONUDNIKOV KASNEJE:
-   * - email: tu se priklopi SendGrid ali Twilio SendGrid adapter,
-   * - sms: tu se priklopi SMS Chef adapter,
-   * - zaradi varnosti naj dejansko pošiljanje poteka prek strežnika, ne neposredno iz brskalnika.
-   */
 
   function renderLog() {
     const log = getLog();
@@ -484,7 +478,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="communication-log-item">
             <strong>${escapeHtml(entry.subject || "Brez zadeve")}</strong>
             <span>${escapeHtml(entry.channel === "sms" ? "SMS" : "E-pošta")} | ${entry.recipientCount || 0} prejemnikov | ${escapeHtml(formatDateTime(entry.createdAt))}</span>
-            <small>${escapeHtml(entry.provider || "")} | pripravljeno, ni poslano</small>
+            <small>${escapeHtml(entry.provider || "")} | shranjen osnutek</small>
           </div>
         `).join("")
       : `<div class="small-hint">Dnevnik je zaenkrat prazen.</div>`;
@@ -631,3 +625,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return `"${text.replaceAll('"', '""')}"`;
   }
 });
+
+
+

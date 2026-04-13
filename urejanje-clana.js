@@ -22,6 +22,7 @@
   const pageModeHint = document.getElementById("page-mode-hint");
   const btnSubmitMember = document.getElementById("btn-submit-member");
   const btnBackLink = document.getElementById("btn-back-link");
+  const detailView = document.getElementById("member-detail-view");
 
   // pošta/kraj
   const postaEl = document.getElementById("posta");
@@ -195,23 +196,11 @@
   // SUBMIT
   // =========================
   if (isViewMode) {
-    if (avatarDrop) {
-      avatarDrop.style.cursor = "default";
-      avatarDrop.setAttribute("aria-disabled", "true");
+    form.hidden = true;
+    if (detailView) {
+      detailView.hidden = false;
+      renderMemberProfile(member);
     }
-    if (avatarInput) avatarInput.disabled = true;
-    if (avatarActions) avatarActions.style.display = "none";
-
-    form.querySelectorAll("input, select, textarea, button").forEach((el) => {
-      if (el.id === "btn-submit-member") return;
-      if (el.tagName === "A") return;
-      if (el.type === "checkbox" || el.type === "radio") {
-        el.disabled = true;
-      } else if (el.tagName === "SELECT" || el.tagName === "TEXTAREA" || el.tagName === "INPUT") {
-        el.readOnly = true;
-        el.disabled = true;
-      }
-    });
     return;
   }
 
@@ -276,11 +265,33 @@
     const prevPhone = normalizePhoneLocal(list[idx].telefon);
     const nextPhone = data.telefon;
 
+    const previousStatus = String(list[idx].status || "").trim();
+    const previousClanska = String(list[idx].clanska || "").trim();
+
     list[idx] = {
       ...list[idx],
       ...data,
       avatar: avatarDataUrl,
     };
+
+    if (previousStatus !== String(data.status || "").trim()) {
+      list[idx].statusHistory = Array.isArray(list[idx].statusHistory) ? list[idx].statusHistory : [];
+      list[idx].statusHistory.push({
+        date: new Date().toISOString(),
+        from: previousStatus || "",
+        to: data.status || "",
+        note: "Sprememba pri urejanju člana",
+      });
+    }
+
+    if (previousClanska !== String(data.clanska || "").trim()) {
+      list[idx].membershipHistory = Array.isArray(list[idx].membershipHistory) ? list[idx].membershipHistory : [];
+      list[idx].membershipHistory.push({
+        date: new Date().toISOString(),
+        type: "clanska",
+        text: data.clanska ? `Vpisana članska številka ${data.clanska}` : "Članska številka odstranjena",
+      });
+    }
 
     // če je na novo označil potrebuje izkaznico, poskrbi da se pojavi v naročilu
     if (!prevNeeds && nextNeeds) {
@@ -341,6 +352,290 @@ function normalizeTipKarteForSave(value) {
   if (!raw) return "";
   if (raw === "elrd" || raw.includes("elektronska")) return "eLRD";
   return "navadna";
+}
+
+function renderMemberProfile(member) {
+  const currentUser = getCurrentUser();
+  const canEdit = currentUser?.username === "admin" || currentUser?.permissions?.canEditMembers === true;
+  const activeYear = typeof AktivnoLeto === "function" ? AktivnoLeto() : currentYear();
+  const annualLicense = findAnnualLicenseForMember(member, activeYear);
+  const licenseHistory = getAnnualLicensesForMember(member);
+
+  setProfileText("profile-full-name", `${member.priimek || ""} ${member.ime || ""}`.trim() || "Član");
+  const avatar = document.getElementById("profile-avatar-img");
+  if (avatar) avatar.src = member.avatar || "https://via.placeholder.com/300x300.png?text=CLAN";
+
+  const editLink = document.getElementById("profile-edit-link");
+  if (editLink) {
+    editLink.href = `urejanje-clana.html?id=${member.id}`;
+    editLink.hidden = !canEdit;
+  }
+
+  const badges = document.getElementById("profile-basic-badges");
+  if (badges) {
+    badges.innerHTML = [
+      profileBadge(member.status || "Brez statusa"),
+      profileBadge(member.clanska ? `Članska ${member.clanska}` : "Brez članske številke", member.clanska ? "" : "warn"),
+      profileBadge(member.arhiviran ? "Arhiviran" : "Aktiven", member.arhiviran ? "warn" : "ok"),
+      profileBadge(formatCardType(member.tipKarte), ""),
+    ].join("");
+  }
+
+  setProfileText(
+    "profile-short-summary",
+    `Prvi vpis: ${formatDateSI(member.datumVpisa) || "ni podatka"} | Starost: ${formatAge(member)} | Letna karta ${activeYear}: ${annualLicense ? annualLicense.stKarte : "ni zapisa"}`
+  );
+
+  const kpi = document.getElementById("profile-kpi-grid");
+  if (kpi) {
+    const awards = getMemberAwards(member.id);
+    const functions = getMemberFunctions(member.id);
+    kpi.innerHTML = [
+      profileKpi("Status", member.status || "-"),
+      profileKpi("Članska", member.clanska || "čaka"),
+      profileKpi("Letna karta", annualLicense ? annualLicense.stKarte : "ni zapisa"),
+      profileKpi("Priznanja", awards.length),
+      profileKpi("Funkcije", functions.length),
+      profileKpi("Ribiški izpit", member.ribiskiIzpit ? "opravljen" : "ni označen"),
+    ].join("");
+  }
+
+  renderProfileList("profile-personal", [
+    ["Ime", member.ime],
+    ["Priimek", member.priimek],
+    ["Datum rojstva", formatDateSI(member.datumRojstva)],
+    ["Spol", member.spc],
+    ["Naslov", [member.naslov, member.posta, member.kraj].filter(Boolean).join(", ")],
+    ["Telefon", member.telefon],
+    ["E-pošta", member.email],
+  ]);
+
+  renderProfileList("profile-license", [
+    ["Tip letne karte", formatCardType(member.tipKarte)],
+    [`Št. letne karte ${activeYear}`, annualLicense ? annualLicense.stKarte : "Ni zapisa za izbrano leto"],
+    ["Vrsta letne karte", annualLicense ? licenseTypeLabel(annualLicense.vrstaKarte) : "-"],
+    ["Revir 0", annualLicense?.revir0],
+    ["Revir 1", annualLicense?.revir1],
+    ["Revir 2", annualLicense?.revir2],
+    ["Zgodovina letnih kart", formatLicenseHistory(licenseHistory)],
+    ["Članska številka", member.clanska || "Čaka na prijavo v sistem"],
+  ]);
+
+  renderProfileList("profile-exam", [
+    ["Opravljen ribiški izpit", member.ribiskiIzpit ? "Da" : "Ne"],
+    ["Datum izpita", formatDateSI(member.datumRibiskegaIzpita)],
+    ["Status pripravnika", member.status === "AP" ? "Pripravnik" : "-"],
+  ]);
+
+  renderTimeline("profile-history", buildMembershipTimeline(member));
+  renderTimeline("profile-awards", getMemberAwards(member.id).map((item) => ({
+    date: item.date,
+    title: awardLabel(item.awardKey),
+    text: "Priznanje člana",
+  })));
+  renderTimeline("profile-functions", getMemberFunctions(member.id));
+}
+
+function setProfileText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = String(value || "");
+}
+
+function profileBadge(text, tone = "") {
+  return `<span class="member-profile-badge ${tone ? `is-${tone}` : ""}">${escapeHtml(text || "-")}</span>`;
+}
+
+function profileKpi(label, value) {
+  return `
+    <article class="member-profile-kpi">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+    </article>
+  `;
+}
+
+function renderProfileList(id, rows) {
+  const host = document.getElementById(id);
+  if (!host) return;
+  host.innerHTML = rows
+    .map(([label, value]) => `
+      <div class="member-profile-list-row">
+        <span>${escapeHtml(label)}</span>
+        <strong>${escapeHtml(value || "-")}</strong>
+      </div>
+    `)
+    .join("");
+}
+
+function renderTimeline(id, rows) {
+  const host = document.getElementById(id);
+  if (!host) return;
+  if (!rows.length) {
+    host.innerHTML = `<div class="member-profile-empty">Ni zabeleženih podatkov.</div>`;
+    return;
+  }
+  host.innerHTML = rows
+    .slice()
+    .sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")))
+    .map((item) => `
+      <article class="member-profile-timeline-item">
+        <time>${escapeHtml(formatDateSI(item.date) || item.date || "-")}</time>
+        <strong>${escapeHtml(item.title || "-")}</strong>
+        <span>${escapeHtml(item.text || "")}</span>
+      </article>
+    `)
+    .join("");
+}
+
+function buildMembershipTimeline(member) {
+  const rows = [];
+  if (member.datumVpisa) rows.push({ date: member.datumVpisa, title: "Prvi vpis", text: "Prvič zabeležen v evidenci članov." });
+  if (member.ponovniVpisOd) rows.push({ date: member.ponovniVpisOd, title: "Ponovni vpis", text: "Član je bil ponovno vrnjen med aktivne." });
+  if (member.datumArhiva) rows.push({ date: member.datumArhiva, title: "Prekinitev članstva", text: `Arhiviran${member.arhivLeto ? ` v letu ${member.arhivLeto}` : ""}.` });
+  (member.statusHistory || []).forEach((item) => {
+    rows.push({
+      date: item.date,
+      title: "Sprememba statusa",
+      text: `${item.from || "-"} → ${item.to || "-"}`,
+    });
+  });
+  (member.membershipHistory || []).forEach((item) => {
+    rows.push({ date: item.date, title: "Evidenca članstva", text: item.text || item.type || "" });
+  });
+  if (!rows.length && member.status) rows.push({ date: member.datumVpisa || "", title: "Trenutni status", text: member.status });
+  return rows;
+}
+
+function getMemberAwards(memberId) {
+  return getJSON("rd_awards_history_v1", []).filter((item) => Number(item.memberId) === Number(memberId));
+}
+
+function awardLabel(key) {
+  const labels = {
+    ZNAK_MLADI_RIBIC: "Znak mladi ribič",
+    ZNAK_RIBISKE_ZASLUGE: "Znak za ribiške zasluge",
+    RED_III: "Red za ribiške zasluge III. stopnje",
+    RED_II: "Red za ribiške zasluge II. stopnje",
+    RED_I: "Red za ribiške zasluge I. stopnje",
+    PLAKETA_RZS: "Plaketa RZS",
+    PLAKETA_FRANKET: "Plaketa Ivana Franketa",
+  };
+  return labels[key] || key || "-";
+}
+
+function getMemberFunctions(memberId) {
+  const mandates = getJSON("rd_official_mandates", []);
+  const bodyLabels = {
+    "upravni-odbor": "Upravni odbor",
+    "disciplinski-tozilec": "Disciplinski tožilec",
+    "disciplinsko-sodisce": "Disciplinsko sodišče",
+  };
+
+  return getOfficials()
+    .filter((item) => Number(item.memberId) === Number(memberId))
+    .map((item) => {
+      const mandate =
+        mandates.find((m) => Number(m.id) === Number(item.mandateId)) ||
+        mandates.find((m) => Number(m.startYear) === Number(item.mandateStart) && Number(m.endYear) === Number(item.mandateEnd));
+      const mandateText = mandate ? `${mandate.startYear}-${mandate.endYear}` : [item.mandateStart, item.mandateEnd].filter(Boolean).join("-");
+      return {
+        date: item.createdAt || `${item.mandateStart || ""}-01-01`,
+        title: item.role || "Funkcija",
+        text: `${bodyLabels[item.body] || item.body || "Organ"}${mandateText ? ` | mandat ${mandateText}` : ""}`,
+      };
+    });
+}
+
+function findAnnualLicenseForMember(member, year) {
+  const list = getJSON("rd_licenses_active_v1", {})[year] || [];
+  const byMemberId = list.find((item) => Number(item.memberId) === Number(member.id));
+  if (byMemberId) return byMemberId;
+
+  const nameMatch = (item) =>
+    normalizeIdentityText(item.ime) === normalizeIdentityText(member.ime) &&
+    normalizeIdentityText(item.priimek) === normalizeIdentityText(member.priimek);
+  const byName = list.find(nameMatch);
+  if (byName) return byName;
+  if (member.clanska) {
+    return list.find((item) => String(item.stKarte || "").trim() === String(member.clanska || "").trim()) || null;
+  }
+  return null;
+}
+
+function getAnnualLicensesForMember(member) {
+  const active = getJSON("rd_licenses_active_v1", {});
+  const archive = getJSON("rd_licenses_archive_v1", {});
+  const rows = [];
+
+  const collect = (map, sourceLabel) => {
+    Object.entries(map || {}).forEach(([year, list]) => {
+      (list || []).forEach((item) => {
+        if (!licenseBelongsToMember(item, member)) return;
+        rows.push({
+          year,
+          sourceLabel,
+          stKarte: item.stKarte || "",
+          vrstaKarte: item.vrstaKarte || "",
+          revir0: item.revir0 || "",
+          revir1: item.revir1 || "",
+          revir2: item.revir2 || "",
+        });
+      });
+    });
+  };
+
+  collect(active, "aktivno");
+  collect(archive, "arhiv");
+
+  return rows.sort((a, b) => Number(b.year) - Number(a.year));
+}
+
+function licenseBelongsToMember(item, member) {
+  if (Number(item.memberId) === Number(member.id)) return true;
+  const sameName =
+    normalizeIdentityText(item.ime) === normalizeIdentityText(member.ime) &&
+    normalizeIdentityText(item.priimek) === normalizeIdentityText(member.priimek);
+  if (sameName) return true;
+  if (member.clanska && String(item.stKarte || "").trim() === String(member.clanska || "").trim()) return true;
+  return false;
+}
+
+function formatLicenseHistory(rows) {
+  if (!rows.length) return "Ni zabeleženih letnih kart";
+  return rows
+    .map((row) => {
+      const type = licenseTypeLabel(row.vrstaKarte);
+      const source = row.sourceLabel === "arhiv" ? "arhiv" : "aktivno";
+      return `${row.year}: ${row.stKarte || "-"} (${type}, ${source})`;
+    })
+    .join(" | ");
+}
+
+function licenseTypeLabel(value) {
+  const raw = normalizeIdentityText(value);
+  if (raw.includes("mlad")) return "Mladinska";
+  if (raw.includes("tren")) return "Trening";
+  if (raw.includes("cast")) return "Častna";
+  return "Članska";
+}
+
+function formatCardType(value) {
+  const raw = normalizeIdentityText(value);
+  if (!raw) return "-";
+  if (raw.includes("elrd") || raw.includes("elektronska")) return "eLRD";
+  return "Navadna";
+}
+
+function formatAge(member) {
+  const age = getAge(member.datumRojstva);
+  return age === null ? "ni podatka" : `${age} let`;
+}
+
+function formatDateSI(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toLocaleDateString("sl-SI");
 }
 
 document.addEventListener("DOMContentLoaded", () => {

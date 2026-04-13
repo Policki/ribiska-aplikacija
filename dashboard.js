@@ -72,6 +72,27 @@ function renderDashboardStats(currentUser) {
   setText("stat-izkaznice", cakajociNaPrijavo);
 }
 
+function startDashboardClock() {
+  const el = document.querySelector(".dashboard-eyebrow");
+  if (!el) return;
+
+  const render = () => {
+    const now = new Date();
+    el.textContent = now.toLocaleString("sl-SI", {
+      weekday: "long",
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  };
+
+  render();
+  setInterval(render, 1000);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   ensureDemoData();
   const user = requireAuth({ pageModuleKey: "dashboard" });
@@ -79,6 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   initHeader(user);
   handleDashboardPage(user);
+  startDashboardClock();
   renderDashboardStats(user);
   const _aktivnoLetoEl = document.getElementById('aktivno-leto');
   if (_aktivnoLetoEl) {

@@ -17,6 +17,8 @@ const STORAGE_KEYS = {
   GUARDS: "rd_guards",
   REMINDERS: "rd_reminders",
   MEMBERSHIP_APPLICATIONS: "rd_membership_applications",
+  MEMBERSHIP_YEAR_ARCHIVES: "rd_membership_year_archives",
+  MEMBERSHIP_RESIGNED_ARCHIVES: "rd_membership_resigned_archives",
   ANIMAL_OBSERVATIONS: "rd_animal_observations",
   YEARLY_RECAPS: "rd_yearly_recaps",
   COMMUNICATION_GROUPS: "rd_communication_groups",
@@ -58,6 +60,111 @@ function getMembers() {
 
 function saveMembers(members) {
   setJSON(STORAGE_KEYS.MEMBERS, members);
+}
+
+function getMembershipYearArchives() {
+  return getJSON(STORAGE_KEYS.MEMBERSHIP_YEAR_ARCHIVES, {});
+}
+
+function saveMembershipYearArchives(archives) {
+  setJSON(STORAGE_KEYS.MEMBERSHIP_YEAR_ARCHIVES, archives);
+}
+
+function getMembershipResignedArchives() {
+  return getJSON(STORAGE_KEYS.MEMBERSHIP_RESIGNED_ARCHIVES, {});
+}
+
+function saveMembershipResignedArchives(archives) {
+  setJSON(STORAGE_KEYS.MEMBERSHIP_RESIGNED_ARCHIVES, archives);
+}
+
+function snapshotMemberForArchive(member) {
+  return {
+    id: member.id,
+    zapSt: member.zapSt || member.id,
+    status: member.status || "",
+    spc: member.spc || "",
+    clanska: member.clanska || "",
+    priimek: member.priimek || "",
+    ime: member.ime || "",
+    email: member.email || "",
+    telefon: member.telefon || "",
+    naslov: member.naslov || "",
+    posta: member.posta || "",
+    kraj: member.kraj || "",
+    tipKarte: member.tipKarte || "",
+    datumRojstva: member.datumRojstva || "",
+    datumVpisa: member.datumVpisa || "",
+  };
+}
+
+function ensureMembershipYearSnapshot(year, options = {}) {
+  const y = String(year || "").trim();
+  if (!y) return null;
+
+  const archives = getMembershipYearArchives();
+  if (!options.force && archives[y]?.members?.length) return archives[y];
+
+  const members = getMembers()
+    .filter((member) => !member.arhiviran)
+    .sort((a, b) => {
+      const byLast = String(a.priimek || "").localeCompare(String(b.priimek || ""), "sl", { sensitivity: "base" });
+      if (byLast !== 0) return byLast;
+      return String(a.ime || "").localeCompare(String(b.ime || ""), "sl", { sensitivity: "base" });
+    })
+    .map(snapshotMemberForArchive);
+
+  archives[y] = {
+    year: y,
+    createdAt: new Date().toISOString(),
+    members,
+  };
+  saveMembershipYearArchives(archives);
+  return archives[y];
+}
+
+function ensurePreviousMembershipYearSnapshot() {
+  const previousYear = String(new Date().getFullYear() - 1);
+  return ensureMembershipYearSnapshot(previousYear);
+}
+
+function upsertMembershipResignedMember(year, member, extra = {}) {
+  const y = String(year || "").trim();
+  if (!y || !member) return;
+
+  const archives = getMembershipResignedArchives();
+  archives[y] = archives[y] || { year: y, createdAt: new Date().toISOString(), members: [] };
+
+  const entry = {
+    ...snapshotMemberForArchive(member),
+    amount: extra.amount ?? "",
+    reason: extra.reason || "Neporavnana članarina",
+    resignedAt: extra.resignedAt || new Date().toISOString(),
+  };
+
+  const idx = archives[y].members.findIndex((item) => Number(item.id) === Number(member.id));
+  if (idx === -1) archives[y].members.push(entry);
+  else archives[y].members[idx] = { ...archives[y].members[idx], ...entry };
+
+  archives[y].members.sort((a, b) => {
+    const byLast = String(a.priimek || "").localeCompare(String(b.priimek || ""), "sl", { sensitivity: "base" });
+    if (byLast !== 0) return byLast;
+    return String(a.ime || "").localeCompare(String(b.ime || ""), "sl", { sensitivity: "base" });
+  });
+
+  saveMembershipResignedArchives(archives);
+}
+
+function removeMembershipResignedMember(year, memberId) {
+  const y = String(year || "").trim();
+  if (!y) return;
+
+  const archives = getMembershipResignedArchives();
+  if (!archives[y]?.members?.length) return;
+
+  const next = archives[y].members.filter((item) => Number(item.id) !== Number(memberId));
+  archives[y].members = next;
+  saveMembershipResignedArchives(archives);
 }
 
 function normalizeIdentityText(value) {
@@ -275,10 +382,65 @@ function ensureDemoData() {
   if (!getJSON(STORAGE_KEYS.GUARDS, null)) setJSON(STORAGE_KEYS.GUARDS, []);
   if (!getJSON(STORAGE_KEYS.REMINDERS, null)) setJSON(STORAGE_KEYS.REMINDERS, []);
   if (!getJSON(STORAGE_KEYS.MEMBERSHIP_APPLICATIONS, null)) setJSON(STORAGE_KEYS.MEMBERSHIP_APPLICATIONS, []);
+  if (!getJSON(STORAGE_KEYS.MEMBERSHIP_YEAR_ARCHIVES, null)) setJSON(STORAGE_KEYS.MEMBERSHIP_YEAR_ARCHIVES, {});
+  if (!getJSON(STORAGE_KEYS.MEMBERSHIP_RESIGNED_ARCHIVES, null)) setJSON(STORAGE_KEYS.MEMBERSHIP_RESIGNED_ARCHIVES, {});
   if (!getJSON(STORAGE_KEYS.ANIMAL_OBSERVATIONS, null)) setJSON(STORAGE_KEYS.ANIMAL_OBSERVATIONS, []);
   if (!getJSON(STORAGE_KEYS.YEARLY_RECAPS, null)) setJSON(STORAGE_KEYS.YEARLY_RECAPS, []);
   if (!getJSON(STORAGE_KEYS.COMMUNICATION_GROUPS, null)) setJSON(STORAGE_KEYS.COMMUNICATION_GROUPS, []);
   if (!getJSON(STORAGE_KEYS.COMMUNICATION_LOG, null)) setJSON(STORAGE_KEYS.COMMUNICATION_LOG, []);
+
+  ensurePreviousMembershipYearSnapshot();
+  ensureDemoMembershipArchiveData();
+}
+
+function ensureDemoMembershipArchiveData() {
+  const demoKey = "rd_membership_archive_demo_v1";
+  if (localStorage.getItem(demoKey) === "1") return;
+
+  const members = getMembers().filter((member) => !member.arhiviran);
+  if (!members.length) return;
+
+  const yearNow = new Date().getFullYear();
+  const archives = getMembershipYearArchives();
+
+  [yearNow - 2, yearNow - 3].forEach((year, offset) => {
+    const y = String(year);
+    if (archives[y]?.members?.length) return;
+
+    const sliceEnd = Math.max(8, members.length - 3 - offset * 4);
+    archives[y] = {
+      year: y,
+      createdAt: new Date(year + 1, 0, 1, 8, 0, 0).toISOString(),
+      demo: true,
+      members: members.slice(0, sliceEnd).map((member, index) => ({
+        ...snapshotMemberForArchive(member),
+        status: index % 9 === 0 ? "AM" : member.status || "",
+      })),
+    };
+  });
+
+  saveMembershipYearArchives(archives);
+
+  const resignedArchives = getMembershipResignedArchives();
+  [yearNow - 1, yearNow - 2].forEach((year, offset) => {
+    const y = String(year);
+    if (resignedArchives[y]?.members?.length) return;
+
+    resignedArchives[y] = {
+      year: y,
+      createdAt: new Date(year + 1, 0, 15, 8, 0, 0).toISOString(),
+      demo: true,
+      members: members.slice(2 + offset, 5 + offset).map((member, index) => ({
+        ...snapshotMemberForArchive(member),
+        amount: index === 0 ? 180 : 25,
+        reason: "Neporavnana članarina",
+        resignedAt: new Date(year + 1, 0, 15 + index, 8, 0, 0).toISOString(),
+      })),
+    };
+  });
+
+  saveMembershipResignedArchives(resignedArchives);
+  localStorage.setItem(demoKey, "1");
 }
 
 // ---------- AUTH / PERMISSIONS ----------
@@ -637,7 +799,7 @@ function renderAppNav(user, activeKey) {
     { key: "priznanja", label: "PRIZNANJA", href: "priznanja.html" },
     { key: "delovne-ure", label: "DELOVNE URE", href: "delovne-ure.html" },
     { key: "clanarina", label: "ČLANARINA", href: "clanarina.html" },
-    { key: "karte-cuvaji", label: "LETNE KARTE IN ČUVAJI", href: "karte-čuvaji.html" },
+    { key: "karte-cuvaji", label: "LETNE KARTE", href: "karte-čuvaji.html" },
     { key: "pripravniki-izpiti", label: "PRIPRAVNIKI IN IZPITI", href: "pripravniki-izpiti.html" },
     { key: "clanske-izkaznice", label: "ČLANSKE IZKAZNICE", href: "narocilo-izkaznic.html" },
     { key: "obvescanje", label: "OBVEŠČANJE", href: "obvescanje.html" },

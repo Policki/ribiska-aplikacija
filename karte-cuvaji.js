@@ -144,16 +144,23 @@
   }
 
   function inferLicenseTypeFromMember(ime, priimek) {
-    const targetIme = normalizeIdentityText(ime);
-    const targetPriimek = normalizeIdentityText(priimek);
-    const member = getMembers().find((m) => {
-      return normalizeIdentityText(m.ime) === targetIme && normalizeIdentityText(m.priimek) === targetPriimek;
-    });
+    const member = findMemberByLicenseName(ime, priimek);
 
     if (!member) return "clanska";
     if (member.status === "AM" || member.status === "DAM") return "mladinska";
     if (member.status === "AČ" || member.status === "ZAČ") return "castna";
     return "clanska";
+  }
+
+  function findMemberByLicenseName(ime, priimek) {
+    const targetIme = normalizeIdentityText(ime);
+    const targetPriimek = normalizeIdentityText(priimek);
+    if (!targetIme || !targetPriimek) return null;
+    return (
+      getMembers().find((m) => {
+        return normalizeIdentityText(m.ime) === targetIme && normalizeIdentityText(m.priimek) === targetPriimek;
+      }) || null
+    );
   }
 
   function matchesSearch(x) {
@@ -373,6 +380,7 @@
     }
 
     const list = getActiveList(year);
+    const linkedMember = findMemberByLicenseName(ime, priimek);
 
     // prepreči podvojitev iste številke (lahko odstraniš, če ne želiš)
     if (list.some((x) => String(x.stKarte) === String(stKarte) && normalizeLicenseType(x.vrstaKarte) === vrstaKarte)) {
@@ -381,6 +389,7 @@
 
     list.push({
       id: Date.now(),
+      memberId: linkedMember?.id || null,
       ime,
       priimek,
       stKarte,
@@ -511,6 +520,7 @@
 
       imported.push({
         id: Date.now() + r + Math.floor(Math.random() * 999),
+        memberId: findMemberByLicenseName(ime, priimek)?.id || null,
         ime,
         priimek,
         stKarte,

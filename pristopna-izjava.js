@@ -365,7 +365,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (drugaRdFields) drugaRdFields.hidden = !active;
     if (drugaRdOd) drugaRdOd.required = active;
     if (drugaRdNaziv) drugaRdNaziv.required = active;
-    if (drugaRdClanska) drugaRdClanska.required = active;
+    if (drugaRdClanska) {
+      drugaRdClanska.required = active;
+      if (!active) drugaRdClanska.value = "";
+    }
     if (drugaRdDoWrap) drugaRdDoWrap.hidden = value !== "bil";
     if (drugaRdDo) {
       drugaRdDo.required = value === "bil";
@@ -408,6 +411,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!fotografija?.files?.[0]) {
       alert("Dodajte fotografijo člana.");
+      return;
+    }
+
+    const drugaRdActive = form.drugaRdStatus.value === "bil" || form.drugaRdStatus.value === "se";
+    if (drugaRdActive && !String(form.drugaRdClanska.value || "").trim()) {
+      alert("Ker ste označili, da ste bili ali ste še član druge ribiške družine, morate vpisati tudi člansko številko druge RD.");
+      form.drugaRdClanska.focus();
       return;
     }
 
